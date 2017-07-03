@@ -33,11 +33,19 @@ task start(type: NpmTask, dependsOn: 'npmInstall') {
     args = ['run', 'start'] // corresponds with script @ package.json/scripts.start
 }
 
-task test(type: NpmTask, dependsOn: 'npmInstall') {
+task testChrome(type: NpmTask, dependsOn: 'npmInstall') {
     group = 'verification'
-    description = 'Run ng test --browser Chrome --single-run'
-    args = ['run', 'testCI'] // corresponds with script @ package.json/scripts.testCI
+    description = 'Run ng test --browser ChromeHeadless --single-run'
+    args = ['run', 'testCIChrome'] // corresponds with script @ package.json/scripts.testCIChrome
 }
+
+task testFirefox(type: NpmTask, dependsOn: 'npmInstall') {
+    group = 'verification'
+    description = 'Run ng test --browser Firefox --single-run'
+    args = ['run', 'testCIFirefox'] // corresponds with script @ package.json/scripts.testCIFirefox
+}
+
+task test(dependsOn: 'testFirefox')
 
 task lint(type: NpmTask, dependsOn: 'npmInstall') {
     group = 'verification'

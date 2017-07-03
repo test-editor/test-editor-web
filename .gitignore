@@ -55,3 +55,6 @@ local.properties
 flycheck_*.el
 .projectile
 .dir-locals.el
+
+# surefire reports
+target/
