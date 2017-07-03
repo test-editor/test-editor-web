@@ -1,0 +1,43 @@
+plugins {
+  id "com.moowork.node" version "1.2.0"
+}
+
+node {
+    version = '8.1.3'
+    download = true
+    nodeModulesDir = file("${project.projectDir}/")
+}
+
+task clean {
+    dependsOn(npmClean)
+}
+
+task build(type: NpmTask, dependsOn: 'npmInstall') {
+    group = 'build'
+    description = 'Run ng build'
+    args = ['run', 'build'] // corresponds with script @ package.json/scripts.build
+}
+
+task start(type: NpmTask, dependsOn: 'npmInstall') {
+    group = 'run'
+    description = 'Run ng serve (frontend on localhost:4200)'
+    args = ['run', 'start'] // corresponds with script @ package.json/scripts.start
+}
+
+task test(type: NpmTask, dependsOn: 'npmInstall') {
+    group = 'verification'
+    description = 'Run ng test'
+    args = ['run', 'test'] // corresponds with script @ package.json/scripts.test
+}
+
+task lint(type: NpmTask, dependsOn: 'npmInstall') {
+    group = 'verification'
+    description = 'Run ng lint'
+    args = ['run', 'lint'] // corresponds with script @ package.json/scripts.lint
+}
+
+task e2e(type: NpmTask, dependsOn: 'npmInstall') {
+    group = 'verification'
+    description = 'Run ng e2e'
+    args = ['run', 'e2e'] // corresponds with script @ package.json/scripts.e2e
+}
