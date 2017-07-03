@@ -35,8 +35,8 @@ task start(type: NpmTask, dependsOn: 'npmInstall') {
 
 task test(type: NpmTask, dependsOn: 'npmInstall') {
     group = 'verification'
-    description = 'Run ng test'
-    args = ['run', 'test'] // corresponds with script @ package.json/scripts.test
+    description = 'Run ng test --browser Chrome --single-run'
+    args = ['run', 'testCI'] // corresponds with script @ package.json/scripts.testCI
 }
 
 task lint(type: NpmTask, dependsOn: 'npmInstall') {
