@@ -9,13 +9,13 @@ import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
 @NgModule({
   declarations: [
     AppComponent,
-      AceComponentComponent,
-      AceEditorComponent
+    AceComponentComponent,
+    AceEditorComponent
   ],
   imports: [
     BrowserModule
   ],
   providers: [],
-    bootstrap: [AppComponent,AceComponentComponent]
+  bootstrap: [AppComponent,AceComponentComponent]
 })
 export class AppModule { }

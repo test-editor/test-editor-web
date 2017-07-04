@@ -21,11 +21,13 @@ nodeWithProperWorkspace {
     }
 
     // need to get tests running first!
-    // stage('Test') {
-    //     withGradleEnv {
-    //         gradle 'test'
-    //     }
-    // }
+    stage('Test') {
+        withXvfb {
+            withGradleEnv {
+                gradle 'testFirefox'
+            }
+        }
+    }
 
     // no release stage, will be added if deemed necessary
 }
