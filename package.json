@@ -1,14 +1,14 @@
 {
   "name": "test-editor-web",
-  "version": "0.0.0",
-  "license": "MIT",
+  "version": "0.0.1",
+  "license": "EPL",
   "scripts": {
     "ng": "node_modules/@angular/cli/bin/ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "testCIChrome": "ng test --browser ChromeHeadless --single-run",
-    "testCIFirefox": "ng test --browser Firefox --single-run",
+    "testCIChrome": "ng test --browser ChromeHeadless --single-run --log-level debug",
+    "testCIFirefox": "ng test --browser Firefox --single-run --log-level debug",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

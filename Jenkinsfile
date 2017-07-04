@@ -16,7 +16,7 @@ nodeWithProperWorkspace {
 
     stage('Build') {
         withGradleEnv {
-            gradle 'clean build'
+            gradle 'clean npm_install build'
         }
     }
 
