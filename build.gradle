@@ -45,8 +45,6 @@ task testFirefox(type: NpmTask, dependsOn: 'npmInstall') {
     args = ['run', 'testCIFirefox'] // corresponds with script @ package.json/scripts.testCIFirefox
 }
 
-task test(dependsOn: 'testFirefox')
-
 task lint(type: NpmTask, dependsOn: 'npmInstall') {
     group = 'verification'
     description = 'Run ng lint'

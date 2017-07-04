@@ -16,7 +16,7 @@ nodeWithProperWorkspace {
 
     stage('Build') {
         withGradleEnv {
-            gradle 'clean npm_install build'
+            gradle 'clean build'
         }
     }
 
@@ -24,7 +24,7 @@ nodeWithProperWorkspace {
     stage('Test') {
         withXvfb {
             withGradleEnv {
-                gradle 'test'
+                gradle 'testFirefox'
             }
         }
     }
