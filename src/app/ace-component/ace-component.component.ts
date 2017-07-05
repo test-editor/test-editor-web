@@ -12,7 +12,7 @@ export class AceComponentComponent {
     @ViewChild('editor') editor;
 
     ngAfterViewInit() {
-        createXtextEditor('xtext-editor', 'example.mydsl');
+        createXtextEditor('xtext-editor', 'example.tsl');
     }
 
 }

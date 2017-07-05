@@ -14,16 +14,38 @@ require.config({
 });
 
 function createXtextEditor(parent, resourceId) {
-    console.log(`createXtextEditor(${parent}, ${resourceId})`)
-    require(["ace/ace", "xtext/xtext-ace"], function(ace, xtext) {
-        ace.config.set('basePath', baseUrl + 'assets/ace');
-        xtext.createEditor({
-            baseUrl: baseUrl,
-            serviceUrl: 'http://localhost:8080/xtext-service',
-            parent: parent,
-            resourceId: resourceId,
-            syntaxDefinition: "xtext-resources/generated/mode-mydsl",
-            enableSaveAction: true
-        });
-    });
+    console.log(`createXtextEditor(${parent}, ${resourceId})`);
+    require(["jquery",
+             "ace/ace",
+             "xtext/xtext-ace",
+             "xtext/services/XtextService" ],
+            function(jquery, ace, xtext, xtextService) {
+                ace.config.set('basePath', baseUrl + 'assets/ace');
+
+                /* Send the session credentials also cross-domain. */
+                jquery.ajaxSetup({
+                    xhrFields: {
+                        withCredentials: true
+                    }
+                });
+
+                /* Dummy authorization for now... */
+                var originalSendRequest = xtextService.prototype.sendMyRequest;
+                var newSendRequest = function(editorContext, settings, needsSession) {
+                    settings.headers = {
+                        "Authorization": "admin:admin@example.org"
+                    };
+                    originalSendRequest(editorContext, settings, needsSession); // is bound to original function
+                };
+                xtextService.prototype.sendMyRequest = newSendRequest;
+
+                xtext.createEditor({
+                    baseUrl: baseUrl,
+                    serviceUrl: 'http://localhost:8080/xtext-service',
+                    parent: parent,
+                    resourceId: resourceId,
+                    syntaxDefinition: "xtext-resources/generated/mode-mydsl",
+                    enableSaveAction: true
+                });
+            });
 }
