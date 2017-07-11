@@ -1,18 +1,9 @@
 define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], function(oop, mText, mTextHighlightRules) {
 	var HighlightRules = function() {
-		var keywords = "Hello";
+		var keywords = "package";
 		this.$rules = {
 			"start": [
-				{token: "comment", regex: "\\/\\/.*$"},
-				{token: "comment", regex: "\\/\\*", next : "comment"},
-				{token: "string", regex: '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'},
-				{token: "string", regex: "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"},
-				{token: "constant.numeric", regex: "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"},
 				{token: "keyword", regex: "\\b(?:" + keywords + ")\\b"}
-			],
-			"comment": [
-				{token: "comment", regex: ".*?\\*\\/", next : "start"},
-				{token: "comment", regex: ".+"}
 			]
 		};
 	};
@@ -22,7 +13,7 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 		this.HighlightRules = HighlightRules;
 	};
 	oop.inherits(Mode, mText.Mode);
-	Mode.prototype.$id = "xtext/mydsl";
+	Mode.prototype.$id = "xtext/tsl";
 	Mode.prototype.getCompletions = function(state, session, pos, prefix) {
 		return [];
 	}
