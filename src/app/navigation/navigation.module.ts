@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { NavigationComponent } from './navigation.component';
+import { TreeViewerComponent } from './tree-viewer/tree-viewer.component';
 
 @NgModule({
   imports: [
@@ -11,7 +12,8 @@ import { NavigationComponent } from './navigation.component';
     NavigationComponent
   ],
   declarations: [
-    NavigationComponent
+    NavigationComponent,
+    TreeViewerComponent
   ]
 })
 export class NavigationModule { }
