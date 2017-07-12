@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { WorkspaceElement } from './workspace/workspace-element';
+import { WorkspaceService } from './workspace/workspace.service';
+
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
@@ -7,9 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavigationComponent implements OnInit {
 
-  constructor() { }
+  workspaceRoot: WorkspaceElement;
+
+  constructor(private workspaceService: WorkspaceService) { }
 
   ngOnInit() {
+    this.workspaceService.listFiles().then(element => this.workspaceRoot = element);
   }
 
 }

@@ -1,0 +1,35 @@
+.tree-view {
+	font-family: system-ui,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+	font-size: 13px;
+	line-height: 22px;
+}
+
+.tree-view-item {
+    display: block
+}
+
+.tree-view span.icon {
+	font-size: 10px;
+    margin-right: 3px;
+}
+
+.tree-view div {
+    padding-left: 12px;
+}
+
+.tree-view > div {
+    padding-left: 0;
+}
+
+.tree-view div {
+	text-decoration: none;
+    font-size: 15px;
+    color: #CCCCCC;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+}
+
+.tree-view-item-key:hover {
+    background-color: #2A2D2E;
+}
