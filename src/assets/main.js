@@ -1,10 +1,6 @@
-let baseUrl = window.location.pathname;
-let fileIndex = baseUrl.indexOf("index.html");
-if (fileIndex > 0) {
-    baseUrl = baseUrl.slice(0, fileIndex);
-}
+let baseUrl = window.location.origin;
 require.config({
-    baseUrl: baseUrl + "assets",
+    baseUrl: baseUrl + "/assets",
     paths: {
         "jquery": "jquery/dist/jquery.min",
         "ace/ace": "ace/src/ace",
@@ -17,14 +13,7 @@ require.config({
 require(
     ["jquery", "ace/ace", "xtext/xtext-ace", "xtext/services/XtextService"],
     function (jquery, ace, xtext, xtextService) {
-        ace.config.set('basePath', baseUrl + 'assets/ace');
-
-        /* Send the session credentials also cross-domain. */
-        jquery.ajaxSetup({
-            xhrFields: {
-                withCredentials: true
-            }
-        });
+        ace.config.set('basePath', baseUrl + '/assets/ace');
 
         /* Dummy authorization for now... */
         xtextService.prototype._sendRequest = xtextService.prototype.sendRequest;
