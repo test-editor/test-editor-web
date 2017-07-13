@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
+import { NavigationComponent } from './navigation/navigation.component';
 
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
 
@@ -10,7 +11,8 @@ import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
   declarations: [
     AppComponent,
     AceComponentComponent,
-    AceEditorComponent
+    AceEditorComponent,
+    NavigationComponent
   ],
   imports: [
     BrowserModule

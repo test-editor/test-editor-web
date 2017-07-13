@@ -1,57 +1,61 @@
 plugins {
-  id "com.moowork.node" version "1.2.0"
+    id "com.moowork.node" version "1.2.0"
 }
 
 node {
     version = '8.1.3'
     download = true
-    nodeModulesDir = file("${project.projectDir}/")
 }
 
 // clean node/node_modules/dist
 task npmClean(type: Delete) {
-    final def webDir = "${rootDir}"
-    delete "${webDir}/node"
-    delete "${webDir}/node_modules"
-    delete "${webDir}/dist"
-    delete "${webDir}/coverage"
+    delete "$rootDir/node"
+    delete "$rootDir/node_modules"
+    delete "$rootDir/dist"
+    delete "$rootDir/coverage"
 }
 
 task clean {
     dependsOn(npmClean)
 }
 
-task build(type: NpmTask, dependsOn: 'npmInstall') {
+task customNpmInstall(type: NpmTask) {
+    outputs.upToDateWhen { false }
+    group = 'build'
+    args = ['install']
+}
+
+task build(type: NpmTask, dependsOn: 'customNpmInstall') {
     group = 'build'
     description = 'Run ng build'
     args = ['run', 'build'] // corresponds with script @ package.json/scripts.build
 }
 
-task start(type: NpmTask, dependsOn: 'npmInstall') {
+task start(type: NpmTask, dependsOn: 'customNpmInstall') {
     group = 'run'
     description = 'Run ng serve (frontend on localhost:4200)'
     args = ['run', 'start'] // corresponds with script @ package.json/scripts.start
 }
 
-task testChrome(type: NpmTask, dependsOn: 'npmInstall') {
+task testChrome(type: NpmTask, dependsOn: 'customNpmInstall') {
     group = 'verification'
     description = 'Run ng test --browser ChromeHeadless --single-run'
     args = ['run', 'testCIChrome'] // corresponds with script @ package.json/scripts.testCIChrome
 }
 
-task testFirefox(type: NpmTask, dependsOn: 'npmInstall') {
+task testFirefox(type: NpmTask, dependsOn: 'customNpmInstall') {
     group = 'verification'
     description = 'Run ng test --browser Firefox --single-run'
     args = ['run', 'testCIFirefox'] // corresponds with script @ package.json/scripts.testCIFirefox
 }
 
-task lint(type: NpmTask, dependsOn: 'npmInstall') {
+task lint(type: NpmTask, dependsOn: 'customNpmInstall') {
     group = 'verification'
     description = 'Run ng lint'
     args = ['run', 'lint'] // corresponds with script @ package.json/scripts.lint
 }
 
-task e2e(type: NpmTask, dependsOn: 'npmInstall') {
+task e2e(type: NpmTask, dependsOn: 'customNpmInstall') {
     group = 'verification'
     description = 'Run ng e2e'
     args = ['run', 'e2e'] // corresponds with script @ package.json/scripts.e2e
