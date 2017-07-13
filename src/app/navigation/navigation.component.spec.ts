@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { WorkspaceService } from './workspace/workspace.service';
+import { TreeViewerComponent } from './tree-viewer/tree-viewer.component';
 import { NavigationComponent } from './navigation.component';
 
 describe('NavigationComponent', () => {
@@ -8,7 +10,13 @@ describe('NavigationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavigationComponent ]
+      declarations: [
+        NavigationComponent,
+        TreeViewerComponent
+      ],
+      providers: [
+        WorkspaceService
+      ]
     })
     .compileComponents();
   }));
