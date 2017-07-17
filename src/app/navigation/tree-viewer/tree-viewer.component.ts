@@ -9,6 +9,10 @@ import { WorkspaceElement } from '../workspace/workspace-element';
 })
 export class TreeViewerComponent implements OnInit {
 
+  // workspace element types
+  static readonly FOLDER = "folder";
+  static readonly FILE   = "file";
+
   @Input() model: WorkspaceElement;
 
   constructor() { }
@@ -17,34 +21,37 @@ export class TreeViewerComponent implements OnInit {
   }
 
   onClick() {
-    if (this.model.type == "folder") {
+    switch (this.model.type) {
+    case TreeViewerComponent.FOLDER:
       this.model.expanded = !this.model.expanded;
       console.log("toggle folder " + this.model.name + ", " + this.model.expanded);
-    } else if (this.model.type == "file") {
+      break;
+    case TreeViewerComponent.FILE:
       console.log("open editor for file " + this.model.path);
-    } else {
-      console.log("no action for file type " + this.model.type);
+      break;
+    default:
+      console.log("no action for type " + this.model.type);
     }
   }
 
   isFolderExpanded() : boolean {
-    return this.model.expanded && this.model.children.length > 0 && this.model.type == "folder";
+    return this.model.expanded && this.model.children.length > 0 && this.model.type === TreeViewerComponent.FOLDER;
   }
 
   isFolderFolded() : boolean {
-    return !this.model.expanded && this.model.children.length > 0 && this.model.type == "folder";
+    return !this.model.expanded && this.model.children.length > 0 && this.model.type === TreeViewerComponent.FOLDER;
   }
 
   isEmptyFolder() : boolean {
-    return this.model.children.length == 0 && this.model.type == "folder";
+    return this.model.children.length == 0 && this.model.type === TreeViewerComponent.FOLDER;
   }
 
   isFile() : boolean {
-    return this.model.children.length == 0 && this.model.type == "file";
+    return this.model.children.length == 0 && this.model.type === TreeViewerComponent.FILE;
   }
 
   isUnknown() : boolean {
-    return this.model.type !== "file" && this.model.type !== "folder";
+    return this.model.type !== "file" && this.model.type !== TreeViewerComponent.FOLDER;
   }
 
 }
