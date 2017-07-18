@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
 
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
+import { NavigationServiceComponent } from './navigation-service/navigation-service.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AceComponentComponent,
-    AceEditorComponent
+    AceEditorComponent,
+    NavigationServiceComponent
   ],
   imports: [
     BrowserModule,

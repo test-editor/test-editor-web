@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-
+import { NavigationServiceComponent } from '../../navigation-service/navigation-service.component';
 import { WorkspaceElement } from '../workspace/workspace-element';
 
 @Component({
@@ -15,7 +15,9 @@ export class TreeViewerComponent implements OnInit {
 
   @Input() model: WorkspaceElement;
 
-  constructor() { }
+  constructor(private navigationService: NavigationServiceComponent) {
+      navigationService.event$.subscribe(message => { console.log('TreeViewerComponent: '+message); });
+  }
 
   ngOnInit() {
   }
@@ -24,13 +26,13 @@ export class TreeViewerComponent implements OnInit {
     switch (this.model.type) {
     case TreeViewerComponent.FOLDER:
       this.model.expanded = !this.model.expanded;
-      console.log("toggle folder " + this.model.name + ", " + this.model.expanded);
+      this.navigationService.emit("toggle folder " + this.model.name);
       break;
     case TreeViewerComponent.FILE:
-      console.log("open editor for file " + this.model.path);
+      this.navigationService.emit("open editor for file " + this.model.path);
       break;
     default:
-      console.log("no action for type " + this.model.type);
+      this.navigationService.emit("clicked unknown filetype '" + this.model.type + "'");
     }
   }
 
