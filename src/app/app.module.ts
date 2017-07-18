@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpModule }    from '@angular/http';
 
 import { NavigationModule } from './navigation/navigation.module'
 
@@ -16,6 +17,7 @@ import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     NavigationModule
   ],
   providers: [],
