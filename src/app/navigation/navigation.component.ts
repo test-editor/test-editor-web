@@ -8,6 +8,7 @@ import { WorkspaceService } from './workspace/workspace.service';
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.css']
 })
+
 export class NavigationComponent implements OnInit {
 
   workspaceRoot: WorkspaceElement;
@@ -16,7 +17,8 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit() {
     this.workspaceService.listFiles().then(element => {
-      this.workspaceRoot = element; });
+      this.workspaceRoot = element;
+    });
   }
 
 }

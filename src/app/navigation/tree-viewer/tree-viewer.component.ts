@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavigationChannelComponent } from '../../navigation-channel/navigation-channel.component';
-import { NavigationEventType } from '../../navigation-channel/navigation-event';
+import { NavigationChannel } from '../../navigation-channel/navigation-channel';
 import { WorkspaceElement } from '../workspace/workspace-element';
 
 @Component({
@@ -15,10 +14,11 @@ export class TreeViewerComponent implements OnInit {
   static readonly FILE   = "file";
 
   static readonly EVENT_SOURCE = "tree-viewer";
+  static readonly CLICK_NAV_EVENT_TYPE = "selectTreeElement";
 
   @Input() model: WorkspaceElement;
 
-  constructor(private navigationChannel: NavigationChannelComponent) {
+  constructor(private navigationChannel: NavigationChannel) {
     navigationChannel.navEvent$.subscribe(navEvent => {
       if (navEvent.source !== TreeViewerComponent.EVENT_SOURCE) {
         console.log("Received navigation event:");
@@ -31,7 +31,10 @@ export class TreeViewerComponent implements OnInit {
   }
 
   onClick() {
-    this.navigationChannel.emitNavEvent({ source: TreeViewerComponent.EVENT_SOURCE, type: NavigationEventType.selectTreeElement, content: { path: this.model.path, name: this.model.name }});
+    this.navigationChannel.emitNavEvent({
+      source: TreeViewerComponent.EVENT_SOURCE,
+      type: TreeViewerComponent.CLICK_NAV_EVENT_TYPE,
+      content: { path: this.model.path, name: this.model.name, additionalPayload: "TODO: put file content here" }});
     if (this.model.type === TreeViewerComponent.FOLDER) {
       this.model.expanded = !this.model.expanded;
     }

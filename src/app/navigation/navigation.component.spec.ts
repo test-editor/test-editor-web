@@ -4,7 +4,7 @@ import { HttpModule } from '@angular/http';
 import { WorkspaceService } from './workspace/workspace.service';
 import { TreeViewerComponent } from './tree-viewer/tree-viewer.component';
 import { NavigationComponent } from './navigation.component';
-import { NavigationChannelComponent } from '../navigation-channel/navigation-channel.component';
+import { NavigationChannel } from '../navigation-channel/navigation-channel';
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
@@ -19,7 +19,7 @@ describe('NavigationComponent', () => {
       imports: [ HttpModule ],
       providers: [
         WorkspaceService,
-        NavigationChannelComponent
+        NavigationChannel
       ]
     })
     .compileComponents();
