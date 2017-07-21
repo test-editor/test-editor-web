@@ -19,43 +19,43 @@ task clean {
     dependsOn(npmClean)
 }
 
-task customNpmInstall(type: NpmTask) {
+task yarnInstall(type: YarnTask) {
     outputs.upToDateWhen { false }
     group = 'build'
     args = ['install']
 }
 
-task build(type: NpmTask, dependsOn: 'customNpmInstall') {
+task build(type: NpmTask, dependsOn: 'yarnInstall') {
     group = 'build'
     description = 'Run ng build'
     args = ['run', 'build'] // corresponds with script @ package.json/scripts.build
 }
 
-task start(type: NpmTask, dependsOn: 'customNpmInstall') {
+task start(type: NpmTask, dependsOn: 'yarnInstall') {
     group = 'run'
     description = 'Run ng serve (frontend on localhost:4200)'
     args = ['run', 'start'] // corresponds with script @ package.json/scripts.start
 }
 
-task testChrome(type: NpmTask, dependsOn: 'customNpmInstall') {
+task testChrome(type: NpmTask, dependsOn: 'yarnInstall') {
     group = 'verification'
     description = 'Run ng test --browser ChromeHeadless --single-run'
     args = ['run', 'testCIChrome'] // corresponds with script @ package.json/scripts.testCIChrome
 }
 
-task testFirefox(type: NpmTask, dependsOn: 'customNpmInstall') {
+task testFirefox(type: NpmTask, dependsOn: 'yarnInstall') {
     group = 'verification'
     description = 'Run ng test --browser Firefox --single-run'
     args = ['run', 'testCIFirefox'] // corresponds with script @ package.json/scripts.testCIFirefox
 }
 
-task lint(type: NpmTask, dependsOn: 'customNpmInstall') {
+task lint(type: NpmTask, dependsOn: 'yarnInstall') {
     group = 'verification'
     description = 'Run ng lint'
     args = ['run', 'lint'] // corresponds with script @ package.json/scripts.lint
 }
 
-task e2e(type: NpmTask, dependsOn: 'customNpmInstall') {
+task e2e(type: NpmTask, dependsOn: 'yarnInstall') {
     group = 'verification'
     description = 'Run ng e2e'
     args = ['run', 'e2e'] // corresponds with script @ package.json/scripts.e2e
