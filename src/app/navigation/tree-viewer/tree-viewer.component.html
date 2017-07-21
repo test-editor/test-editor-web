@@ -1,12 +1,15 @@
 <div class="tree-view" *ngIf="model">
-  <div class="tree-view-item" (click)="onClick()">
-    <span class="icon glyphicon"
-          [ngClass]="{ 'glyphicon-question-sign': isUnknown(),
-                       'glyphicon-folder-close': isEmptyFolder(),
-                       'glyphicon-chevron-down': isFolderExpanded(),
-                       'glyphicon-chevron-right': isFolderFolded(),
-                       'glyphicon-file': isFile() }"></span>
-    &nbsp;{{model.name}}
+  <div class="tree-view-item">
+    <div class="tree-view-item-key" (click)="onClick()">
+      <span class="icon glyphicon"
+            [ngClass]="{ 'glyphicon-question-sign': isUnknown(),
+                        'glyphicon-folder-close': isEmptyFolder(),
+                        'glyphicon-chevron-down': isFolderExpanded(),
+                        'glyphicon-chevron-right': isFolderFolded(),
+                        'glyphicon-file': isFile() }">
+      </span>
+      {{model.name}}
+    </div>
   </div>
   <div *ngIf="model.expanded">
     <div *ngFor="let child of model.children">
