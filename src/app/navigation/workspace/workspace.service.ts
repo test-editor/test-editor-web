@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-
+import { Http, Headers, Response } from '@angular/http';
 import { WorkspaceElement } from './workspace-element';
+import 'rxjs/add/operator/toPromise';
 
 const mockData: WorkspaceElement = {
   "name": "workspace (admin)",
@@ -55,9 +56,25 @@ const mockData: WorkspaceElement = {
 
 @Injectable()
 export class WorkspaceService {
-  
+
+  private workspaceUrl = 'http://localhost:8080/workspace/list-files';
+
+  constructor(private http: Http) { }
+
+  createAuthorizationHeader(headers: Headers) {
+    headers.append('Authorization', 'admin:admin@example.com');
+  }
+
   listFiles(): Promise<WorkspaceElement> {
-    return Promise.resolve(mockData);
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+    return this.http.get(this.workspaceUrl, { headers: headers }).toPromise().then(res => res.json()).catch(this.handleError)
+    // return Promise.resolve(mockData);
   }
   
+  private handleError(error: any): Promise<any> {
+    console.error('An error occurred', error); // for demo purposes only
+    return Promise.reject(error.message || error);
+  }
+
 }
