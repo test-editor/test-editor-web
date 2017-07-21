@@ -2,6 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { NavigationChannel } from './navigation-channel/navigation-channel';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -9,7 +10,8 @@ describe('AppComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         AppComponent
-      ]
+      ],
+      providers: [ NavigationChannel ]
     }).compileComponents();
   }));
 
