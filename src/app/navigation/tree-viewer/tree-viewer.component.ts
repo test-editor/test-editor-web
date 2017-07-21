@@ -34,7 +34,8 @@ export class TreeViewerComponent implements OnInit {
     this.navigationChannel.emitNavEvent({
       source: TreeViewerComponent.EVENT_SOURCE,
       type: TreeViewerComponent.CLICK_NAV_EVENT_TYPE,
-      content: { path: this.model.path, name: this.model.name, additionalPayload: "TODO: put file content here" }});
+      content: { path: this.model.path, name: this.model.name, additionalPayload: "TODO: put file content here" }
+    });
     if (this.model.type === TreeViewerComponent.FOLDER) {
       this.model.expanded = !this.model.expanded;
     }
