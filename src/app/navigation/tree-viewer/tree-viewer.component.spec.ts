@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TreeViewerComponent } from './tree-viewer.component';
+import { NavigationChannelComponent } from '../../navigation-channel/navigation-channel.component';
 
 describe('TreeViewerComponent', () => {
   let component: TreeViewerComponent;
@@ -8,7 +9,8 @@ describe('TreeViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TreeViewerComponent ]
+      declarations: [ TreeViewerComponent ],
+      providers: [ NavigationChannelComponent ]
     })
     .compileComponents();
   }));

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { WorkspaceElement } from './workspace/workspace-element';
 import { WorkspaceService } from './workspace/workspace.service';
-import { NavigationServiceComponent } from '../navigation-service/navigation-service.component';
 
 @Component({
   selector: 'app-navigation',
@@ -13,12 +12,11 @@ export class NavigationComponent implements OnInit {
 
   workspaceRoot: WorkspaceElement;
 
-  constructor(private workspaceService: WorkspaceService, private navigationService: NavigationServiceComponent) { }
+  constructor(private workspaceService: WorkspaceService) { }
 
   ngOnInit() {
     this.workspaceService.listFiles().then(element => {
-      this.workspaceRoot = element;
-      this.navigationService.emit("loaded files"); });
+      this.workspaceRoot = element; });
   }
 
 }

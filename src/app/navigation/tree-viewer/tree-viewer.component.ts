@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavigationServiceComponent } from '../../navigation-service/navigation-service.component';
+import { NavigationChannelComponent } from '../../navigation-channel/navigation-channel.component';
+import { NavigationEventType } from '../../navigation-channel/navigation-event';
 import { WorkspaceElement } from '../workspace/workspace-element';
 
 @Component({
@@ -13,26 +14,25 @@ export class TreeViewerComponent implements OnInit {
   static readonly FOLDER = "folder";
   static readonly FILE   = "file";
 
+  static readonly EVENT_SOURCE = "tree-viewer";
+
   @Input() model: WorkspaceElement;
 
-  constructor(private navigationService: NavigationServiceComponent) {
-      navigationService.event$.subscribe(message => { console.log('TreeViewerComponent: '+message); });
+  constructor(private navigationChannel: NavigationChannelComponent) {
+    navigationChannel.navEvent$.subscribe(navEvent => {
+      if (navEvent.source !== TreeViewerComponent.EVENT_SOURCE) {
+        console.log("TreeViewer, navEvent: " + navEvent.toString());
+      }
+    }); // e.g. react on selected editor to open tree accordingly
   }
 
   ngOnInit() {
   }
 
   onClick() {
-    switch (this.model.type) {
-    case TreeViewerComponent.FOLDER:
+    this.navigationChannel.emitNavEvent({ source: TreeViewerComponent.EVENT_SOURCE, type: NavigationEventType.selectTreeElement, content: { path: this.model.path, name: this.model.name }});
+    if (this.model.type === TreeViewerComponent.FOLDER) {
       this.model.expanded = !this.model.expanded;
-      this.navigationService.emit("toggle folder " + this.model.name);
-      break;
-    case TreeViewerComponent.FILE:
-      this.navigationService.emit("open editor for file " + this.model.path);
-      break;
-    default:
-      this.navigationService.emit("clicked unknown filetype '" + this.model.type + "'");
     }
   }
 

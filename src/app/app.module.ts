@@ -7,20 +7,21 @@ import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
 
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
-import { NavigationServiceComponent } from './navigation-service/navigation-service.component';
+import { NavigationChannelComponent } from './navigation-channel/navigation-channel.component';
+import { NavigationEventService } from './navigation-channel/navigation-event';
 
 @NgModule({
   declarations: [
     AppComponent,
     AceComponentComponent,
     AceEditorComponent,
-    NavigationServiceComponent
+    NavigationChannelComponent
   ],
   imports: [
     BrowserModule,
     NavigationModule
   ],
-  providers: [],
+  providers: [NavigationEventService],
   bootstrap: [AppComponent,AceComponentComponent]
 })
 export class AppModule { }

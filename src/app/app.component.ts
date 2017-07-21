@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
-import { NavigationServiceComponent } from './navigation-service/navigation-service.component';
+import { NavigationChannelComponent } from './navigation-channel/navigation-channel.component';
+import { NavigationEventType, NavigationEventService } from './navigation-channel/navigation-event';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [NavigationServiceComponent]
+  providers: [NavigationChannelComponent]
 })
 export class AppComponent {
   title = 'test-editor-web';
 
-  constructor(private navigationService: NavigationServiceComponent) {
-    navigationService.event$.subscribe(message => { console.log('AppComponent: '+message); });
+    constructor(private navigationChannel: NavigationChannelComponent, private eventService: NavigationEventService) {
+    navigationChannel.navEvent$.subscribe(navEvent => {
+        console.log('AppComponent, navEvent: ' + eventService.toString(navEvent)); });
   }
 
 }
