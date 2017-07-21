@@ -21,7 +21,8 @@ export class TreeViewerComponent implements OnInit {
   constructor(private navigationChannel: NavigationChannelComponent) {
     navigationChannel.navEvent$.subscribe(navEvent => {
       if (navEvent.source !== TreeViewerComponent.EVENT_SOURCE) {
-        console.log("TreeViewer, navEvent: " + navEvent.toString());
+        console.log("Received navigation event:");
+        console.log(navEvent);
       }
     }); // e.g. react on selected editor to open tree accordingly
   }

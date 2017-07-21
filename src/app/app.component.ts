@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavigationChannelComponent } from './navigation-channel/navigation-channel.component';
-import { NavigationEventType, NavigationEventService } from './navigation-channel/navigation-event';
 
 @Component({
   selector: 'app-root',
@@ -11,9 +10,10 @@ import { NavigationEventType, NavigationEventService } from './navigation-channe
 export class AppComponent {
   title = 'test-editor-web';
 
-    constructor(private navigationChannel: NavigationChannelComponent, private eventService: NavigationEventService) {
+    constructor(private navigationChannel: NavigationChannelComponent) {
     navigationChannel.navEvent$.subscribe(navEvent => {
-        console.log('AppComponent, navEvent: ' + eventService.toString(navEvent)); });
+        console.log('Received navigation event in app-root:');
+        console.log(navEvent);});
   }
 
 }

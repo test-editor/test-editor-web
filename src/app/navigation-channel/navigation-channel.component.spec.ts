@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NavigationChannelComponent } from './navigation-channel.component';
-import { NavigationEventService } from './navigation-event';
 
 describe('NavigationChannelComponent', () => {
   let component: NavigationChannelComponent;
@@ -9,8 +8,7 @@ describe('NavigationChannelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavigationChannelComponent ],
-      providers: [ NavigationEventService ]
+      declarations: [ NavigationChannelComponent ]
     })
     .compileComponents();
   }));

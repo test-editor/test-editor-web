@@ -3,16 +3,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
-import { NavigationEventService } from './navigation-channel/navigation-event';
-
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
         AppComponent
-      ],
-      providers: [ NavigationEventService ]
+      ]
     }).compileComponents();
   }));
 

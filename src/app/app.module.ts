@@ -8,7 +8,6 @@ import { AceComponentComponent } from './ace-component/ace-component.component';
 
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
 import { NavigationChannelComponent } from './navigation-channel/navigation-channel.component';
-import { NavigationEventService } from './navigation-channel/navigation-event';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,6 @@ import { NavigationEventService } from './navigation-channel/navigation-event';
     BrowserModule,
     NavigationModule
   ],
-  providers: [NavigationEventService],
   bootstrap: [AppComponent,AceComponentComponent]
 })
 export class AppModule { }
