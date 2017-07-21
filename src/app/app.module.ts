@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpModule }    from '@angular/http';
 
 import { NavigationModule } from './navigation/navigation.module'
 
@@ -18,6 +19,7 @@ import { NavigationChannelComponent } from './navigation-channel/navigation-chan
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     NavigationModule
   ],
   bootstrap: [AppComponent,AceComponentComponent]
