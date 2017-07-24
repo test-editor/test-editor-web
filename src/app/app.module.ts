@@ -6,8 +6,9 @@ import { NavigationModule } from './navigation/navigation.module'
 
 import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
-
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
+
+import { NavigationChannelModule } from './navigation-channel/navigation-channel.module'
 
 @NgModule({
   declarations: [
@@ -18,9 +19,9 @@ import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
   imports: [
     BrowserModule,
     HttpModule,
-    NavigationModule
+    NavigationModule,
+    NavigationChannelModule
   ],
-  providers: [],
   bootstrap: [AppComponent,AceComponentComponent]
 })
 export class AppModule { }

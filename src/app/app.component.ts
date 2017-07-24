@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NavigationChannel } from './navigation-channel/navigation-channel';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'test-editor-web';
+
+    constructor(private navigationChannel: NavigationChannel) {
+    navigationChannel.navEvent$.subscribe(navEvent => {
+        console.log('Received navigation event in app-root:');
+        console.log(navEvent);
+    });
+  }
+
 }
