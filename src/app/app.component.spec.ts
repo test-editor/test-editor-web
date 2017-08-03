@@ -1,17 +1,20 @@
 import { TestBed, async } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+import { MessagingModule } from '@testeditor/messaging-service';
+
 import { AppComponent } from './app.component';
-import { NavigationChannel } from './navigation-channel/navigation-channel';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        MessagingModule.forRoot()
+      ],
       declarations: [
         AppComponent
-      ],
-      providers: [ NavigationChannel ]
+      ]
     }).compileComponents();
   }));
 

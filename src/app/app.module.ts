@@ -1,13 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { MessagingModule } from '@testeditor/messaging-service';
 import { LibModule } from '@testeditor/workspace-navigator';
 
 import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
-
-import { NavigationChannelModule } from './navigation-channel/navigation-channel.module'
 
 @NgModule({
   declarations: [
@@ -17,7 +16,7 @@ import { NavigationChannelModule } from './navigation-channel/navigation-channel
   ],
   imports: [
     BrowserModule,
-    NavigationChannelModule,
+    MessagingModule.forRoot(),
     LibModule.forRoot({
       serviceUrl: "http://localhost:9080/workspace",
       authorizationHeader: "admin:admin@example.com"
