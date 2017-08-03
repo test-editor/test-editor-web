@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpModule }    from '@angular/http';
 
-import { NavigationModule } from './navigation/navigation.module'
+import { LibModule } from '@testeditor/workspace-navigator';
 
 import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
@@ -18,10 +17,12 @@ import { NavigationChannelModule } from './navigation-channel/navigation-channel
   ],
   imports: [
     BrowserModule,
-    HttpModule,
-    NavigationModule,
-    NavigationChannelModule
+    NavigationChannelModule,
+    LibModule.forRoot({
+      serviceUrl: "http://localhost:9080/workspace",
+      authorizationHeader: "admin:admin@example.com"
+    })
   ],
-  bootstrap: [AppComponent,AceComponentComponent]
+  bootstrap: [AppComponent, AceComponentComponent]
 })
 export class AppModule { }
