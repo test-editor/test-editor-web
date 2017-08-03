@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavigationChannel } from './navigation-channel/navigation-channel';
+import { Component, OnInit } from '@angular/core';
+import { MessagingService } from '@testeditor/messaging-service';
 
 @Component({
   selector: 'app-root',
@@ -7,12 +7,17 @@ import { NavigationChannel } from './navigation-channel/navigation-channel';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'test-editor-web';
 
-    constructor(private navigationChannel: NavigationChannel) {
-    navigationChannel.navEvent$.subscribe(navEvent => {
-        console.log('Received navigation event in app-root:');
-        console.log(navEvent);
+  title = 'test-editor-web';
+  lastModelName: string;
+
+  constructor(private messagingService: MessagingService) {
+  }
+
+  ngOnInit(): void {
+    this.messagingService.subscribe('navigation.open', (model) => {
+      console.log(`Received 'navigation.open' on '${model.name}'.`);
+      this.lastModelName = model.name;
     });
   }
 

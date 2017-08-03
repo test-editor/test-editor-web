@@ -153,9 +153,13 @@
     magic-string "^0.22.3"
     source-map "^0.5.6"
 
-"@testeditor/workspace-navigator@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.1.0.tgz#4c581645d5c1840906a99b2886c45929fa6b98e7"
+"@testeditor/messaging-service@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.0.0.tgz#5003d9703dbedfda73d0838a9be274e82bb21c3f"
+
+"@testeditor/workspace-navigator@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.2.0.tgz#11686c5a11664c6fdedd8e63485befa8db0e1c9b"
 
 "@types/jasmine@2.5.45":
   version "2.5.45"
