@@ -5,14 +5,12 @@ import { MessagingModule } from '@testeditor/messaging-service';
 import { LibModule } from '@testeditor/workspace-navigator';
 
 import { AppComponent } from './app.component';
-import { AceComponentComponent } from './ace-component/ace-component.component';
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
+import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    AceComponentComponent,
-    AceEditorComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -20,8 +18,9 @@ import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
     LibModule.forRoot({
       serviceUrl: "http://localhost:9080/workspace",
       authorizationHeader: "admin:admin@example.com"
-    })
+    }),
+    EditorTabsModule
   ],
-  bootstrap: [AppComponent, AceComponentComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
