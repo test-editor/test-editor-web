@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
 
+declare var appConfig: any;
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,7 +20,7 @@ import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
     BrowserModule,
     MessagingModule.forRoot(),
     LibModule.forRoot({
-      serviceUrl: "http://localhost:9080/workspace",
+      serviceUrl: appConfig.serviceUrls.persistenceService,
       authorizationHeader: "admin:admin@example.com"
     })
   ],
