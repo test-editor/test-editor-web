@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
+import * as constants from '../config/app-config'
+
 declare var createXtextEditor: any;
-declare var appConfig: any;
 
 @Component({
     selector: 'xtext-editor',
@@ -13,7 +14,7 @@ export class AceComponentComponent {
     @ViewChild('editor') editor;
 
     ngAfterViewInit() {
-      createXtextEditor('xtext-editor', 'example.tsl', appConfig.serviceUrls.xtextService);
+      createXtextEditor('xtext-editor', 'example.tsl', constants.appConfig.serviceUrls.xtextService);
     }
 
 }

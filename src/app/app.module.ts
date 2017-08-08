@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { AceComponentComponent } from './ace-component/ace-component.component';
 import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
 
-declare var appConfig: any;
+import * as constants from './config/app-config';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,7 @@ declare var appConfig: any;
     BrowserModule,
     MessagingModule.forRoot(),
     LibModule.forRoot({
-      serviceUrl: appConfig.serviceUrls.persistenceService,
+      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
       authorizationHeader: "admin:admin@example.com"
     })
   ],
