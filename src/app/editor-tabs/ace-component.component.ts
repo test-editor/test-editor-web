@@ -1,26 +1,32 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Deferred } from 'prophecy/src/Deferred';
 
 declare var createXtextEditor: any;
 
 @Component({
-    selector: 'xtext-editor',
-    styleUrls: ['./ace-component.css'],
-    template: `<div [id]="myId" class="xtext-editor"></div>`
+  selector: 'xtext-editor',
+  styleUrls: ['./ace-component.css'],
+  template: `<div [id]="myId" class="xtext-editor"><ng-content></ng-content></div>`
 })
 export class AceComponentComponent {
 
-    static count: number = 0;
+  static count: number = 0;
 
-    @ViewChild('editor') editor;
-    myId: string;
+  @Input() initialContent: Promise<string>;
+  editor: Promise<any>;
+  myId: string;
 
-    constructor() {
-        let number = AceComponentComponent.count++;
-        this.myId = `xtext-editor-${number}`;
-    }
+  constructor() {
+    let number = AceComponentComponent.count++;
+    this.myId = `xtext-editor-${number}`;
+  }
 
-    ngAfterViewInit() {
-        createXtextEditor(this.myId, 'example.tsl');
-    }
+  ngAfterViewInit() {
+    let deferred: Deferred = createXtextEditor(this.myId, 'example.tsl');
+    this.editor = deferred.promise;
+    Promise.all([this.editor, this.initialContent]).then(([editor, content]) => {
+      editor.setValue(content);
+    })
+  }
 
 }

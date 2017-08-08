@@ -9,8 +9,7 @@
       [removable]="true"
       (removed)="removeTab(tab)"
       [customClass]="myCustomClass">
-      Showing editor for: {{tab.path}}
-      <xtext-editor>{{tab?.content}}</xtext-editor>
+      <xtext-editor [initialContent]="tab.initialContent"></xtext-editor>
     </tab>
   </tabset>
 </div>

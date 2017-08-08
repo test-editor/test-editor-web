@@ -1,7 +1,8 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-
 import { Subscription } from 'rxjs/Subscription';
+
 import { MessagingService } from '@testeditor/messaging-service';
+import { WorkspaceDocument } from '@testeditor/workspace-navigator';
 
 import { TabElement } from './tab-element';
 
@@ -21,10 +22,8 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
  
   public ngOnInit(): void {
-    this.subscription = this.messagingService.subscribe('navigation.open', (model) => {
-      if (model.type === "file") {
-        this.handleNavigationOpenOnFile(model);
-      }
+    this.subscription = this.messagingService.subscribe('navigation.open', (model: WorkspaceDocument) => {
+      this.handleNavigationOpen(model);
     });
   }
 
@@ -32,22 +31,20 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  private handleNavigationOpenOnFile(model: any): void {
+  private handleNavigationOpen(model: WorkspaceDocument): void {
     let existingTab = this.tabs.find(t => t.path === model.path);
     if (existingTab) {
-      // TODO active handling sucks a bit, doesn't it?!
       existingTab.active = true;
-      this.changeDetectorRef.detectChanges();
     } else {
       let newElement = {
         title: model.name,
         path: model.path,
-        content: `Content for ${model.path}`,
-        active: true
+        active: true,
+        initialContent: model.content
       };
       this.tabs.push(newElement);
-      this.changeDetectorRef.detectChanges();
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   public removeTab(tab: TabElement): void {

@@ -157,9 +157,9 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.0.0.tgz#5003d9703dbedfda73d0838a9be274e82bb21c3f"
 
-"@testeditor/workspace-navigator@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.2.0.tgz#11686c5a11664c6fdedd8e63485befa8db0e1c9b"
+"@testeditor/workspace-navigator@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.3.0.tgz#ad010f95c9fbc5d914184f5301f4c68ff571ce17"
 
 "@types/jasmine@2.5.45":
   version "2.5.45"
@@ -1538,6 +1538,10 @@ error-ex@^1.2.0:
   resolved "https://registry.yarnpkg.com/error-ex/-/error-ex-1.3.1.tgz#f855a86ce61adc4e8621c3cda21e7a7612c3a8dc"
   dependencies:
     is-arrayish "^0.2.1"
+
+es6-shim@~0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/es6-shim/-/es6-shim-0.10.1.tgz#39626ae0deacb5ca6bc6065cc003fdb09976f6b5"
 
 escape-html@~1.0.3:
   version "1.0.3"
@@ -3813,6 +3817,12 @@ promise@^7.1.1:
   resolved "https://registry.yarnpkg.com/promise/-/promise-7.3.1.tgz#064b72602b18f90f29192b8b1bc418ffd1ebd3bf"
   dependencies:
     asap "~2.0.3"
+
+prophecy@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/prophecy/-/prophecy-0.0.4.tgz#89f50eff2522d25033a1c2908b067a0e619cd133"
+  dependencies:
+    es6-shim "~0.10.1"
 
 protractor@~5.1.2:
   version "5.1.2"
