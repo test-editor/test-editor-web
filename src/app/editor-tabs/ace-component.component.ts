@@ -22,11 +22,11 @@ export class AceComponentComponent {
   }
 
   ngAfterViewInit() {
-    let deferred: Deferred = createXtextEditor(this.myId, 'example.tsl');
+    let deferred: Deferred = createXtextEditor(this.myId);
     this.editor = deferred.promise;
     Promise.all([this.editor, this.initialContent]).then(([editor, content]) => {
       editor.setValue(content);
-    })
+    });
   }
 
 }

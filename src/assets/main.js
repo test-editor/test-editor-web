@@ -43,14 +43,13 @@ require(["xtext/services/XtextService"], xtextService => {
     };
 });
 
-function createXtextEditor(parent, resourceId) {
+function createXtextEditor(parent) {
     let deferred = new Deferred();
     require(["xtext/xtext-ace"], xtext => {
         let editor = xtext.createEditor({
             baseUrl: baseUrl,
             serviceUrl: 'http://localhost:8080/xtext-service',
             parent: parent,
-            resourceId: resourceId,
             loadFromServer: false,
             sendFullText: true,
             syntaxDefinition: "xtext-resources/generated/mode-mydsl",

@@ -22,8 +22,8 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
  
   public ngOnInit(): void {
-    this.subscription = this.messagingService.subscribe('navigation.open', (model: WorkspaceDocument) => {
-      this.handleNavigationOpen(model);
+    this.subscription = this.messagingService.subscribe('navigation.open', (document: WorkspaceDocument) => {
+      this.handleNavigationOpen(document);
     });
   }
 
@@ -31,16 +31,17 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  private handleNavigationOpen(model: WorkspaceDocument): void {
-    let existingTab = this.tabs.find(t => t.path === model.path);
+  private handleNavigationOpen(document: WorkspaceDocument): void {
+    let existingTab = this.tabs.find(t => t.path === document.path);
     if (existingTab) {
+      this.tabs.forEach(tab => tab.active = false);
       existingTab.active = true;
     } else {
       let newElement = {
-        title: model.name,
-        path: model.path,
+        title: document.name,
+        path: document.path,
         active: true,
-        initialContent: model.content
+        initialContent: document.content
       };
       this.tabs.push(newElement);
     }
