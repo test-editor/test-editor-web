@@ -43,12 +43,12 @@ require(["xtext/services/XtextService"], xtextService => {
     };
 });
 
-function createXtextEditor(parent) {
+function createXtextEditor(parent, serviceUrl) {
     let deferred = new Deferred();
     require(["xtext/xtext-ace"], xtext => {
         let editor = xtext.createEditor({
             baseUrl: baseUrl,
-            serviceUrl: 'http://localhost:8080/xtext-service',
+            serviceUrl: serviceUrl,
             parent: parent,
             loadFromServer: false,
             sendFullText: true,

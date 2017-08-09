@@ -7,6 +7,8 @@ import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
 import { AppComponent } from './app.component';
 import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
 
+import * as constants from './config/app-config';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -15,7 +17,7 @@ import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
     BrowserModule,
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      serviceUrl: "http://localhost:9080",
+      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
       authorizationHeader: "admin:admin@example.com"
     }),
     EditorTabsModule

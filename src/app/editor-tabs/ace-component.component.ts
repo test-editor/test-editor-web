@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
+import * as constants from '../config/app-config'
+
 declare var createXtextEditor: any;
 
 @Component({
@@ -22,7 +24,7 @@ export class AceComponentComponent {
   }
 
   ngAfterViewInit() {
-    let deferred: Deferred = createXtextEditor(this.myId);
+    let deferred: Deferred = createXtextEditor(this.myId, constants.appConfig.serviceUrls.xtextService);
     this.editor = deferred.promise;
     Promise.all([this.editor, this.initialContent]).then(([editor, content]) => {
       editor.setValue(content);
