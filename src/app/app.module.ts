@@ -20,7 +20,10 @@ import * as constants from './config/app-config';
       serviceUrl: constants.appConfig.serviceUrls.persistenceService,
       authorizationHeader: "admin:admin@example.com"
     }),
-    EditorTabsModule
+    EditorTabsModule.forRoot({
+      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
+      authorizationHeader: "admin:admin@example.com"
+    })
   ],
   bootstrap: [AppComponent]
 })

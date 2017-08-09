@@ -47,8 +47,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
         id: `editor-tab-${EditorTabsComponent.uniqueTabId++}`,
         title: document.name,
         path: document.path,
-        active: true,
-        initialContent: document.content
+        active: true
       };
       this.tabs.push(newElement);
     }
@@ -56,6 +55,8 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   public removeTab(tab: TabElement): void {
+    // TODO first we should check the dirty state of the editor?!
+    // see http://valor-software.com/ngx-bootstrap/#/modals - Static modal
     this.tabs.splice(this.tabs.indexOf(tab), 1);
   }
 

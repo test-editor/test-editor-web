@@ -43,19 +43,10 @@ require(["xtext/services/XtextService"], xtextService => {
     };
 });
 
-function createXtextEditor(tabClass, parent, serviceUrl) {
+function createXtextEditor(config) {
     let deferred = new Deferred();
     require(["xtext/xtext-ace"], xtext => {
-        let editor = xtext.createEditor({
-            baseUrl: baseUrl,
-            serviceUrl: serviceUrl,
-            parent: parent,
-            dirtyElement: document.getElementsByClassName(tabClass),
-            loadFromServer: false,
-            sendFullText: true,
-            syntaxDefinition: "xtext-resources/generated/mode-mydsl",
-            enableSaveAction: true
-        });
+        let editor = xtext.createEditor(config);
         deferred.resolve(editor);
     });
     return deferred;
