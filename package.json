@@ -4,7 +4,7 @@
   "license": "EPL",
   "scripts": {
     "ng": "node_modules/@angular/cli/bin/ng",
-    "start": "ng serve",
+    "start": "ng serve -H 0.0.0.0",
     "build": "ng build",
     "test": "ng test",
     "testCIChrome": "ng test --browser ChromeHeadless --single-run --log-level debug",
