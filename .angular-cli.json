@@ -12,7 +12,6 @@
         "favicon.ico",
         { "glob": "**/*", "input": "../node_modules/jquery/dist/", "output": "./assets/jquery/dist" },
         { "glob": "**/*", "input": "../node_modules/ace-builds", "output": "./assets/ace" }
-        
       ],
       "index": "index.html",
       "main": "main.ts",

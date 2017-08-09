@@ -26,11 +26,11 @@ require(["xtext/services/XtextService"], xtextService => {
     };
 });
 
-function createXtextEditor(parent, resourceId) {
+function createXtextEditor(parent, resourceId, serviceUrl) {
     require(["xtext/xtext-ace"], xtext => {
         xtext.createEditor({
             baseUrl: baseUrl,
-            serviceUrl: 'http://localhost:8080/xtext-service',
+            serviceUrl: serviceUrl,
             parent: parent,
             resourceId: resourceId,
             sendFullText: true,
