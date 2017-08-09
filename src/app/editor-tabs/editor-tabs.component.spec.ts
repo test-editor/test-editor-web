@@ -6,7 +6,7 @@ import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 import { WorkspaceDocument } from '@testeditor/workspace-navigator';
 
-import { AceComponentComponent } from './ace-component.component';
+import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
 
 describe('EditorTabsComponent', () => {
@@ -36,7 +36,7 @@ describe('EditorTabsComponent', () => {
         MessagingModule.forRoot()
       ],
       declarations: [
-        AceComponentComponent,
+        AceComponent,
         EditorTabsComponent
       ]
     })

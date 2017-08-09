@@ -7,10 +7,10 @@ declare var createXtextEditor: any;
 
 @Component({
   selector: 'xtext-editor',
-  styleUrls: ['./ace-component.css'],
-  template: `<div [id]="myId" class="xtext-editor"><ng-content></ng-content></div>`
+  templateUrl: './ace.component.html',
+  styleUrls: ['./ace.component.css']
 })
-export class AceComponentComponent {
+export class AceComponent {
 
   static count: number = 0;
 
@@ -19,7 +19,7 @@ export class AceComponentComponent {
   myId: string;
 
   constructor() {
-    let number = AceComponentComponent.count++;
+    let number = AceComponent.count++;
     this.myId = `xtext-editor-${number}`;
   }
 

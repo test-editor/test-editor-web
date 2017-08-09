@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 
-import { AceComponentComponent } from './ace-component.component';
+import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
 
 @NgModule({
@@ -13,11 +13,11 @@ import { EditorTabsComponent } from './editor-tabs.component';
     TooltipModule.forRoot()
   ],
   declarations: [
-    AceComponentComponent,
+    AceComponent,
     EditorTabsComponent
   ],
   exports: [
-    AceComponentComponent,
+    AceComponent,
     EditorTabsComponent
   ]
 })
