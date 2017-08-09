@@ -12,22 +12,18 @@ declare var createXtextEditor: any;
 })
 export class AceComponent {
 
-  static count: number = 0;
-
   @Input() initialContent: Promise<string>;
+  @Input() tabId: string;
   editor: Promise<any>;
-  myId: string;
-
-  constructor() {
-    let number = AceComponent.count++;
-    this.myId = `xtext-editor-${number}`;
-  }
+  id: string;
 
   ngAfterViewInit() {
-    let deferred: Deferred = createXtextEditor(this.myId, constants.appConfig.serviceUrls.xtextService);
+    let editorId = `${this.tabId}-editor`;
+    let deferred: Deferred = createXtextEditor(this.tabId, editorId, constants.appConfig.serviceUrls.xtextService);
     this.editor = deferred.promise;
     Promise.all([this.editor, this.initialContent]).then(([editor, content]) => {
       editor.setValue(content);
+      editor.xtextServices.editorContext.setDirty(false);
     });
   }
 

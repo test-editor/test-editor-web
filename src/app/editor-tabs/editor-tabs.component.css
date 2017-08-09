@@ -1,3 +1,8 @@
 div {
-    height: 100%;
+  height: 100%;
+}
+
+::ng-deep .nav-item.dirty > a > span:first-of-type:after {
+  margin-left: 3px;
+  content: '*'
 }
