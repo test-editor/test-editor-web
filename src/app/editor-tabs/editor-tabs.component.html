@@ -2,14 +2,14 @@
   <tabset>
     <tab *ngFor="let tab of tabs" 
       [heading]="tab.title"
-      [id]="tab.path"
+      [id]="tab.id"
       [active]="tab.active"
       (select)="tab.active = true"
       (deselect)="tab.active = false"
       [removable]="true"
       (removed)="removeTab(tab)"
-      [customClass]="myCustomClass">
-      <xtext-editor [initialContent]="tab.initialContent"></xtext-editor>
+      [customClass]="tab.id">
+      <xtext-editor [tabId]="tab.id" [path]="tab.path"></xtext-editor>
     </tab>
   </tabset>
 </div>

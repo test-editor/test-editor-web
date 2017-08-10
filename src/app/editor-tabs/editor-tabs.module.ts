@@ -5,6 +5,8 @@ import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 
 import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
+import { DocumentService } from './document.service';
+import { DocumentServiceConfig } from './document.service.config';
 
 @NgModule({
   imports: [
@@ -22,4 +24,15 @@ import { EditorTabsComponent } from './editor-tabs.component';
   ]
 })
 export class EditorTabsModule {
+
+  static forRoot(config: DocumentServiceConfig): ModuleWithProviders {
+    return {
+      ngModule: EditorTabsModule,
+      providers: [
+        { provide: DocumentServiceConfig, useValue: config },
+        DocumentService
+      ]
+    }
+  }
+
 }
