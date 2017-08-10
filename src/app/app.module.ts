@@ -2,28 +2,26 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { MessagingModule } from '@testeditor/messaging-service';
-import { LibModule } from '@testeditor/workspace-navigator';
+import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
 
 import { AppComponent } from './app.component';
-import { AceComponentComponent } from './ace-component/ace-component.component';
-import { AceEditorDirective, AceEditorComponent } from 'ng2-ace-editor';
+import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
 
 import * as constants from './config/app-config';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    AceComponentComponent,
-    AceEditorComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     MessagingModule.forRoot(),
-    LibModule.forRoot({
+    WorkspaceNavigatorModule.forRoot({
       serviceUrl: constants.appConfig.serviceUrls.persistenceService,
       authorizationHeader: "admin:admin@example.com"
-    })
+    }),
+    EditorTabsModule
   ],
-  bootstrap: [AppComponent, AceComponentComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

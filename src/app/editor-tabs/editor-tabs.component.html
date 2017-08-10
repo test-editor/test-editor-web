@@ -1,0 +1,15 @@
+<div (click)="$event.preventDefault()">
+  <tabset>
+    <tab *ngFor="let tab of tabs" 
+      [heading]="tab.title"
+      [id]="tab.path"
+      [active]="tab.active"
+      (select)="tab.active = true"
+      (deselect)="tab.active = false"
+      [removable]="true"
+      (removed)="removeTab(tab)"
+      [customClass]="myCustomClass">
+      <xtext-editor [initialContent]="tab.initialContent"></xtext-editor>
+    </tab>
+  </tabset>
+</div>

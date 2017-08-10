@@ -1,3 +1,20 @@
+// copied from prophecy/src/Deferred.js
+// cannot be imported due to the used ES6 syntax (export class)
+class Deferred {
+  constructor () {
+    this.promise = new Promise((resolve, reject) => {
+      this.resolve_ = resolve;
+      this.reject_ = reject;
+    });
+  }
+  resolve (value) {
+    this.resolve_.call(this.promise, value);
+  }
+  reject (reason) {
+    this.reject_.call(this.promise, reason);
+  }
+}
+
 let baseUrl = window.location.origin;
 require.config({
     baseUrl: baseUrl + "/assets",
@@ -26,16 +43,19 @@ require(["xtext/services/XtextService"], xtextService => {
     };
 });
 
-function createXtextEditor(parent, resourceId, serviceUrl) {
+function createXtextEditor(parent, serviceUrl) {
+    let deferred = new Deferred();
     require(["xtext/xtext-ace"], xtext => {
-        xtext.createEditor({
+        let editor = xtext.createEditor({
             baseUrl: baseUrl,
             serviceUrl: serviceUrl,
             parent: parent,
-            resourceId: resourceId,
+            loadFromServer: false,
             sendFullText: true,
             syntaxDefinition: "xtext-resources/generated/mode-mydsl",
             enableSaveAction: true
         });
+        deferred.resolve(editor);
     });
+    return deferred;
 }

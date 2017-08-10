@@ -157,9 +157,9 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.0.0.tgz#5003d9703dbedfda73d0838a9be274e82bb21c3f"
 
-"@testeditor/workspace-navigator@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.2.0.tgz#11686c5a11664c6fdedd8e63485befa8db0e1c9b"
+"@testeditor/workspace-navigator@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.3.0.tgz#ad010f95c9fbc5d914184f5301f4c68ff571ce17"
 
 "@types/jasmine@2.5.45":
   version "2.5.45"
@@ -188,7 +188,7 @@ accepts@1.3.3, accepts@~1.3.3:
     mime-types "~2.1.11"
     negotiator "0.6.1"
 
-ace-builds@^1.2.5, ace-builds@^1.2.6:
+ace-builds@^1.2.6:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/ace-builds/-/ace-builds-1.2.8.tgz#062dc45772b00ece6a547a266a3081fe57591103"
 
@@ -622,12 +622,6 @@ brace-expansion@^1.1.7:
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
-
-brace@^0.9.0:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/brace/-/brace-0.9.1.tgz#19dcbae2faec9a9920a0452ec64d8d84df45e7b6"
-  dependencies:
-    w3c-blob "0.0.1"
 
 braces@^0.1.2:
   version "0.1.5"
@@ -1544,6 +1538,10 @@ error-ex@^1.2.0:
   resolved "https://registry.yarnpkg.com/error-ex/-/error-ex-1.3.1.tgz#f855a86ce61adc4e8621c3cda21e7a7612c3a8dc"
   dependencies:
     is-arrayish "^0.2.1"
+
+es6-shim@~0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/es6-shim/-/es6-shim-0.10.1.tgz#39626ae0deacb5ca6bc6065cc003fdb09976f6b5"
 
 escape-html@~1.0.3:
   version "1.0.3"
@@ -3059,6 +3057,10 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkd
   dependencies:
     minimist "0.0.8"
 
+moment@2.18.1:
+  version "2.18.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
+
 ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
@@ -3089,12 +3091,11 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-ng2-ace-editor@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/ng2-ace-editor/-/ng2-ace-editor-0.2.3.tgz#76f2fd1a0f5399b54b0cf667881bd0ad64eedb23"
+ngx-bootstrap@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-1.8.1.tgz#317c0fecf0a88248031b3f6102466ebf86658dfd"
   dependencies:
-    ace-builds "^1.2.5"
-    brace "^0.9.0"
+    moment "2.18.1"
 
 no-case@^2.2.0:
   version "2.3.1"
@@ -3816,6 +3817,12 @@ promise@^7.1.1:
   resolved "https://registry.yarnpkg.com/promise/-/promise-7.3.1.tgz#064b72602b18f90f29192b8b1bc418ffd1ebd3bf"
   dependencies:
     asap "~2.0.3"
+
+prophecy@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/prophecy/-/prophecy-0.0.4.tgz#89f50eff2522d25033a1c2908b067a0e619cd133"
+  dependencies:
+    es6-shim "~0.10.1"
 
 protractor@~5.1.2:
   version "5.1.2"
@@ -5052,10 +5059,6 @@ vm-browserify@0.0.4:
 void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
-
-w3c-blob@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/w3c-blob/-/w3c-blob-0.0.1.tgz#b0cd352a1a50f515563420ffd5861f950f1d85b8"
 
 walk-sync@^0.3.1:
   version "0.3.2"
