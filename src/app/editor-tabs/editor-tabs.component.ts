@@ -14,6 +14,12 @@ import { TabElement } from './tab-element';
 })
 export class EditorTabsComponent implements OnInit, OnDestroy {
 
+  /** 
+   * Provide unique id's for tabs to assign them a unique css class.
+   * This is used for the dirty flag.
+   */
+  static uniqueTabId: number = 0;
+
   public tabs: TabElement[] = [];
   private subscription: Subscription;
 
@@ -38,10 +44,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
       existingTab.active = true;
     } else {
       let newElement = {
+        id: `editor-tab-${EditorTabsComponent.uniqueTabId++}`,
         title: document.name,
         path: document.path,
-        active: true,
-        initialContent: document.content
+        active: true
       };
       this.tabs.push(newElement);
     }
@@ -49,6 +55,8 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   public removeTab(tab: TabElement): void {
+    // TODO first we should check the dirty state of the editor?!
+    // see http://valor-software.com/ngx-bootstrap/#/modals - Static modal
     this.tabs.splice(this.tabs.indexOf(tab), 1);
   }
 

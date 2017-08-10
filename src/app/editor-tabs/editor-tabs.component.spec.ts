@@ -1,6 +1,7 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { mock, when, anything, instance } from 'ts-mockito';
 
 import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
@@ -8,6 +9,8 @@ import { WorkspaceDocument } from '@testeditor/workspace-navigator';
 
 import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
+import { DocumentService } from './document.service';
+import { DocumentServiceConfig } from './document.service.config';
 
 describe('EditorTabsComponent', () => {
 
@@ -29,6 +32,10 @@ describe('EditorTabsComponent', () => {
   };
 
   beforeEach(async(() => {
+    // Mock DocumentService
+    let documentServiceMock = mock(DocumentService)
+
+    // Initialize TestBed
     TestBed.configureTestingModule({
       imports: [
         TabsModule.forRoot(),
@@ -38,6 +45,9 @@ describe('EditorTabsComponent', () => {
       declarations: [
         AceComponent,
         EditorTabsComponent
+      ],
+      providers: [
+       { provide: DocumentService, useValue: instance(documentServiceMock) }
       ]
     })
     .compileComponents();
@@ -72,7 +82,7 @@ describe('EditorTabsComponent', () => {
     // given
     messagingService.publish('navigation.open', fooDocument);
     fixture.detectChanges();
-    
+
     // when
     messagingService.publish('navigation.open', barDocument);
     fixture.detectChanges();
