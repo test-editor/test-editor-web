@@ -35,7 +35,8 @@ export class AceComponent implements AfterViewInit {
       dirtyElement: document.getElementsByClassName(this.tabId),
       loadFromServer: false,
       sendFullText: true,
-      syntaxDefinition: "xtext-resources/generated/mode-mydsl",
+      resourceId: this.path,
+      syntaxDefinition: "xtext-resources/generated/mode-tsl",
       enableSaveAction: false // don't want the default xtext-save action
     }
     let deferred = createXtextEditor(config);
