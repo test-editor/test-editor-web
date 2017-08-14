@@ -1,7 +1,9 @@
 import { Component, Input, AfterViewInit } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
+import { MessagingService } from '@testeditor/messaging-service';
 import { DocumentService } from './document.service';
+import { DirtyState } from './dirty-state';
 
 import * as constants from '../config/app-config'
 
@@ -14,11 +16,13 @@ declare var createXtextEditor: (config: any) => Deferred;
 })
 export class AceComponent implements AfterViewInit {
 
+  static readonly EDITOR_DIRTY_CHANGED = 'editor.dirtyStateChanged';
+
   @Input() path: string;
   @Input() tabId: string;
   editor: Promise<any>;
 
-  constructor(private documentService: DocumentService) {
+  constructor(private documentService: DocumentService, private messagingService: MessagingService) {
   }
 
   ngAfterViewInit(): void {
@@ -46,9 +50,10 @@ export class AceComponent implements AfterViewInit {
   private initializeEditor(editor: any): void {
     // Set initial content
     this.documentService.loadDocument(this.path).then(response => {
-      this.setContent(response.text());
+      this.setContent(editor, response.text());
+      editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
     }).catch(reason => {
-      this.setContent(`Could not load resource: ${this.path}\n\nReason:\n${reason}`);
+      this.setContent(editor, `Could not load resource: ${this.path}\n\nReason:\n${reason}`);
       this.setReadOnly(true);
     });
 
@@ -63,12 +68,18 @@ export class AceComponent implements AfterViewInit {
     window["editor"] = editor;
   }
 
-  private setContent(content: string): void {
-    this.editor.then(editor => {
-      editor.setValue(content);
-      this.setDirty(false);
-      editor.session.selection.clearSelection();
-    });
+  private setContent(editor: any, content: string): void {
+    editor.setValue(content);
+    this.setDirty(false);
+    editor.session.selection.clearSelection();
+  }
+
+  private onDirtyChange(dirty: boolean): void {
+    let dirtyState: DirtyState = {
+      path: this.path,
+      dirty: dirty
+    }
+    this.messagingService.publish(AceComponent.EDITOR_DIRTY_CHANGED, dirtyState);
   }
 
   public save(): void {

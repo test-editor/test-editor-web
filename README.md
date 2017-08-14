@@ -15,12 +15,45 @@ Emits the following events:
   </tr>
   <tr>
     <td>editor.active</td>
-    <td>string</td>
-    <td><pre>
+    <td>Element</td>
+    <td>
+<pre>
 {
   "type": "editor.active",
-  "payload": "com/example/test.tsl"
-}</pre></td>
+  "payload": {
+    "path": "com/example/test.tsl"
+  }
+}
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td>editor.dirtyStateChanged</td>
+    <td>DirtyState</td>
+    <td>
+<pre>
+{
+  "type": "editor.dirtyStateChanged",
+  "payload": {
+    "path": "com/example/test.tsl",
+    "dirty": true
+  }
+}
+</pre></td>
+  </tr>
+  <tr>
+    <td>editor.close</td>
+    <td>Element</td>
+    <td>
+<pre>
+{
+  "type": "editor.close",
+  "payload": {
+    "path": "com/example/test.tsl"
+  }
+}
+</pre>
+    </td>
   </tr>
 </table>
 
@@ -45,6 +78,7 @@ Understands the following events:
     "name": "test.tsl",
     "path": "com/example/test.tsl"
   }
-}</pre></td>
+}
+</pre></td>
   </tr>
 </table>

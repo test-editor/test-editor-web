@@ -129,7 +129,7 @@ describe('EditorTabsComponent', () => {
 
     // then
     expect(editorActiveCallback).toHaveBeenCalledTimes(1);
-    expect(editorActiveCallback).toHaveBeenCalledWith(fooDocument.path);
+    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.path });
   });
 
   it('emits editor.active event on tab switch', () => {
@@ -145,7 +145,7 @@ describe('EditorTabsComponent', () => {
 
     // then
     expect(editorActiveCallback).toHaveBeenCalledTimes(1);
-    expect(editorActiveCallback).toHaveBeenCalledWith(fooDocument.path);
+    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.path });
   });
 
   it('emits editor.active event when tab is removed', () => {
@@ -160,24 +160,25 @@ describe('EditorTabsComponent', () => {
     closeIcon.nativeElement.click();
 
     // then
-    expect(editorActiveCallback).toHaveBeenCalledWith(fooDocument.path);
+    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.path });
     // there seems to be a problem running in Jasmine... maybe $event.preventDefault()
     // does not work? Thee is one more event triggered with barDocument.path but
     // this does not happen in the real app :-S
   });
 
-  it('emits empty editor.active event when last tab is closed', () => {
+  it('emits editor.close event when tab is closed', () => {
     // given
     messagingService.publish('navigation.open', fooDocument);
-    editorActiveCallback.calls.reset();
+    let editorCloseCallback = jasmine.createSpy('editorCloseCallback');
+    messagingService.subscribe(EditorTabsComponent.EVENT_EDITOR_CLOSE, editorCloseCallback);
     let tab = component.tabs[0];
 
     // when
     component.removeTab(tab);
 
     // then
-    expect(editorActiveCallback).toHaveBeenCalledTimes(1);
-    expect(editorActiveCallback).toHaveBeenCalledWith('');
+    expect(editorCloseCallback).toHaveBeenCalledTimes(1);
+    expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.path });
   });
 
 });

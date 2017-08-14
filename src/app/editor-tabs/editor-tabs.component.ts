@@ -5,6 +5,7 @@ import { MessagingService } from '@testeditor/messaging-service';
 import { WorkspaceDocument } from '@testeditor/workspace-navigator';
 
 import { TabElement } from './tab-element';
+import { Element } from './element';
 
 @Component({
   selector: 'app-editor-tabs',
@@ -15,6 +16,7 @@ import { TabElement } from './tab-element';
 export class EditorTabsComponent implements OnInit, OnDestroy {
 
   static readonly EVENT_EDITOR_ACTIVE = 'editor.active';
+  static readonly EVENT_EDITOR_CLOSE = 'editor.close';
 
   /** 
    * Provide unique id's for tabs to assign them a unique css class.
@@ -59,7 +61,8 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   public selectTab(tab: TabElement): void {
     if (!tab.active) {
       tab.active = true;
-      this.messagingService.publish(EditorTabsComponent.EVENT_EDITOR_ACTIVE, tab.path);
+      let element: Element = { path: tab.path };
+      this.messagingService.publish(EditorTabsComponent.EVENT_EDITOR_ACTIVE, element);
     }
   }
 
@@ -70,11 +73,9 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   public removeTab(tab: TabElement): void {
     // TODO first we should check the dirty state of the editor?!
     // see http://valor-software.com/ngx-bootstrap/#/modals - Static modal
-    let index = this.tabs.indexOf(tab);
-    this.tabs.splice(index, 1);
-    if (this.tabs.length == 0) {
-      this.messagingService.publish(EditorTabsComponent.EVENT_EDITOR_ACTIVE, '');
-    }
+    this.tabs.splice(this.tabs.indexOf(tab), 1);
+    let element: Element = { path: tab.path };
+    this.messagingService.publish(EditorTabsComponent.EVENT_EDITOR_CLOSE, element);
   }
 
 }
