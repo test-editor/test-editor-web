@@ -4,8 +4,8 @@
       [heading]="tab.title"
       [id]="tab.id"
       [active]="tab.active"
-      (select)="tab.active = true"
-      (deselect)="tab.active = false"
+      (select)="selectTab(tab)"
+      (deselect)="deselectTab(tab)"
       [removable]="true"
       (removed)="removeTab(tab)"
       [customClass]="tab.id">

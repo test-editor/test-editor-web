@@ -18,6 +18,7 @@ describe('EditorTabsComponent', () => {
   let component: EditorTabsComponent;
   let tabset: DebugElement;
   let messagingService: MessagingService;
+  let editorActiveCallback: jasmine.Spy;
 
   let fooDocument: WorkspaceDocument = {
     name: 'foo',
@@ -30,6 +31,12 @@ describe('EditorTabsComponent', () => {
     path: 'tropical/bar',
     content: Promise.resolve('a bottle of rum')
   };
+
+  let openFooAndBar = () => {
+    messagingService.publish('navigation.open', fooDocument);
+    messagingService.publish('navigation.open', barDocument);
+    fixture.detectChanges();
+  }
 
   beforeEach(async(() => {
     // Mock DocumentService
@@ -47,7 +54,7 @@ describe('EditorTabsComponent', () => {
         EditorTabsComponent
       ],
       providers: [
-       { provide: DocumentService, useValue: instance(documentServiceMock) }
+        { provide: DocumentService, useValue: instance(documentServiceMock) }
       ]
     })
     .compileComponents();
@@ -57,7 +64,12 @@ describe('EditorTabsComponent', () => {
     fixture = TestBed.createComponent(EditorTabsComponent);
     component = fixture.componentInstance;
     tabset = fixture.debugElement.query(By.css('tabset'));
+
+    // configure messaging
     messagingService = TestBed.get(MessagingService);
+    editorActiveCallback = jasmine.createSpy('editorActiveCallback');
+    messagingService.subscribe(EditorTabsComponent.EVENT_EDITOR_ACTIVE, editorActiveCallback);
+
     fixture.detectChanges();
   });
 
@@ -97,9 +109,7 @@ describe('EditorTabsComponent', () => {
 
   it('reopens existing tab', () => {
     // given
-    messagingService.publish('navigation.open', fooDocument);
-    messagingService.publish('navigation.open', barDocument);
-    fixture.detectChanges();
+    openFooAndBar();
 
     // when
     messagingService.publish('navigation.open', fooDocument);
@@ -111,6 +121,63 @@ describe('EditorTabsComponent', () => {
 
     let activeItem = tabset.query(By.css('.nav-item.active'));
     expect(activeItem.nativeElement.innerText).toBe("foo");
+  });
+
+  it('emits editor.active event on navigation.open event', () => {
+    // when
+    messagingService.publish('navigation.open', fooDocument);
+
+    // then
+    expect(editorActiveCallback).toHaveBeenCalledTimes(1);
+    expect(editorActiveCallback).toHaveBeenCalledWith(fooDocument.path);
+  });
+
+  it('emits editor.active event on tab switch', () => {
+    // given
+    openFooAndBar();
+    editorActiveCallback.calls.reset();
+    let navItems = tabset.queryAll(By.css('.nav-item > a'));
+    let foo = navItems.find(item => item.nativeElement.innerText === "foo")
+
+    // when
+    foo.nativeElement.click();
+    fixture.detectChanges();
+
+    // then
+    expect(editorActiveCallback).toHaveBeenCalledTimes(1);
+    expect(editorActiveCallback).toHaveBeenCalledWith(fooDocument.path);
+  });
+
+  it('emits editor.active event when tab is removed', () => {
+    // given
+    openFooAndBar();
+    editorActiveCallback.calls.reset();
+    let navItems = tabset.queryAll(By.css('.nav-item > a'));
+    let bar = navItems.find(item => item.nativeElement.innerText === "bar")
+    let closeIcon = bar.query(By.css('span.glyphicon'));
+
+    // when
+    closeIcon.nativeElement.click();
+
+    // then
+    expect(editorActiveCallback).toHaveBeenCalledWith(fooDocument.path);
+    // there seems to be a problem running in Jasmine... maybe $event.preventDefault()
+    // does not work? Thee is one more event triggered with barDocument.path but
+    // this does not happen in the real app :-S
+  });
+
+  it('emits empty editor.active event when last tab is closed', () => {
+    // given
+    messagingService.publish('navigation.open', fooDocument);
+    editorActiveCallback.calls.reset();
+    let tab = component.tabs[0];
+
+    // when
+    component.removeTab(tab);
+
+    // then
+    expect(editorActiveCallback).toHaveBeenCalledTimes(1);
+    expect(editorActiveCallback).toHaveBeenCalledWith('');
   });
 
 });

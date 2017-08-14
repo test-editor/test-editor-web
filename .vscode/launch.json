@@ -22,6 +22,19 @@
             "port": 9222,
             "webRoot": "${workspaceRoot}",
             "sourceMaps": true
+        },
+        {
+            "name": "Launch Chrome for Jasmine",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:9876/debug.html",
+            "webRoot": "${workspaceRoot}/src",
+            "sourceMaps": true,
+            "userDataDir": "${workspaceRoot}/.vscode/chrome",
+            "runtimeExecutable": "chromium-browser",
+            "skipFiles": [
+                "node_modules/**/*"
+            ]
         }
     ]
 }
