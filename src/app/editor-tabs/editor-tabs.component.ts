@@ -7,6 +7,8 @@ import { WorkspaceDocument } from '@testeditor/workspace-navigator';
 import { TabElement } from './tab-element';
 import { Element } from './element';
 
+import * as events from './event-types';
+
 @Component({
   selector: 'app-editor-tabs',
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,9 +16,6 @@ import { Element } from './element';
   styleUrls: ['./editor-tabs.component.css']
 })
 export class EditorTabsComponent implements OnInit, OnDestroy {
-
-  static readonly EVENT_EDITOR_ACTIVE = 'editor.active';
-  static readonly EVENT_EDITOR_CLOSE = 'editor.close';
 
   /** 
    * Provide unique id's for tabs to assign them a unique css class.
@@ -32,7 +31,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.subscription = this.messagingService.subscribe('navigation.open', (document: WorkspaceDocument) => {
+    this.subscription = this.messagingService.subscribe(events.NAVIGATION_OPEN, (document: WorkspaceDocument) => {
       this.handleNavigationOpen(document);
     });
   }
@@ -62,7 +61,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     if (!tab.active) {
       tab.active = true;
       let element: Element = { path: tab.path };
-      this.messagingService.publish(EditorTabsComponent.EVENT_EDITOR_ACTIVE, element);
+      this.messagingService.publish(events.EDITOR_ACTIVE, element);
     }
   }
 
@@ -75,7 +74,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     // see http://valor-software.com/ngx-bootstrap/#/modals - Static modal
     this.tabs.splice(this.tabs.indexOf(tab), 1);
     let element: Element = { path: tab.path };
-    this.messagingService.publish(EditorTabsComponent.EVENT_EDITOR_CLOSE, element);
+    this.messagingService.publish(events.EDITOR_CLOSE, element);
   }
 
 }

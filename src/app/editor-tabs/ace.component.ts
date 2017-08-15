@@ -6,6 +6,7 @@ import { DocumentService } from './document.service';
 import { DirtyState } from './dirty-state';
 
 import * as constants from '../config/app-config'
+import * as events from './event-types';
 
 declare var createXtextEditor: (config: any) => Deferred;
 
@@ -15,8 +16,6 @@ declare var createXtextEditor: (config: any) => Deferred;
   styleUrls: ['./ace.component.css']
 })
 export class AceComponent implements AfterViewInit {
-
-  static readonly EDITOR_DIRTY_CHANGED = 'editor.dirtyStateChanged';
 
   @Input() path: string;
   @Input() tabId: string;
@@ -79,7 +78,7 @@ export class AceComponent implements AfterViewInit {
       path: this.path,
       dirty: dirty
     }
-    this.messagingService.publish(AceComponent.EDITOR_DIRTY_CHANGED, dirtyState);
+    this.messagingService.publish(events.EDITOR_DIRTY_CHANGED, dirtyState);
   }
 
   public save(): void {
