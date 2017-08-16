@@ -10,3 +10,16 @@
   padding: 15px;
   overflow-x: hidden;
 }
+
+#navigation-label {
+  background-color: #252525;
+  color: rgb(187, 187, 187);
+  line-height: 35px;
+  padding-left: 17px;
+  text-transform: uppercase;
+  height: 35px;
+}
+
+#navigation-content {
+  height: calc(100% - 35px);
+}
