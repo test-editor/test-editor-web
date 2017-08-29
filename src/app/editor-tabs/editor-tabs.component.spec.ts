@@ -5,14 +5,13 @@ import { mock, when, anything, instance } from 'ts-mockito';
 
 import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
-import { WorkspaceDocument } from '@testeditor/workspace-navigator';
 
 import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
 import { DocumentService } from './document.service';
 import { DocumentServiceConfig } from './document.service.config';
 
-import * as events from './event-types';
+import { NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
 
 describe('EditorTabsComponent', () => {
 
@@ -22,21 +21,19 @@ describe('EditorTabsComponent', () => {
   let messagingService: MessagingService;
   let editorActiveCallback: jasmine.Spy;
 
-  let fooDocument: WorkspaceDocument = {
+  let fooDocument: NavigationOpenPayload = {
     name: 'foo',
-    path: 'top/secret/foo',
-    content: Promise.resolve('foo fighters')
+    path: 'top/secret/foo'
   };
 
-  let barDocument: WorkspaceDocument = {
+  let barDocument: NavigationOpenPayload = {
     name: 'bar',
-    path: 'tropical/bar',
-    content: Promise.resolve('a bottle of rum')
+    path: 'tropical/bar'
   };
 
   let openFooAndBar = () => {
-    messagingService.publish(events.NAVIGATION_OPEN, fooDocument);
-    messagingService.publish(events.NAVIGATION_OPEN, barDocument);
+    messagingService.publish(NAVIGATION_OPEN, fooDocument);
+    messagingService.publish(NAVIGATION_OPEN, barDocument);
     fixture.detectChanges();
   }
 
@@ -70,7 +67,7 @@ describe('EditorTabsComponent', () => {
     // configure messaging
     messagingService = TestBed.get(MessagingService);
     editorActiveCallback = jasmine.createSpy('editorActiveCallback');
-    messagingService.subscribe(events.EDITOR_ACTIVE, editorActiveCallback);
+    messagingService.subscribe(EDITOR_ACTIVE, editorActiveCallback);
 
     fixture.detectChanges();
   });
@@ -81,7 +78,7 @@ describe('EditorTabsComponent', () => {
 
   it('opens tab when event on messaging bus', () => {
     // when
-    messagingService.publish(events.NAVIGATION_OPEN, fooDocument);
+    messagingService.publish(NAVIGATION_OPEN, fooDocument);
     fixture.detectChanges();
 
     // then
@@ -94,11 +91,11 @@ describe('EditorTabsComponent', () => {
 
   it('opens second tab on second event', () => {
     // given
-    messagingService.publish(events.NAVIGATION_OPEN, fooDocument);
+    messagingService.publish(NAVIGATION_OPEN, fooDocument);
     fixture.detectChanges();
 
     // when
-    messagingService.publish(events.NAVIGATION_OPEN, barDocument);
+    messagingService.publish(NAVIGATION_OPEN, barDocument);
     fixture.detectChanges();
 
     // then
@@ -114,7 +111,7 @@ describe('EditorTabsComponent', () => {
     openFooAndBar();
 
     // when
-    messagingService.publish(events.NAVIGATION_OPEN, fooDocument);
+    messagingService.publish(NAVIGATION_OPEN, fooDocument);
     fixture.detectChanges();
 
     // then
@@ -127,7 +124,7 @@ describe('EditorTabsComponent', () => {
 
   it('emits editor.active event on navigation.open event', () => {
     // when
-    messagingService.publish(events.NAVIGATION_OPEN, fooDocument);
+    messagingService.publish(NAVIGATION_OPEN, fooDocument);
 
     // then
     expect(editorActiveCallback).toHaveBeenCalledTimes(1);
@@ -170,9 +167,9 @@ describe('EditorTabsComponent', () => {
 
   it('emits editor.close event when tab is closed', () => {
     // given
-    messagingService.publish(events.NAVIGATION_OPEN, fooDocument);
+    messagingService.publish(NAVIGATION_OPEN, fooDocument);
     let editorCloseCallback = jasmine.createSpy('editorCloseCallback');
-    messagingService.subscribe(events.EDITOR_CLOSE, editorCloseCallback);
+    messagingService.subscribe(EDITOR_CLOSE, editorCloseCallback);
     let tab = component.tabs[0];
 
     // when

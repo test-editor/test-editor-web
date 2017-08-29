@@ -2,12 +2,10 @@ import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRe
 import { Subscription } from 'rxjs/Subscription';
 
 import { MessagingService } from '@testeditor/messaging-service';
-import { WorkspaceDocument } from '@testeditor/workspace-navigator';
-
 import { TabElement } from './tab-element';
 import { Element } from './element';
 
-import * as events from './event-types';
+import { NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
 
 @Component({
   selector: 'app-editor-tabs',
@@ -17,7 +15,7 @@ import * as events from './event-types';
 })
 export class EditorTabsComponent implements OnInit, OnDestroy {
 
-  /** 
+  /**
    * Provide unique id's for tabs to assign them a unique css class.
    * This is used for the dirty flag.
    */
@@ -31,7 +29,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.subscription = this.messagingService.subscribe(events.NAVIGATION_OPEN, (document: WorkspaceDocument) => {
+    this.subscription = this.messagingService.subscribe(NAVIGATION_OPEN, (document: NavigationOpenPayload) => {
       this.handleNavigationOpen(document);
     });
   }
@@ -40,7 +38,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  private handleNavigationOpen(document: WorkspaceDocument): void {
+  private handleNavigationOpen(document: NavigationOpenPayload): void {
     let existingTab = this.tabs.find(t => t.path === document.path);
     if (existingTab) {
       this.selectTab(existingTab);
@@ -61,7 +59,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     if (!tab.active) {
       tab.active = true;
       let element: Element = { path: tab.path };
-      this.messagingService.publish(events.EDITOR_ACTIVE, element);
+      this.messagingService.publish(EDITOR_ACTIVE, element);
     }
   }
 
@@ -74,7 +72,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     // see http://valor-software.com/ngx-bootstrap/#/modals - Static modal
     this.tabs.splice(this.tabs.indexOf(tab), 1);
     let element: Element = { path: tab.path };
-    this.messagingService.publish(events.EDITOR_CLOSE, element);
+    this.messagingService.publish(EDITOR_CLOSE, element);
   }
 
 }
