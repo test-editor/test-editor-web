@@ -11,7 +11,7 @@ import { EditorTabsComponent } from './editor-tabs.component';
 import { DocumentService } from './document.service';
 import { DocumentServiceConfig } from './document.service.config';
 
-import { NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
+import { NAVIGATION_DELETED, NavigationDeletedPayload, NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
 
 describe('EditorTabsComponent', () => {
 
@@ -35,6 +35,14 @@ describe('EditorTabsComponent', () => {
     messagingService.publish(NAVIGATION_OPEN, fooDocument);
     messagingService.publish(NAVIGATION_OPEN, barDocument);
     fixture.detectChanges();
+  }
+
+  function getNavItems(): DebugElement[] {
+    return tabset.queryAll(By.css('.nav-item'));
+  }
+
+  function getActiveItem(): DebugElement {
+    return tabset.query(By.css('.nav-item.active'));
   }
 
   beforeEach(async(() => {
@@ -82,10 +90,9 @@ describe('EditorTabsComponent', () => {
     fixture.detectChanges();
 
     // then
-    let navItems = tabset.queryAll(By.css('.nav-item'));
-    expect(navItems.length).toBe(1);
+    expect(getNavItems().length).toBe(1);
 
-    let activeItem = tabset.query(By.css('.nav-item.active'));
+    let activeItem = getActiveItem();
     expect(activeItem.nativeElement.innerText).toBe("foo");
   });
 
@@ -99,11 +106,8 @@ describe('EditorTabsComponent', () => {
     fixture.detectChanges();
 
     // then
-    let navItems = tabset.queryAll(By.css('.nav-item'));
-    expect(navItems.length).toBe(2);
-
-    let activeItem = tabset.query(By.css('.nav-item.active'));
-    expect(activeItem.nativeElement.innerText).toBe("bar");
+    expect(getNavItems().length).toBe(2);
+    expect(getActiveItem().nativeElement.innerText).toBe("bar");
   });
 
   it('reopens existing tab', () => {
@@ -115,11 +119,8 @@ describe('EditorTabsComponent', () => {
     fixture.detectChanges();
 
     // then
-    let navItems = tabset.queryAll(By.css('.nav-item'));
-    expect(navItems.length).toBe(2);
-
-    let activeItem = tabset.query(By.css('.nav-item.active'));
-    expect(activeItem.nativeElement.innerText).toBe("foo");
+    expect(getNavItems().length).toBe(2);
+    expect(getActiveItem().nativeElement.innerText).toBe("foo");
   });
 
   it('emits editor.active event on navigation.open event', () => {
@@ -178,6 +179,47 @@ describe('EditorTabsComponent', () => {
     // then
     expect(editorCloseCallback).toHaveBeenCalledTimes(1);
     expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.path });
+  });
+
+  it('closes tab when "navigation.deleted" event is received for file', () => {
+    // given
+    openFooAndBar();
+    let fooDeletePayload: NavigationDeletedPayload = {
+      name: 'foo',
+      path: 'top/secret/foo',
+      type: 'file'
+    };
+    let editorCloseCallback = jasmine.createSpy('editorCloseCallback');
+    messagingService.subscribe(EDITOR_CLOSE, editorCloseCallback);
+
+    // when
+    messagingService.publish(NAVIGATION_DELETED, fooDeletePayload);
+    fixture.detectChanges();
+
+    // then
+    expect(getNavItems().length).toBe(1);
+    expect(getActiveItem().nativeElement.innerText).toBe("bar");
+
+    expect(editorCloseCallback).toHaveBeenCalledTimes(1);
+    expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.path });
+  });
+
+  it('closes tab when "navigation.deleted" is received for parent folder', () => {
+    // given
+    openFooAndBar();
+    let topDeletePayload: NavigationDeletedPayload = {
+      name: 'top',
+      path: 'top',
+      type: 'folder'
+    };
+
+    // when
+    messagingService.publish(NAVIGATION_DELETED, topDeletePayload);
+    fixture.detectChanges();
+
+    // then
+    expect(getNavItems().length).toBe(1);
+    expect(getActiveItem().nativeElement.innerText).toBe("bar");
   });
 
 });
