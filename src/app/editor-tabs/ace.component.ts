@@ -63,6 +63,8 @@ export class AceComponent implements AfterViewInit {
       exec: this.save.bind(this)
     });
 
+    this.focus();
+
     // TODO for debugging only
     window["editor"] = editor;
   }
@@ -79,6 +81,12 @@ export class AceComponent implements AfterViewInit {
       dirty: dirty
     }
     this.messagingService.publish(events.EDITOR_DIRTY_CHANGED, dirtyState);
+  }
+
+  public focus(): void {
+    this.editor.then(editor => {
+      editor.focus();
+    });
   }
 
   public save(): void {
