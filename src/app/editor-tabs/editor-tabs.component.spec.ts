@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { DebugElement, Component } from '@angular/core';
 import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { mock, when, anything, instance } from 'ts-mockito';
@@ -31,19 +31,24 @@ describe('EditorTabsComponent', () => {
     path: 'tropical/bar'
   };
 
+  let openFoo = () => {
+    messagingService.publish(NAVIGATION_OPEN, fooDocument);
+    fixture.detectChanges();
+  };
+
   let openFooAndBar = () => {
     messagingService.publish(NAVIGATION_OPEN, fooDocument);
     messagingService.publish(NAVIGATION_OPEN, barDocument);
     fixture.detectChanges();
-  }
+  };
 
   function getNavItems(): DebugElement[] {
     return tabset.queryAll(By.css('.nav-item'));
-  }
+  };
 
   function getActiveItem(): DebugElement {
     return tabset.query(By.css('.nav-item.active'));
-  }
+  };
 
   beforeEach(async(() => {
     // Mock DocumentService
@@ -57,7 +62,7 @@ describe('EditorTabsComponent', () => {
         MessagingModule.forRoot()
       ],
       declarations: [
-        AceComponent,
+        MockedAceComponent,
         EditorTabsComponent
       ],
       providers: [
@@ -86,8 +91,7 @@ describe('EditorTabsComponent', () => {
 
   it('opens tab when event on messaging bus', () => {
     // when
-    messagingService.publish(NAVIGATION_OPEN, fooDocument);
-    fixture.detectChanges();
+    openFoo();
 
     // then
     expect(getNavItems().length).toBe(1);
@@ -98,8 +102,7 @@ describe('EditorTabsComponent', () => {
 
   it('opens second tab on second event', () => {
     // given
-    messagingService.publish(NAVIGATION_OPEN, fooDocument);
-    fixture.detectChanges();
+    openFoo();
 
     // when
     messagingService.publish(NAVIGATION_OPEN, barDocument);
@@ -125,7 +128,7 @@ describe('EditorTabsComponent', () => {
 
   it('emits editor.active event on navigation.open event', () => {
     // when
-    messagingService.publish(NAVIGATION_OPEN, fooDocument);
+    openFoo();
 
     // then
     expect(editorActiveCallback).toHaveBeenCalledTimes(1);
@@ -168,7 +171,7 @@ describe('EditorTabsComponent', () => {
 
   it('emits editor.close event when tab is closed', () => {
     // given
-    messagingService.publish(NAVIGATION_OPEN, fooDocument);
+    openFoo();
     let editorCloseCallback = jasmine.createSpy('editorCloseCallback');
     messagingService.subscribe(EDITOR_CLOSE, editorCloseCallback);
     let tab = component.tabs[0];
@@ -223,3 +226,18 @@ describe('EditorTabsComponent', () => {
   });
 
 });
+
+@Component({
+  selector: 'xtext-editor',
+  template: '<div>mocked-editor for path: "{{path}}" and tabId: "{{tabId}}"</div>'
+})
+class MockedAceComponent extends AceComponent {
+
+  editorSpy: any;
+
+  ngAfterViewInit(): void {
+    this.editorSpy = jasmine.createSpyObj('editor', ['focus']);
+    this.editor = Promise.resolve(this.editorSpy);
+  }
+
+}

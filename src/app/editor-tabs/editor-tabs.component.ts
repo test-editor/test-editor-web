@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef, ViewChildren, QueryList } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { MessagingService } from '@testeditor/messaging-service';
-import { TabElement } from './tab-element';
+import { AceComponent } from './ace.component';
 import { Element } from './element';
+import { TabElement } from './tab-element';
 
 import { NAVIGATION_DELETED, NavigationDeletedPayload, NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
 
@@ -21,6 +22,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
    */
   static uniqueTabId: number = 0;
 
+  @ViewChildren(AceComponent) editorComponents: QueryList<AceComponent>;
   public tabs: TabElement[] = [];
   private subscriptions: Subscription[] = [];
 
@@ -96,6 +98,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
       tab.active = true;
       let element: Element = { path: tab.path };
       this.messagingService.publish(EDITOR_ACTIVE, element);
+    }
+    let component = this.editorComponents.find(element => element.tabId === tab.id);
+    if (component) {
+      component.focus();
     }
   }
 
