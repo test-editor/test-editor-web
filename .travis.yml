@@ -13,7 +13,8 @@ before_install:
   # Install latest chrome.
   - export CHROME_BIN=chromium-browser
   # Use newer Yarn version
-  - npm install -g yarn@0.27.5
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.0.2
+  - export PATH="$HOME/.yarn/bin:$PATH"
 install:
   - yarn install
 script:
