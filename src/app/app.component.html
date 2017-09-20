@@ -2,6 +2,9 @@
   <div id="navigation-area">
     <div id="navigation-label">Test-Editor</div>
     <div id="navigation-content">
+      <li><a class="navigationLinkButton" *ngIf="!isAuthorized" (click)="login()">Login</a></li>
+      <li><a class="navigationLinkButton" *ngIf="isAuthorized" (click)="logout()">Logout</a></li>
+      <li><a class="navigationLinkButton" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</a></li>
       <app-navigation></app-navigation>
     </div>
   </div>

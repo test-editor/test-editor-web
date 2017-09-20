@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptionsArgs } from '@angular/http';
 
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+
 import 'rxjs/add/operator/toPromise';
 
 import { DocumentServiceConfig } from './document.service.config';
@@ -11,11 +13,15 @@ export class DocumentService {
   private serviceUrl: string;
   private requestOptions: RequestOptionsArgs;
 
-  constructor(private http: Http, config: DocumentServiceConfig) {
+  constructor(private http: Http, config: DocumentServiceConfig, public oidcSecurityService: OidcSecurityService) {
     this.serviceUrl = config.serviceUrl;
+    let token = this.oidcSecurityService.getToken();
+    let authorization = token !== '' ? 'Bearer '+ token : config.authorizationHeader;
     this.requestOptions = {
       headers: new Headers({
-        'Authorization': config.authorizationHeader
+        'Authorization': authorization,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       })
     };
   }
