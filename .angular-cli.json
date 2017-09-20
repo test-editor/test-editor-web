@@ -26,6 +26,7 @@
         "styles.css"
       ],
       "scripts": [
+        "../node_modules/auth0-js/build/auth0.js",
         "../node_modules/requirejs/require.js",
         "assets/main.js"
       ],

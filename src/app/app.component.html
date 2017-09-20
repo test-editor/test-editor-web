@@ -1,11 +1,7 @@
-<div id="page">
-  <div id="navigation-area">
-    <div id="navigation-label">Test-Editor</div>
-    <div id="navigation-content">
-      <app-navigation></app-navigation>
-    </div>
-  </div>
-  <div id="editor-area">
-    <app-editor-tabs></app-editor-tabs>
-  </div>
+<div id="login" *ngIf="!auth.isAuthenticated()">
+  You are not logged-in!
+  <a href="" (click)="auth.login()"> Log In</a>
+</div>
+<div id="router-outlet" *ngIf="auth.isAuthenticated()">
+    <router-outlet></router-outlet>
 </div>
