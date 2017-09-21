@@ -16,10 +16,24 @@
   color: rgb(187, 187, 187);
   line-height: 35px;
   padding-left: 17px;
+  padding-right: 17px;
   text-transform: uppercase;
   height: 35px;
 }
 
 #navigation-content {
-  height: calc(100% - 35px);
+  background-color: #252525;
+  height: calc(100% - 70px);
+}
+
+.navigation-text {
+  background-color: #252525;
+  color: rgb(187, 187, 187);
+  line-height: 35px;
+  padding-left: 17px;
+  height: 35px;
+}
+
+.navigation-text:hover {
+  cursor: pointer;
 }

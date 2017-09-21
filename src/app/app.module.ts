@@ -29,11 +29,11 @@ const appRoutes: Routes = [
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
       serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      authorizationHeader: "bachmann:gunther.bachmann.si@gmail.com"
     }),
     EditorTabsModule.forRoot({
       serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      authorizationHeader: "bachmann:gunther.bachmann.si@gmail.com"
     })
   ],
   providers: [
@@ -45,19 +45,19 @@ export class AppModule {
     constructor(public oidcSecurityService: OidcSecurityService) {
         let openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
         openIDImplicitFlowConfiguration.stsServer = 'https://accounts.google.com';
-        openIDImplicitFlowConfiguration.redirect_url = 'https://localhost:44386';
-        openIDImplicitFlowConfiguration.client_id = '188968487735-b1hh7k87nkkh6vv84548sinju2kpr7gn.apps.googleusercontent.com';
+        openIDImplicitFlowConfiguration.redirect_url = 'http://localhost:4200';
+        openIDImplicitFlowConfiguration.client_id = '173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com';
         openIDImplicitFlowConfiguration.response_type = 'id_token token';
         openIDImplicitFlowConfiguration.scope = 'openid email profile';
-        openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'https://localhost:44386/Unauthorized';
-        openIDImplicitFlowConfiguration.startup_route = '/home';
+        openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'https://localhost:4200';
+        openIDImplicitFlowConfiguration.startup_route = '/';
         openIDImplicitFlowConfiguration.forbidden_route = '/Forbidden';
         openIDImplicitFlowConfiguration.unauthorized_route = '/Unauthorized';
         openIDImplicitFlowConfiguration.log_console_warning_active = true;
         openIDImplicitFlowConfiguration.log_console_debug_active = true;
         openIDImplicitFlowConfiguration.max_id_token_iat_offset_allowed_in_seconds = 20;
         openIDImplicitFlowConfiguration.override_well_known_configuration = false;
-        openIDImplicitFlowConfiguration.override_well_known_configuration_url = 'https://localhost:44386/wellknownconfiguration.json';
+        openIDImplicitFlowConfiguration.override_well_known_configuration_url = 'https://localhost:4200/wellknownconfiguration.json';
 
         this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration);
 

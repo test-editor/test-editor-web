@@ -2,6 +2,7 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { MessagingService, Message } from '@testeditor/messaging-service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
+import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent {
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
   userDataSubscription: Subscription;
+  user: String;
 
 
   constructor(private messagingService: MessagingService, public oidcSecurityService: OidcSecurityService) {
@@ -36,18 +38,21 @@ export class AppComponent {
   ngOnInit() {
     this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
       (isAuthorized: boolean) => {
-        console.log('user is authorized ' + isAuthorized)
         this.isAuthorized = isAuthorized;
       });
     this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
       (userData: any) => {
-
         if (userData && userData != '') {
-          console.log('userData ');
-          console.log(userData);
+          this.user = userData.name;
+          let idToken = this.oidcSecurityService.getIdToken();
+          if (idToken !== '') {
+            localStorage.setItem('token', idToken);
+            if (isDevMode()) {
+              console.log('idToken ');
+              console.log(idToken);
+            }
+          }
         }
-
-        console.log('userData getting data');
       });
   }
 
@@ -69,7 +74,10 @@ export class AppComponent {
 
   logout() {
     console.log('start logout');
+    this.messagingService.publish(NAVIGATION_CLOSE, null);
     this.oidcSecurityService.logoff();
+    this.user = null;
+    localStorage.removeItem('token');
   }
 
   private doCallbackLogicIfRequired() {
@@ -78,4 +86,5 @@ export class AppComponent {
       this.oidcSecurityService.authorizedCallback();
     }
   }
+
 }

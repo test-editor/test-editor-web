@@ -15,15 +15,15 @@ export class DocumentService {
 
   constructor(private http: Http, config: DocumentServiceConfig, public oidcSecurityService: OidcSecurityService) {
     this.serviceUrl = config.serviceUrl;
-    let token = this.oidcSecurityService.getToken();
-    let authorization = token !== '' ? 'Bearer '+ token : config.authorizationHeader;
-    this.requestOptions = {
-      headers: new Headers({
-        'Authorization': authorization,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      })
-    };
+    try {
+      let userData = this.oidcSecurityService.getPayloadFromIdToken();
+      let authorization = userData !== '' ? userData.family_name.toLowerCase() + ":" + userData.email : config.authorizationHeader;
+      this.requestOptions = {
+        headers: new Headers({
+          'Authorization': authorization
+        })
+      };
+    } catch (Error) { }
   }
 
   loadDocument(path: string): Promise<Response> {
