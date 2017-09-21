@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response, RequestOptionsArgs } from '@angular/http';
+import { Response } from '@angular/http';
+import { AuthHttp } from 'angular2-jwt';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -9,25 +10,19 @@ import { DocumentServiceConfig } from './document.service.config';
 export class DocumentService {
 
   private serviceUrl: string;
-  private requestOptions: RequestOptionsArgs;
 
-  constructor(private http: Http, config: DocumentServiceConfig) {
+  constructor(private http: AuthHttp, config: DocumentServiceConfig) {
     this.serviceUrl = config.serviceUrl;
-    this.requestOptions = {
-      headers: new Headers({
-        'Authorization': config.authorizationHeader
-      })
-    };
   }
 
   loadDocument(path: string): Promise<Response> {
     let url = `${this.serviceUrl}/documents/${path}`;
-    return this.http.get(url, this.requestOptions).toPromise();
+    return this.http.get(url).toPromise();
   }
 
   saveDocument(path: string, content: string): Promise<Response> {
     let url = `${this.serviceUrl}/documents/${path}`;
-    return this.http.put(url, content, this.requestOptions).toPromise();
+    return this.http.put(url, content).toPromise();
   }
 
 }
