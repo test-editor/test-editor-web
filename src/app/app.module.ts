@@ -27,12 +27,10 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     BrowserModule,
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
     EditorTabsModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     })
   ],
   providers: [

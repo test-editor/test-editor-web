@@ -12,7 +12,7 @@ export class DocumentService {
   private serviceUrl: string;
 
   constructor(private http: AuthHttp, config: DocumentServiceConfig) {
-    this.serviceUrl = config.serviceUrl;
+    this.serviceUrl = config.persistenceServiceUrl;
   }
 
   loadDocument(path: string): Promise<Response> {
