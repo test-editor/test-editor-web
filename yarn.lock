@@ -262,8 +262,8 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
 angular-auth-oidc-client@^1.3.15:
-  version "1.3.15"
-  resolved "http://npmrepo.system.local/repository/npm-all/angular-auth-oidc-client/-/angular-auth-oidc-client-1.3.15.tgz#3378094f998f26045eca3a105ffe03ccd1aa9770"
+  version "1.3.16"
+  resolved "https://registry.yarnpkg.com/angular-auth-oidc-client/-/angular-auth-oidc-client-1.3.16.tgz#b834112efc15c1c3b39b09d593cc9dda26247e14"
   dependencies:
     jsrsasign "8.0.3"
 
@@ -2677,7 +2677,7 @@ jsprim@^1.2.2:
 
 jsrsasign@8.0.3:
   version "8.0.3"
-  resolved "http://npmrepo.system.local/repository/npm-all/jsrsasign/-/jsrsasign-8.0.3.tgz#04017b1452f5f7ef6cfff053fede4d397afc8910"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-8.0.3.tgz#04017b1452f5f7ef6cfff053fede4d397afc8910"
 
 karma-chrome-launcher@~2.1.1:
   version "2.1.1"

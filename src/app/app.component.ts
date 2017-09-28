@@ -15,6 +15,7 @@ export class AppComponent {
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
+  hasToken: boolean;
   userDataSubscription: Subscription;
   user: String;
 
@@ -25,8 +26,6 @@ export class AppComponent {
       messagingService.subscribeAll((message: Message) => {
         console.log(`Received message of type: ${message.type}`, message);
       });
-      // for development purposes, store 'john doe' token as long as no definite login is implemented that provides an appropriate token
-      sessionStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBnbWFpbC5jb20ifQ.G96r0gWRtYfUaEb9XHQp3A4zoovFLJLfx86f5qz-Vl8');
     }
     if (this.oidcSecurityService.moduleSetup) {
       this.doCallbackLogicIfRequired();
@@ -48,7 +47,8 @@ export class AppComponent {
           this.user = userData.name;
           let idToken = this.oidcSecurityService.getIdToken();
           if (idToken !== '') {
-            localStorage.setItem('token', idToken);
+            this.hasToken = true
+            sessionStorage.setItem('token', idToken);
             if (isDevMode()) {
               console.log('idToken ');
               console.log(idToken);
