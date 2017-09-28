@@ -7,7 +7,17 @@ import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
 import { AppComponent } from './app.component';
 import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
 
+import { Http, RequestOptions } from '@angular/http';
+import { AuthHttp, AuthConfig } from 'angular2-jwt';
+
 import * as constants from './config/app-config';
+
+export function authHttpServiceFactory(http: Http, options: RequestOptions) {
+  return new AuthHttp(new AuthConfig({
+    tokenName: 'token',
+		tokenGetter: (() => sessionStorage.getItem('token'))
+	}), http, options);
+}
 
 @NgModule({
   declarations: [
@@ -17,13 +27,18 @@ import * as constants from './config/app-config';
     BrowserModule,
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
     EditorTabsModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     })
+  ],
+  providers: [
+    {
+      provide: AuthHttp,
+      useFactory: authHttpServiceFactory,
+      deps: [Http, RequestOptions]
+    }
   ],
   bootstrap: [AppComponent]
 })

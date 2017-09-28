@@ -157,9 +157,9 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.1.0.tgz#452c475fcb4f42f310690b6726dc3e9dd79bd706"
 
-"@testeditor/workspace-navigator@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.10.0.tgz#dd2474801481692eb8fce15058093ed0a8acb150"
+"@testeditor/workspace-navigator@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.11.0.tgz#8f94dcedfdb4b9d78e1bd0a0250136925ede6431"
 
 "@types/jasmine@2.5.45":
   version "2.5.45"
@@ -260,6 +260,10 @@ alphanum-sort@^1.0.1, alphanum-sort@^1.0.2:
 amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
+
+angular2-jwt@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/angular2-jwt/-/angular2-jwt-0.2.3.tgz#54efdda3ceedba85f6a37b165f22ac22b8adf021"
 
 ansi-escapes@^2.0.0:
   version "2.0.0"
