@@ -8,6 +8,9 @@ import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
 import { AppComponent } from './app.component';
 import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
 
+import { Http, RequestOptions } from '@angular/http';
+import { AuthHttp, AuthConfig } from 'angular2-jwt';
+
 import * as constants from './config/app-config';
 import { AuthService } from './auth/auth.service';
 import { CallbackComponent } from './auth/callback/callback.component';
@@ -17,6 +20,13 @@ const routes: Routes = [
   { path: 'callback', component: CallbackComponent },
   { path: '', component: HomeComponent, pathMatch: 'full' }
 ];
+
+export function authHttpServiceFactory(http: Http, options: RequestOptions) {
+  return new AuthHttp(new AuthConfig({
+    tokenName: 'token',
+		tokenGetter: (() => localStorage.getItem('id_token'))
+	}), http, options);
+}
 
 @NgModule({
   declarations: [
@@ -29,15 +39,20 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
     EditorTabsModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "admin:admin@example.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     })
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: AuthHttp,
+      useFactory: authHttpServiceFactory,
+      deps: [Http, RequestOptions]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -21,6 +21,8 @@ export class AppComponent {
       messagingService.subscribeAll((message: Message) => {
         console.log(`Received message of type: ${message.type}`, message);
       });
+      // for development purposes, store 'john doe' token as long as no definite login is implemented that provides an appropriate token
+      sessionStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBnbWFpbC5jb20ifQ.G96r0gWRtYfUaEb9XHQp3A4zoovFLJLfx86f5qz-Vl8');
     }
   }
 
