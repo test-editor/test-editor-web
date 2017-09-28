@@ -5,6 +5,15 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.3.
 The regular commands apply, see [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
+## Development
+
+Run this application in development mode by performing:
+
+```
+yarn install
+ng serve
+```
+
 ## EditorTabsComponent
 
 Emits the following events:

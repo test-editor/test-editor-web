@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
+import { HttpModule, Http, RequestOptions } from '@angular/http';
 
 import { MessagingModule } from '@testeditor/messaging-service';
 import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
 
 import { AuthModule, OidcSecurityService, OpenIDImplicitFlowConfiguration } from 'angular-auth-oidc-client';
+import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Routes, RouterModule } from '@angular/router'
 
 import * as constants from './config/app-config';
@@ -16,6 +17,13 @@ import * as constants from './config/app-config';
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
   ]
+
+export function authHttpServiceFactory(http: Http, options: RequestOptions) {
+  return new AuthHttp(new AuthConfig({
+    tokenName: 'token',
+		tokenGetter: (() => sessionStorage.getItem('token'))
+	}), http, options);
+}
 
 @NgModule({
   declarations: [
@@ -28,16 +36,19 @@ const appRoutes: Routes = [
     AuthModule.forRoot(),
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "bachmann:gunther.bachmann.si@gmail.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
     EditorTabsModule.forRoot({
-      serviceUrl: constants.appConfig.serviceUrls.persistenceService,
-      authorizationHeader: "bachmann:gunther.bachmann.si@gmail.com"
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     })
   ],
   providers: [
-    OidcSecurityService
+    OidcSecurityService,
+    {
+      provide: AuthHttp,
+      useFactory: authHttpServiceFactory,
+      deps: [Http, RequestOptions]
+    }
   ],
   bootstrap: [AppComponent]
 })
