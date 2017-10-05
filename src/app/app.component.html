@@ -1,9 +1,12 @@
 <div id="page">
   <div id="navigation-area">
-    <div id="navigation-label">Test-Editor</div>
+    <div id="navigation-label">Test&#8209;Editor</div>
+    <div class="navigation-text" *ngIf="!isAuthorized" (click)="login()" title="uses google login for authentication">Login</div>
     <div id="navigation-content">
-      <app-navigation></app-navigation>
+      <app-navigation *ngIf="isAuthorized && hasToken"></app-navigation>
     </div>
+    <div class="navigation-text" *ngIf="isAuthorized" (click)="logout()" title="this will log the current user out and close the workspace">Logout {{user}}</div>
+    <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
   </div>
   <div id="editor-area">
     <app-editor-tabs></app-editor-tabs>

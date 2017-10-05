@@ -6,7 +6,7 @@ import { AceComponent } from './ace.component';
 import { Element } from './element';
 import { TabElement } from './tab-element';
 
-import { NAVIGATION_DELETED, NavigationDeletedPayload, NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
+import { NAVIGATION_DELETED, NavigationDeletedPayload, NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE, NAVIGATION_CLOSE } from './event-types';
 
 @Component({
   selector: 'app-editor-tabs',
@@ -36,6 +36,9 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     }));
     this.subscriptions.push(this.messagingService.subscribe(NAVIGATION_OPEN, (document: NavigationOpenPayload) => {
       this.handleNavigationOpen(document);
+    }));
+    this.subscriptions.push(this.messagingService.subscribe(NAVIGATION_CLOSE, () => {
+      this.clearTabs();
     }));
   }
 
@@ -91,6 +94,13 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   private findTabsBelowFolder(folder: string): TabElement[] {
     let folderNameWithSlash = folder.endsWith('/') ? folder : folder + '/';
     return this.tabs.filter(tab => tab.path.startsWith(folderNameWithSlash));
+  }
+
+  public clearTabs(): void {
+    let originalLen = this.tabs.length
+    for (var i=0; i < originalLen; i++) { // iterated at most originalLen times!
+      this.removeTab(this.tabs[0]);
+    }
   }
 
   public selectTab(tab: TabElement): void {
