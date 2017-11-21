@@ -35,9 +35,9 @@ require(["ace/ace"], ace => {
 require(["xtext/services/XtextService"], xtextService => {
     xtextService.prototype._sendRequest = xtextService.prototype.sendRequest;
     xtextService.prototype.sendRequest = function (editorContext, settings, needsSession) {
+        var token = sessionStorage.getItem('token');
         settings.headers = {
-            /* Dummy authorization for now... */
-            "Authorization": "admin:admin@example.org"
+            "Authorization": "Bearer " + token
         };
         this._sendRequest(editorContext, settings, needsSession);
     };
