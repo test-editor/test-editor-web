@@ -36,7 +36,9 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     AuthModule.forRoot(),
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService
+    }, {
+      testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService
     }),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
