@@ -157,9 +157,9 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.1.0.tgz#452c475fcb4f42f310690b6726dc3e9dd79bd706"
 
-"@testeditor/workspace-navigator@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.12.0.tgz#59aab144ec47c22992f1cea1345f1b1167ae4505"
+"@testeditor/workspace-navigator@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.14.0.tgz#6ca1b5acba0836cbb494c289d1188001b4ed5abc"
 
 "@types/jasmine@2.5.45":
   version "2.5.45"
