@@ -37,6 +37,7 @@ module.exports = function (config) {
           // See https://chromium.googlesource.com/chromium/src/+/lkgr/headless/README.md
           '--headless',
           '--disable-gpu',
+          '--no-sandbox',
           // Without a remote debugging port, Google Chrome exits immediately.
           '--remote-debugging-port=9222',
         ]

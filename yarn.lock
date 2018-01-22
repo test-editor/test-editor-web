@@ -194,9 +194,9 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.2.0.tgz#c87f5264aef6b9859c3b6f410dc173d9afbd40ec"
 
-"@testeditor/workspace-navigator@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.15.0.tgz#82c9550e31c2299f5285da8376a636ae9f0b83e2"
+"@testeditor/workspace-navigator@^0.17.0":
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.17.0.tgz#27ee7a3b992cb2e3155bb40c34cd6059d3a21d6c"
 
 "@types/jasmine@2.5.45":
   version "2.5.45"
@@ -206,9 +206,9 @@
   version "6.0.85"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.85.tgz#ec02bfe54a61044f2be44f13b389c6a0e8ee05ae"
 
-"@types/node@~6.0.60":
-  version "6.0.95"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.95.tgz#0d027612a77c55b84497ff90a4a7d597e5ac0fab"
+"@types/node@^6.0.96":
+  version "6.0.96"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.96.tgz#7bf0bf40d6ce51e93762cc47d010c8cc5ebb2179"
 
 "@types/q@^0.0.32":
   version "0.0.32"
