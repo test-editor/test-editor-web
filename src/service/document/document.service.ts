@@ -6,7 +6,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 import 'rxjs/add/operator/toPromise';
 
-import { DocumentServiceConfig } from './document.service.config';
+import { DocumentServiceConfig } from '../../service/document/document.service.config';
 
 @Injectable()
 export class DocumentService {

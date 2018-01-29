@@ -2,7 +2,7 @@ import { Component, Input, AfterViewInit } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
 import { MessagingService } from '@testeditor/messaging-service';
-import { DocumentService } from './document.service';
+import { DocumentService } from '../../service/document/document.service';
 import { DirtyState } from './dirty-state';
 
 import * as constants from '../config/app-config'

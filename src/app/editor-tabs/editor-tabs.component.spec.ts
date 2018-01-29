@@ -8,8 +8,8 @@ import { MessagingModule, MessagingService } from '@testeditor/messaging-service
 
 import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
-import { DocumentService } from './document.service';
-import { DocumentServiceConfig } from './document.service.config';
+import { DocumentService } from '../../service/document/document.service';
+import { DocumentServiceConfig } from '../../service/document/document.service.config';
 
 import { NAVIGATION_DELETED, NavigationDeletedPayload, NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
 
