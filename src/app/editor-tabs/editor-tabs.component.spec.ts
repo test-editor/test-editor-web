@@ -1,7 +1,7 @@
 import { DebugElement, Component } from '@angular/core';
 import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { mock, when, anything, instance } from 'ts-mockito';
+import { mock, when, anything, instance, anyString } from 'ts-mockito';
 
 import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
@@ -12,6 +12,8 @@ import { DocumentService } from '../../service/document/document.service';
 import { DocumentServiceConfig } from '../../service/document/document.service.config';
 
 import { NAVIGATION_DELETED, NavigationDeletedPayload, NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE } from './event-types';
+import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
+import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 
 describe('EditorTabsComponent', () => {
 
@@ -52,7 +54,10 @@ describe('EditorTabsComponent', () => {
 
   beforeEach(async(() => {
     // Mock DocumentService
-    let documentServiceMock = mock(DocumentService)
+    const documentServiceMock = mock(DocumentService);
+    const syntaxHighlightingServiceMock = mock(AceClientsideSyntaxHighlightingService);
+    when(syntaxHighlightingServiceMock.getSyntaxHighlighting(anyString()))
+      .thenReturn(Promise.resolve('path/to/syntax-highlighting-file.js'));
 
     // Initialize TestBed
     TestBed.configureTestingModule({
@@ -66,7 +71,8 @@ describe('EditorTabsComponent', () => {
         EditorTabsComponent
       ],
       providers: [
-        { provide: DocumentService, useValue: instance(documentServiceMock) }
+        { provide: DocumentService, useValue: instance(documentServiceMock) },
+        { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) }
       ]
     })
       .compileComponents();

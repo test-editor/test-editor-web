@@ -7,6 +7,8 @@ import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
 import { DocumentService } from '../../service/document/document.service';
 import { DocumentServiceConfig } from '../../service/document/document.service.config';
+import { SyntaxHighlightingService } from '../../service/syntaxHighlighting/syntax.highlighting.service';
+import { AceClientsideSyntaxHighlightingService } from '../../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
 
 @NgModule({
   imports: [
@@ -30,6 +32,7 @@ export class EditorTabsModule {
       ngModule: EditorTabsModule,
       providers: [
         { provide: DocumentServiceConfig, useValue: config },
+        { provide: SyntaxHighlightingService, useClass: AceClientsideSyntaxHighlightingService },
         DocumentService
       ]
     }
