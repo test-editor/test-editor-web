@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing'
 import { mock, when, anything, instance } from 'ts-mockito';
 import { MessagingModule } from '@testeditor/messaging-service';
 
-import { DocumentService } from './document.service';
+import { DocumentService } from '../../service/document/document.service';
 import { Deferred } from 'prophecy/src/Deferred';
 
 describe('AceComponent', () => {

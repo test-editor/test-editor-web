@@ -5,8 +5,8 @@ import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 
 import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
-import { DocumentService } from './document.service';
-import { DocumentServiceConfig } from './document.service.config';
+import { DocumentService } from '../../service/document/document.service';
+import { DocumentServiceConfig } from '../../service/document/document.service.config';
 
 @NgModule({
   imports: [
