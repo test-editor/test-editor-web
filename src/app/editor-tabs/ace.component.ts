@@ -101,9 +101,9 @@ export class AceComponent implements AfterViewInit {
   }
 
   private getFileExtension(): string {
-    const extensionBeginsAt = this.path.lastIndexOf('.') + 1;
-    if (extensionBeginsAt !== -1 && this.path.length > extensionBeginsAt) {
-      return this.path.substring(extensionBeginsAt);
+    const extensionBeginsAfter = this.path.lastIndexOf('.');
+    if (extensionBeginsAfter !== -1 && this.path.length > extensionBeginsAfter + 1) {
+      return this.path.substring(extensionBeginsAfter + 1);
     }
     return '';
   }

@@ -9,7 +9,7 @@ export class AceClientsideSyntaxHighlightingService implements SyntaxHighlightin
     ['config', 'xtext-resources/generated/mode-tcl'],
     ['aml', 'xtext-resources/generated/mode-aml']]);
 
-  getSyntaxHighlighting(extension: string): Promise<any> {
+  getSyntaxHighlighting(extension: string): Promise<string> {
     const map = AceClientsideSyntaxHighlightingService.syntaxHighlightings;
     if (map.has(extension)) {
       return Promise.resolve(map.get(extension));

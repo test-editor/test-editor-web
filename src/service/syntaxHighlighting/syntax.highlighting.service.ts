@@ -1,3 +1,3 @@
 export abstract class SyntaxHighlightingService {
-  abstract getSyntaxHighlighting(extension: string): Promise<any>;
+  abstract getSyntaxHighlighting(extension: string): Promise<string>;
 }

@@ -34,10 +34,10 @@ describe('AceClientsideSyntaxHighlightingService', () => {
 
     it(`provides Ace syntax highlighting file "${expectedSyntaxHighlightingFile}" for language "${knownLanguageExtension}"`, () => {
       // when
-      const actualExceptionReason = serviceUnderTest.getSyntaxHighlighting(knownLanguageExtension)
+      const syntaxHighlightingResult = serviceUnderTest.getSyntaxHighlighting(knownLanguageExtension)
 
       // then
-      actualExceptionReason.then(actualHighlighting => {
+      syntaxHighlightingResult.then(actualHighlighting => {
         expect(actualHighlighting).toEqual(expectedSyntaxHighlightingFile);
       }).catch(exceptionReason => fail(`unexpected exception: ${exceptionReason}`));
     });
