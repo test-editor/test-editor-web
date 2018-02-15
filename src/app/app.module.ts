@@ -13,6 +13,7 @@ import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Routes, RouterModule } from '@angular/router'
 
 import * as constants from './config/app-config';
+import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
@@ -39,7 +40,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService
     }, {
       testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService
-    }),
+    }, testEditorIndicatorFieldSetup),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     })
