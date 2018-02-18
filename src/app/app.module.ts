@@ -14,6 +14,9 @@ import { Routes, RouterModule } from '@angular/router'
 
 import * as constants from './config/app-config';
 import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
+import { ValidationMarkerService } from 'service/validation/validation.marker.service';
+import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
+import { XtextDefaultValidationMarkerServiceConfig } from 'service/validation/xtext.default.validation.marker.service.config';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
@@ -51,7 +54,9 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
       provide: AuthHttp,
       useFactory: authHttpServiceFactory,
       deps: [Http, RequestOptions]
-    }
+    }, 
+    { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
+    { provide: XtextDefaultValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.xtextService }},
   ],
   bootstrap: [AppComponent]
 })

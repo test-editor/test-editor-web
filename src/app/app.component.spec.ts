@@ -8,12 +8,18 @@ import { AppComponent } from './app.component';
 import { AuthModule } from 'angular-auth-oidc-client';
 import { HttpModule } from '@angular/http';
 import { Routes, RouterModule } from '@angular/router'
+import { WorkspaceNavigatorModule, PersistenceService } from '@testeditor/workspace-navigator';
+import { mock, instance } from 'ts-mockito/lib/ts-mockito';
+import { ValidationMarkerService } from '../service/validation/validation.marker.service';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
   ]
 
 describe('AppComponent', () => {
+  const mockPersistenceService = mock(PersistenceService);
+  const mockValidationMarkerService = mock(ValidationMarkerService);
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -26,7 +32,11 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      providers: [{ provide: APP_BASE_HREF, useValue: '/' }]
+      providers: [
+        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: PersistenceService, useValue: instance(mockPersistenceService)},
+        { provide: ValidationMarkerService, useValue: instance(mockValidationMarkerService)}
+      ]
     }).compileComponents();
   }));
 
