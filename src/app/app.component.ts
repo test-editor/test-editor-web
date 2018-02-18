@@ -4,6 +4,10 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 
+import * as events from '@testeditor/workspace-navigator';
+import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
+import { ValidationMarkerService } from 'service/validation/validation.marker.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,16 +15,17 @@ import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 })
 
 export class AppComponent {
-
+  
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
   hasToken: boolean;
   userDataSubscription: Subscription;
   user: String;
-
-
-  constructor(private messagingService: MessagingService, public oidcSecurityService: OidcSecurityService) {
+  
+  
+  constructor(private messagingService: MessagingService, public oidcSecurityService: OidcSecurityService,
+    private persistenceService: PersistenceService, private validationMarkerService: ValidationMarkerService) {
     if (isDevMode()) {
       // log all received events in development mode
       messagingService.subscribeAll((message: Message) => {
@@ -34,6 +39,7 @@ export class AppComponent {
         this.doCallbackLogicIfRequired();
       });
     }
+    this.setupWorkspaceReloadResponse();
   }
 
   ngOnInit() {
@@ -41,52 +47,68 @@ export class AppComponent {
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
       });
-    this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
-      (userData: any) => {
-        if (userData && userData != '') {
-          this.user = userData.name;
-          let idToken = this.oidcSecurityService.getIdToken();
-          if (idToken !== '') {
-            this.hasToken = true
-            sessionStorage.setItem('token', idToken);
-            if (isDevMode()) {
-              console.log('idToken ');
-              console.log(idToken);
+      this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
+        (userData: any) => {
+          if (userData && userData != '') {
+            this.user = userData.name;
+            let idToken = this.oidcSecurityService.getIdToken();
+            if (idToken !== '') {
+              this.hasToken = true
+              sessionStorage.setItem('token', idToken);
+              if (isDevMode()) {
+                console.log('idToken ');
+                console.log(idToken);
+              }
             }
           }
+        });
+      }
+
+      ngOnDestroy(): void {
+        this.userDataSubscription.unsubscribe();
+        this.isAuthorizedSubscription.unsubscribe();
+        this.oidcSecurityService.onModuleSetup.unsubscribe();
+      }
+
+      login() {
+        console.log('start login');
+        this.oidcSecurityService.authorize();
+      }
+
+      refreshSession() {
+        console.log('start refreshSession');
+        this.oidcSecurityService.authorize();
+      }
+
+      logout() {
+        console.log('start logout');
+        this.messagingService.publish(NAVIGATION_CLOSE, null);
+        this.oidcSecurityService.logoff();
+        this.user = null;
+        localStorage.removeItem('token');
+      }
+
+      private doCallbackLogicIfRequired() {
+        if (window.location.hash) {
+          console.log('start authorized callback');
+          this.oidcSecurityService.authorizedCallback();
         }
-      });
-  }
+      }
 
-  ngOnDestroy(): void {
-    this.userDataSubscription.unsubscribe();
-    this.isAuthorizedSubscription.unsubscribe();
-    this.oidcSecurityService.onModuleSetup.unsubscribe();
-  }
+      private setupWorkspaceReloadResponse(): void {
+        this.messagingService.subscribe(events.WORKSPACE_RELOAD_REQUEST, () => {
+          this.persistenceService.listFiles().then((root: WorkspaceElement) => {
+            this.messagingService.publish(events.WORKSPACE_RELOAD_RESPONSE, root);
+            this.updateValidationMarkers(root);
+          });
+        });
+      }
 
-  login() {
-    console.log('start login');
-    this.oidcSecurityService.authorize();
-  }
-
-  refreshSession() {
-    console.log('start refreshSession');
-    this.oidcSecurityService.authorize();
-  }
-
-  logout() {
-    console.log('start logout');
-    this.messagingService.publish(NAVIGATION_CLOSE, null);
-    this.oidcSecurityService.logoff();
-    this.user = null;
-    localStorage.removeItem('token');
-  }
-
-  private doCallbackLogicIfRequired() {
-    if (window.location.hash) {
-      console.log('start authorized callback');
-      this.oidcSecurityService.authorizedCallback();
+      private updateValidationMarkers(root: WorkspaceElement): void {
+        this.validationMarkerService.getMarkerSummary(root).then((summaries) =>
+          this.messagingService.publish(events.WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
+            { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos }}}
+          )))
+        );
+      }
     }
-  }
-
-}
