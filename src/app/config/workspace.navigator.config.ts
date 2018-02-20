@@ -25,7 +25,7 @@ const testStatusField = {
 };
 
 const validationStatusField = {
-  condition: isFile,
+  condition: isValid,
   states: [{
     condition: hasValidationErrors,
     cssClasses: 'fa fa-exclamation-circle validation-errors',
@@ -46,7 +46,7 @@ export const testEditorIndicatorFieldSetup: IndicatorFieldSetup = {
 };
 
 export function isTclFile(element: WorkspaceElementInfo): boolean {
-  return element && element.name.endsWith('tcl');
+  return element && element.name.endsWith('.tcl');
 }
 
 export function testIsRunning(marker: any): boolean {
@@ -74,8 +74,8 @@ export function failedLabel(marker: any): string {
 }
 
 
-export function isFile(element: WorkspaceElementInfo) {
-  return element && element.type === ElementType.File;
+export function isValid(element: WorkspaceElementInfo) {
+  return element !== undefined;
 }
 
 export function hasValidationErrors(marker: any) {
