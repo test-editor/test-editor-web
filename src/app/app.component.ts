@@ -7,6 +7,7 @@ import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 import * as events from '@testeditor/workspace-navigator';
 import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
+import { DocumentService } from 'service/document/document.service';
 
 @Component({
   selector: 'app-root',
@@ -15,17 +16,18 @@ import { ValidationMarkerService } from 'service/validation/validation.marker.se
 })
 
 export class AppComponent {
-  
+
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
   hasToken: boolean;
   userDataSubscription: Subscription;
   user: String;
-  
-  
+
+
   constructor(private messagingService: MessagingService, public oidcSecurityService: OidcSecurityService,
-    private persistenceService: PersistenceService, private validationMarkerService: ValidationMarkerService) {
+    private persistenceService: PersistenceService, private validationMarkerService: ValidationMarkerService,
+    private documentService: DocumentService) {
     if (isDevMode()) {
       // log all received events in development mode
       messagingService.subscribeAll((message: Message) => {
@@ -105,10 +107,22 @@ export class AppComponent {
       }
 
       private updateValidationMarkers(root: WorkspaceElement): void {
-        this.validationMarkerService.getMarkerSummary(root).then((summaries) =>
-          this.messagingService.publish(events.WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
-            { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos }}}
-          )))
-        );
+        this.getAllDocuments(root).then((rootWithFullTexts) => {
+          this.validationMarkerService.getMarkerSummary(rootWithFullTexts).then((summaries) =>
+            this.messagingService.publish(events.WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
+              { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos }}}
+            )))
+          );
+        });
+      }
+
+      private getAllDocuments(root: WorkspaceElement): Promise<any> {
+        if (root.children != null && root.children.length > 0) {
+          return root.children.reduce((previous, child) => previous.then(() => this.getAllDocuments(child)), Promise.resolve(root))
+            .then(() => root);
+        } else {
+          return this.documentService.loadDocument(root.path).then((response) => root['fulltext'] = response.text(),
+            (error) => Promise.resolve(root));
+        }
       }
     }

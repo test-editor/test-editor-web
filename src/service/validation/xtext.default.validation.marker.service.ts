@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Headers } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
 import { WorkspaceElement } from '@testeditor/workspace-navigator';
@@ -43,25 +44,31 @@ export class XtextDefaultValidationMarkerService extends ValidationMarkerService
       } as ValidationSummaryAccumulator)).then((accumulatedSummaries: ValidationSummaryAccumulator) =>
         accumulatedSummaries.summaries.concat([accumulatedSummaries.parentSummary]));
     } else {
-      return this.getMarkersForFile(root.path);
+      return this.getMarkersForFile(root);
     }
   }
 
-  private getMarkersForFile(path: string): Promise<ValidationSummary[]> {
-    const encodedPath = path.split('/').map(encodeURIComponent).join('/');
-    return this.http.get(`${this.serviceUrl}?resource=${encodedPath}`).toPromise().then((response) => {
+  private getMarkersForFile(root: WorkspaceElement): Promise<ValidationSummary[]> {
+    const httpOptions = {
+      headers: new Headers({
+        'Content-Type':  'application/x-www-form-urlencoded; charset=UTF-8'
+      })
+    };
+    const fulltext = encodeURIComponent(root['fulltext']).replace(/%20/g, '+');
+    return this.http.post(`${this.serviceUrl}/validate?resource=${encodeURIComponent(root.path)}`,
+      `fullText=${fulltext}`, httpOptions).toPromise().then((response) => {
       try {
         const validationResponse: ValidationServiceResponseType = response.json();
         return [{
-          path: path,
+          path: root.path,
           errors: validationResponse.issues.filter(issue => issue.severity === Severity.ERROR).length,
           warnings: validationResponse.issues.filter(issue => issue.severity === Severity.WARNING).length,
           infos: validationResponse.issues.filter(issue => issue.severity === Severity.INFO).length,
         }]
       } catch (error) {
-        return this.logErrorAndAssumeDefault(path, error);
+        return this.logErrorAndAssumeDefault(root.path, error);
       }
-    }, (rejected) => this.logErrorAndAssumeDefault(path, rejected));
+    }, (rejected) => this.logErrorAndAssumeDefault(root.path, rejected));
   }
 
   private logErrorAndAssumeDefault(path: string, error: any): ValidationSummary[] {
