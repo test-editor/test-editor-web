@@ -49,80 +49,79 @@ export class AppComponent {
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
       });
-      this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
-        (userData: any) => {
-          if (userData && userData != '') {
-            this.user = userData.name;
-            let idToken = this.oidcSecurityService.getIdToken();
-            if (idToken !== '') {
-              this.hasToken = true
-              sessionStorage.setItem('token', idToken);
-              if (isDevMode()) {
-                console.log('idToken ');
-                console.log(idToken);
-              }
+    this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
+      (userData: any) => {
+        if (userData && userData != '') {
+          this.user = userData.name;
+          let idToken = this.oidcSecurityService.getIdToken();
+          if (idToken !== '') {
+            this.hasToken = true
+            sessionStorage.setItem('token', idToken);
+            if (isDevMode()) {
+              console.log('idToken ');
+              console.log(idToken);
             }
           }
-        });
-      }
-
-      ngOnDestroy(): void {
-        this.userDataSubscription.unsubscribe();
-        this.isAuthorizedSubscription.unsubscribe();
-        this.oidcSecurityService.onModuleSetup.unsubscribe();
-      }
-
-      login() {
-        console.log('start login');
-        this.oidcSecurityService.authorize();
-      }
-
-      refreshSession() {
-        console.log('start refreshSession');
-        this.oidcSecurityService.authorize();
-      }
-
-      logout() {
-        console.log('start logout');
-        this.messagingService.publish(NAVIGATION_CLOSE, null);
-        this.oidcSecurityService.logoff();
-        this.user = null;
-        localStorage.removeItem('token');
-      }
-
-      private doCallbackLogicIfRequired() {
-        if (window.location.hash) {
-          console.log('start authorized callback');
-          this.oidcSecurityService.authorizedCallback();
         }
-      }
+      });
+  }
 
-      private setupWorkspaceReloadResponse(): void {
-        this.messagingService.subscribe(events.WORKSPACE_RELOAD_REQUEST, () => {
-          this.persistenceService.listFiles().then((root: WorkspaceElement) => {
-            this.messagingService.publish(events.WORKSPACE_RELOAD_RESPONSE, root);
-            this.updateValidationMarkers(root);
-          });
-        });
-      }
+  ngOnDestroy(): void {
+    this.userDataSubscription.unsubscribe();
+    this.isAuthorizedSubscription.unsubscribe();
+    this.oidcSecurityService.onModuleSetup.unsubscribe();
+  }
 
-      private updateValidationMarkers(root: WorkspaceElement): void {
-        this.getAllDocuments(root).then((rootWithFullTexts) => {
-          this.validationMarkerService.getMarkerSummary(rootWithFullTexts).then((summaries) =>
-            this.messagingService.publish(events.WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
-              { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos }}}
-            )))
-          );
-        });
-      }
+  login() {
+    console.log('start login');
+    this.oidcSecurityService.authorize();
+  }
 
-      private getAllDocuments(root: WorkspaceElement): Promise<any> {
-        if (root.children != null && root.children.length > 0) {
-          return root.children.reduce((previous, child) => previous.then(() => this.getAllDocuments(child)), Promise.resolve(root))
-            .then(() => root);
-        } else {
-          return this.documentService.loadDocument(root.path).then((response) => root['fulltext'] = response.text(),
-            (error) => Promise.resolve(root));
-        }
-      }
+  refreshSession() {
+    console.log('start refreshSession');
+    this.oidcSecurityService.authorize();
+  }
+
+  logout() {
+    console.log('start logout');
+    this.messagingService.publish(NAVIGATION_CLOSE, null);
+    this.oidcSecurityService.logoff();
+    this.user = null;
+    localStorage.removeItem('token');
+  }
+
+  private doCallbackLogicIfRequired() {
+    if (window.location.hash) {
+      console.log('start authorized callback');
+      this.oidcSecurityService.authorizedCallback();
     }
+  }
+
+  private setupWorkspaceReloadResponse(): void {
+    this.messagingService.subscribe(events.WORKSPACE_RELOAD_REQUEST, () => {
+      this.persistenceService.listFiles().then((root: WorkspaceElement) => {
+        this.messagingService.publish(events.WORKSPACE_RELOAD_RESPONSE, root);
+        this.updateValidationMarkers(root);
+      });
+    });
+  }
+
+  private updateValidationMarkers(root: WorkspaceElement): void {
+    this.validationMarkerService.getAllMarkerSummaries(root).then((summaries) => {
+      console.log(JSON.stringify(summaries));
+      return this.messagingService.publish(events.WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
+        { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos } } }
+      )))
+    });
+  }
+
+  private getAllDocuments(root: WorkspaceElement): Promise<any> {
+    if (root.children != null && root.children.length > 0) {
+      return root.children.reduce((previous, child) => previous.then(() => this.getAllDocuments(child)), Promise.resolve(root))
+        .then(() => root);
+    } else {
+      return this.documentService.loadDocument(root.path).then((response) => root['fulltext'] = response.text(),
+        (error) => Promise.resolve(root));
+    }
+  }
+}

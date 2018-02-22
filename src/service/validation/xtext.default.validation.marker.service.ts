@@ -3,94 +3,61 @@ import { Headers } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
 import { WorkspaceElement } from '@testeditor/workspace-navigator';
-import { XtextDefaultValidationMarkerServiceConfig } from './xtext.default.validation.marker.service.config';
+import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
+import { ElementType } from '@testeditor/workspace-navigator';
 
-/**
- * This is a naive implementation using the REST endpoint for validation information
- * already provided by Xtext. This endpoint, however, provides more detailed information
- * on a per-file basis, and is therefore not well-suited to retrieve only a summary of
- * validation markers present on all files. This is a fallback that should be expected
- * to perform poorly.
-*/
 @Injectable()
 export class XtextDefaultValidationMarkerService extends ValidationMarkerService {
 
   private serviceUrl: string;
 
-  constructor(private http: AuthHttp, config: XtextDefaultValidationMarkerServiceConfig) {
+  constructor(private http: AuthHttp, config: XtextValidationMarkerServiceConfig) {
     super();
     this.serviceUrl = config.serviceUrl;
   }
 
-  getMarkerSummary(root: WorkspaceElement): Promise<ValidationSummary[]> {
-    if (root.children != null && root.children.length > 0) {
-      return root.children.reduce((accumulatorPromise: Promise<ValidationSummaryAccumulator>, child: WorkspaceElement) => {
-        return accumulatorPromise.then((accumulator) => {
-          return this.getMarkerSummary(child).then((childSummaries) => {
-            // console.log(`ValidationSummaries for "${child.path}" are: ${JSON.stringify(childSummaries)}`);
-            // console.log(`ValidationSummary of parent "${root.path}" is: ${JSON.stringify(accumulator.parentSummary)}`);
-            accumulator.summaries = accumulator.summaries.concat(childSummaries);
-            const childSummary = childSummaries.find((summary) => summary.path === child.path)
-            accumulator.parentSummary.errors += childSummary.errors
-            accumulator.parentSummary.warnings += childSummary.warnings
-            accumulator.parentSummary.infos += childSummary.infos
-            return accumulator;
-          });
-        });
-      }, Promise.resolve({
-        lastResponse: [],
-        summaries: [],
-        parentSummary: { path: root.path, errors: 0, warnings: 0, infos: 0 }
-      } as ValidationSummaryAccumulator)).then((accumulatedSummaries: ValidationSummaryAccumulator) =>
-        accumulatedSummaries.summaries.concat([accumulatedSummaries.parentSummary]));
-    } else {
-      return this.getMarkersForFile(root);
-    }
+  getAllMarkerSummaries(workspaceRoot: WorkspaceElement): Promise<ValidationSummary[]> {
+    return this.http.get(this.serviceUrl).toPromise().then(response => response.json(), reject => [])
+      .then((leafSummaries: ValidationSummary[]) => {
+        const summaryMap = this.mapSummariesByPath(leafSummaries);
+        this.recurseAndAggregateValidationSummaries(workspaceRoot, summaryMap);
+        return Array.from(summaryMap.values());
+      });
   }
 
-  private getMarkersForFile(root: WorkspaceElement): Promise<ValidationSummary[]> {
-    const httpOptions = {
-      headers: new Headers({
-        'Content-Type':  'application/x-www-form-urlencoded; charset=UTF-8'
-      })
-    };
-    const fulltext = encodeURIComponent(root['fulltext']).replace(/%20/g, '+');
-    return this.http.post(`${this.serviceUrl}/validate?resource=${encodeURIComponent(root.path)}`,
-      `fullText=${fulltext}`, httpOptions).toPromise().then((response) => {
-      try {
-        const validationResponse: ValidationServiceResponseType = response.json();
-        return [{
-          path: root.path,
-          errors: validationResponse.issues.filter(issue => issue.severity === Severity.ERROR).length,
-          warnings: validationResponse.issues.filter(issue => issue.severity === Severity.WARNING).length,
-          infos: validationResponse.issues.filter(issue => issue.severity === Severity.INFO).length,
-        }]
-      } catch (error) {
-        return this.logErrorAndAssumeDefault(root.path, error);
+  private mapSummariesByPath(summaries: ValidationSummary[]): Map<string, ValidationSummary> {
+    const leafSummaryMap = new Map<string, ValidationSummary>();
+    summaries.forEach((summary) => {
+      if (leafSummaryMap.has(summary.path)) {
+        const existingValidationSummary = leafSummaryMap.get(summary.path);
+        this.addToValidationSummary(existingValidationSummary, summary)
+        existingValidationSummary.errors += summary.errors;
+        existingValidationSummary.warnings += summary.warnings;
+        existingValidationSummary.infos += summary.infos;
+      } else {
+        leafSummaryMap.set(summary.path, summary);
       }
-    }, (rejected) => this.logErrorAndAssumeDefault(root.path, rejected));
+    });
+    return leafSummaryMap;
   }
 
-  private logErrorAndAssumeDefault(path: string, error: any): ValidationSummary[] {
-    console.log(`An error occurred while trying to retrieve validation markers for "${path}": ${error}`);
-    return [{path: path, errors: 0, warnings: 0, infos: 0}];
+  private recurseAndAggregateValidationSummaries(root: WorkspaceElement,
+      summaryMap: Map<string, ValidationSummary>): ValidationSummary {
+    if (root.type === ElementType.Folder && root.children != null && root.children.length > 0) {
+      summaryMap.set(root.path, root.children.reduce(
+        (parentSummary: ValidationSummary, child: WorkspaceElement) =>
+          this.addToValidationSummary(parentSummary, this.recurseAndAggregateValidationSummaries(child, summaryMap)),
+        { path: root.path, errors: 0, warnings: 0, infos: 0 } as ValidationSummary));
+    } else if (!summaryMap.has(root.path)) {
+      summaryMap.set(root.path, { path: root.path, errors: 0, warnings: 0, infos: 0 });
+    }
+    return summaryMap.get(root.path);
   }
 
-}
-
-enum Severity { ERROR = 'error', WARNING = 'warning', INFO = 'info'}
-
-interface ValidationServiceResponseType {
-  issues: {
-    severity: Severity
-  }[]
-}
-
-interface ValidationSummaryAccumulator {
-  summaries: ValidationSummary[],
-  parentSummary: ValidationSummary
-}
-
-function isValidationServiceResponseType(response: any): response is ValidationServiceResponseType {
-  return response != null && response.issues != null && response.issues.every((issue) => issue.severity != null);
+  private addToValidationSummary(accumulator: ValidationSummary, increment: ValidationSummary): ValidationSummary {
+    accumulator.errors += increment.errors;
+    accumulator.warnings += increment.warnings;
+    accumulator.infos += increment.infos;
+    return accumulator;
+  }
 }

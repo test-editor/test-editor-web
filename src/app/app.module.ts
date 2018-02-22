@@ -16,7 +16,7 @@ import * as constants from './config/app-config';
 import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
-import { XtextDefaultValidationMarkerServiceConfig } from 'service/validation/xtext.default.validation.marker.service.config';
+import { XtextValidationMarkerServiceConfig } from 'service/validation/xtext.validation.marker.service.config';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
@@ -25,8 +25,8 @@ const appRoutes: Routes = [
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp(new AuthConfig({
     tokenName: 'token',
-		tokenGetter: (() => sessionStorage.getItem('token'))
-	}), http, options);
+    tokenGetter: (() => sessionStorage.getItem('token'))
+  }), http, options);
 }
 
 @NgModule({
@@ -54,9 +54,9 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
       provide: AuthHttp,
       useFactory: authHttpServiceFactory,
       deps: [Http, RequestOptions]
-    }, 
+    },
     { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
-    { provide: XtextDefaultValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.xtextService }},
+    { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
   ],
   bootstrap: [AppComponent]
 })

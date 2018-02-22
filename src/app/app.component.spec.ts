@@ -11,6 +11,7 @@ import { Routes, RouterModule } from '@angular/router'
 import { WorkspaceNavigatorModule, PersistenceService } from '@testeditor/workspace-navigator';
 import { mock, instance } from 'ts-mockito/lib/ts-mockito';
 import { ValidationMarkerService } from '../service/validation/validation.marker.service';
+import { DocumentService } from 'service/document/document.service';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
@@ -19,6 +20,7 @@ const appRoutes: Routes = [
 describe('AppComponent', () => {
   const mockPersistenceService = mock(PersistenceService);
   const mockValidationMarkerService = mock(ValidationMarkerService);
+  const mockDocumentService = mock(DocumentService);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -35,7 +37,8 @@ describe('AppComponent', () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: PersistenceService, useValue: instance(mockPersistenceService)},
-        { provide: ValidationMarkerService, useValue: instance(mockValidationMarkerService)}
+        { provide: ValidationMarkerService, useValue: instance(mockValidationMarkerService)},
+        { provide: DocumentService, useValue: instance(mockDocumentService)}
       ]
     }).compileComponents();
   }));

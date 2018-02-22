@@ -2,17 +2,17 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpModule, XHRBackend, RequestMethod, Response, ResponseOptions } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 import { AuthConfig, AuthHttp } from 'angular2-jwt';
-import { XtextDefaultValidationMarkerServiceConfig } from './xtext.default.validation.marker.service.config';
+import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { mock } from 'ts-mockito/lib/ts-mockito';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
-import { XtextDefaultValidationMarkerService } from './xtext.default.validation.marker.service';
+import { XtextNaiveValidationMarkerService } from './xtext.naive.validation.marker.service';
 import { async } from '@angular/core/testing';
 
 describe('ValidationMarkerService', () => {
 
   beforeEach(() => {
-    const serviceConfig: XtextDefaultValidationMarkerServiceConfig = {
+    const serviceConfig: XtextValidationMarkerServiceConfig = {
       serviceUrl: ''
     }
 
@@ -24,8 +24,8 @@ describe('ValidationMarkerService', () => {
       providers: [
         { provide: XHRBackend, useClass: MockBackend},
         { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => authToken}) },
-        { provide: XtextDefaultValidationMarkerServiceConfig, useValue: serviceConfig },
-        { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService},
+        { provide: XtextValidationMarkerServiceConfig, useValue: serviceConfig },
+        { provide: ValidationMarkerService, useClass: XtextNaiveValidationMarkerService},
         AuthHttp
       ]
     });
@@ -43,7 +43,7 @@ describe('ValidationMarkerService', () => {
     })
 
     // when
-    validationMarkerService.getMarkerSummary(sampleFile).then((summaries: ValidationSummary[]) => {
+    validationMarkerService.getAllMarkerSummaries(sampleFile).then((summaries: ValidationSummary[]) => {
 
     // then
     expect(summaries.length).toEqual(1);
@@ -65,7 +65,7 @@ describe('ValidationMarkerService', () => {
     })
 
     // when
-    validationMarkerService.getMarkerSummary(root).then((summaries: ValidationSummary[]) => {
+    validationMarkerService.getAllMarkerSummaries(root).then((summaries: ValidationSummary[]) => {
 
     // then
     expect(summaries).toEqual(expectedValidationMarkersForSampleResponse);
@@ -89,7 +89,7 @@ describe('ValidationMarkerService', () => {
     })
 
     // when
-    validationMarkerService.getMarkerSummary(root).then((summaries: ValidationSummary[]) => {
+    validationMarkerService.getAllMarkerSummaries(root).then((summaries: ValidationSummary[]) => {
 
     // then
     expect(summaries.sort()).toEqual(expectedValdationMarkersWithErrors.sort());
@@ -110,7 +110,7 @@ describe('ValidationMarkerService', () => {
       })
 
       // when
-      validationMarkerService.getMarkerSummary(sampleFile).then((summaries: ValidationSummary[]) => {
+      validationMarkerService.getAllMarkerSummaries(sampleFile).then((summaries: ValidationSummary[]) => {
 
       // then
         expect(summaries.length).toEqual(1);
