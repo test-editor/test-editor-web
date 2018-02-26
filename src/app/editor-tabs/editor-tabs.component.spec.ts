@@ -1,5 +1,5 @@
 import { DebugElement, Component } from '@angular/core';
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { mock, when, anything, instance, anyString } from 'ts-mockito';
 
@@ -49,7 +49,7 @@ describe('EditorTabsComponent', () => {
   };
 
   function getActiveItem(): DebugElement {
-    return tabset.query(By.css('.nav-item.active'));
+    return tabset.query(By.css('.nav-item.active > a > span'));
   };
 
   beforeEach(async(() => {
@@ -102,8 +102,8 @@ describe('EditorTabsComponent', () => {
     // then
     expect(getNavItems().length).toBe(1);
 
-    let activeItem = getActiveItem();
-    expect(activeItem.nativeElement.innerText).toBe("foo");
+    const activeItem = getActiveItem();
+    expect(activeItem.nativeElement.innerText).toBe('foo');
   });
 
   it('opens second tab on second event', () => {
@@ -145,8 +145,8 @@ describe('EditorTabsComponent', () => {
     // given
     openFooAndBar();
     editorActiveCallback.calls.reset();
-    let navItems = tabset.queryAll(By.css('.nav-item > a'));
-    let foo = navItems.find(item => item.nativeElement.innerText === "foo")
+    const navItems = tabset.queryAll(By.css('.nav-item > a > span'));
+    const foo = navItems.find(item => item.nativeElement.innerText === 'foo')
 
     // when
     foo.nativeElement.click();
@@ -161,9 +161,9 @@ describe('EditorTabsComponent', () => {
     // given
     openFooAndBar();
     editorActiveCallback.calls.reset();
-    let navItems = tabset.queryAll(By.css('.nav-item > a'));
-    let bar = navItems.find(item => item.nativeElement.innerText === "bar")
-    let closeIcon = bar.query(By.css('span.glyphicon'));
+    const navItems = tabset.queryAll(By.css('.nav-link'));
+    const bar = navItems.find(item => item.query(By.css('span')).nativeElement.innerText === 'bar')
+    const closeIcon = bar.query(By.css('.bs-remove-tab'));
 
     // when
     closeIcon.nativeElement.click();
