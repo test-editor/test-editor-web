@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+
+.test-success {
+  color: #23d800;
+}
+
+.test-failure {
+  color: #d82300
+}
+
+.validation-errors {
+  color: #d82300
+}
+
+.validation-warnings {
+  color: #ffcc00
+}
+
+.validation-infos {
+  color: #3498DB
+}

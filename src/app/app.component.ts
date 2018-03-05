@@ -4,6 +4,11 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 
+import * as events from '@testeditor/workspace-navigator';
+import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
+import { ValidationMarkerService } from 'service/validation/validation.marker.service';
+import { DocumentService } from 'service/document/document.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -20,7 +25,9 @@ export class AppComponent {
   user: String;
 
 
-  constructor(private messagingService: MessagingService, public oidcSecurityService: OidcSecurityService) {
+  constructor(private messagingService: MessagingService, public oidcSecurityService: OidcSecurityService,
+    private persistenceService: PersistenceService, private validationMarkerService: ValidationMarkerService,
+    private documentService: DocumentService) {
     if (isDevMode()) {
       // log all received events in development mode
       messagingService.subscribeAll((message: Message) => {
@@ -34,6 +41,7 @@ export class AppComponent {
         this.doCallbackLogicIfRequired();
       });
     }
+    this.setupWorkspaceReloadResponse();
   }
 
   ngOnInit() {
@@ -89,4 +97,21 @@ export class AppComponent {
     }
   }
 
+  private setupWorkspaceReloadResponse(): void {
+    this.messagingService.subscribe(events.WORKSPACE_RELOAD_REQUEST, () => {
+      this.persistenceService.listFiles().then((root: WorkspaceElement) => {
+        this.messagingService.publish(events.WORKSPACE_RELOAD_RESPONSE, root);
+        this.updateValidationMarkers(root);
+      });
+    });
+  }
+
+  private updateValidationMarkers(root: WorkspaceElement): void {
+    this.validationMarkerService.getAllMarkerSummaries(root).then((summaries) => {
+      console.log(JSON.stringify(summaries));
+      return this.messagingService.publish(events.WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
+        { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos } } }
+      )))
+    });
+  }
 }

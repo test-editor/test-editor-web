@@ -13,6 +13,10 @@ import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Routes, RouterModule } from '@angular/router'
 
 import * as constants from './config/app-config';
+import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
+import { ValidationMarkerService } from 'service/validation/validation.marker.service';
+import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
+import { XtextValidationMarkerServiceConfig } from 'service/validation/xtext.validation.marker.service.config';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
@@ -21,8 +25,8 @@ const appRoutes: Routes = [
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp(new AuthConfig({
     tokenName: 'token',
-		tokenGetter: (() => sessionStorage.getItem('token'))
-	}), http, options);
+    tokenGetter: (() => sessionStorage.getItem('token'))
+  }), http, options);
 }
 
 @NgModule({
@@ -39,7 +43,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService
     }, {
       testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService
-    }),
+    }, testEditorIndicatorFieldSetup),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     })
@@ -50,7 +54,9 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
       provide: AuthHttp,
       useFactory: authHttpServiceFactory,
       deps: [Http, RequestOptions]
-    }
+    },
+    { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
+    { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
   ],
   bootstrap: [AppComponent]
 })
