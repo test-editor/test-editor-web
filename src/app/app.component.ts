@@ -114,14 +114,4 @@ export class AppComponent {
       )))
     });
   }
-
-  private getAllDocuments(root: WorkspaceElement): Promise<any> {
-    if (root.children != null && root.children.length > 0) {
-      return root.children.reduce((previous, child) => previous.then(() => this.getAllDocuments(child)), Promise.resolve(root))
-        .then(() => root);
-    } else {
-      return this.documentService.loadDocument(root.path).then((response) => root['fulltext'] = response.text(),
-        (error) => Promise.resolve(root));
-    }
-  }
 }

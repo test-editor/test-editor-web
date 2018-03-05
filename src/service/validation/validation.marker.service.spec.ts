@@ -16,14 +16,13 @@ describe('ValidationMarkerService', () => {
       serviceUrl: ''
     }
 
-    // dummy jwt token
-    const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
+    const dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
 
     TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [
         { provide: XHRBackend, useClass: MockBackend},
-        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => authToken}) },
+        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => dummyAuthToken}) },
         { provide: XtextValidationMarkerServiceConfig, useValue: serviceConfig },
         { provide: ValidationMarkerService, useClass: XtextNaiveValidationMarkerService},
         AuthHttp
@@ -43,15 +42,16 @@ describe('ValidationMarkerService', () => {
     })
 
     // when
-    validationMarkerService.getAllMarkerSummaries(sampleFile).then((summaries: ValidationSummary[]) => {
+    validationMarkerService.getAllMarkerSummaries(sampleFile)
 
     // then
-    expect(summaries.length).toEqual(1);
-    expect(summaries[0].path).toEqual(sampleFile.path);
-    expect(summaries[0].errors).toEqual(3);
-    expect(summaries[0].warnings).toEqual(2);
-    expect(summaries[0].infos).toEqual(6);
-  });
+    .then((summaries: ValidationSummary[]) => {
+      expect(summaries.length).toEqual(1);
+      expect(summaries[0].path).toEqual(sampleFile.path);
+      expect(summaries[0].errors).toEqual(3);
+      expect(summaries[0].warnings).toEqual(2);
+      expect(summaries[0].infos).toEqual(6);
+    });
   })));
 
   it('retrieves markers for multiple (nested) files and folders', async(inject([XHRBackend, ValidationMarkerService],
@@ -65,12 +65,12 @@ describe('ValidationMarkerService', () => {
     })
 
     // when
-    validationMarkerService.getAllMarkerSummaries(root).then((summaries: ValidationSummary[]) => {
+    validationMarkerService.getAllMarkerSummaries(root)
 
     // then
-    expect(summaries).toEqual(expectedValidationMarkersForSampleResponse);
-    console.log(JSON.stringify(summaries));
-  });
+    .then((summaries: ValidationSummary[]) => {
+      expect(summaries).toEqual(expectedValidationMarkersForSampleResponse);
+    });
   })));
 
   it('handles errors in responses gracefully', async(inject([XHRBackend, ValidationMarkerService],
@@ -86,14 +86,14 @@ describe('ValidationMarkerService', () => {
       } else {
         connection.mockError(new Error('Error while requesting validation markers'));
       }
-    })
+    });
 
     // when
     validationMarkerService.getAllMarkerSummaries(root).then((summaries: ValidationSummary[]) => {
 
     // then
+    expect(connectionCounter).toEqual(numberOfWorkspaceLeafs);
     expect(summaries.sort()).toEqual(expectedValdationMarkersWithErrors.sort());
-    console.log(JSON.stringify(summaries));
   });
   })));
 
@@ -187,6 +187,8 @@ describe('ValidationMarkerService', () => {
     type: ElementType.Folder,
     children: [firstChild, middleChild, lastChild],
   };
+
+  const numberOfWorkspaceLeafs = 4;
 
   const expectedValidationMarkersForSampleResponse = [
     {path: firstChild.path, errors: 3, warnings: 2, infos: 6},
