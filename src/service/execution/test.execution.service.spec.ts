@@ -12,8 +12,6 @@ import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 
 export const HTTP_STATUS_OK = 200;
 export const HTTP_STATUS_CREATED = 201;
-export const HTTP_STATUS_ERROR = 500;
-
 
 describe('TestExecutionService', () => {
   let serviceConfig: TestExecutionServiceConfig;
@@ -112,9 +110,9 @@ describe('TestExecutionService', () => {
 
           connection.mockRespond(new Response(new ResponseOptions({
             status: HTTP_STATUS_OK,
-            body: '[{"path":"src/test/java/failures/failedTest.tcl","status":"FAILED"},\
-{"path":"runningTest.tcl","status":"RUNNING"},\
-{"path":"successfulTest.tcl","status":"SUCCESS"}]'
+            body: '[ { "path": "src/test/java/failures/failedTest.tcl", "status": "FAILED"},\
+                     { "path": "runningTest.tcl",                       "status": "RUNNING"},\
+                     { "path": "successfulTest.tcl",                    "status": "SUCCESS"}]'
           })));
         }
       );
