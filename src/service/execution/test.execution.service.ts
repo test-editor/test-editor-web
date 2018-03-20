@@ -14,7 +14,7 @@ export interface TestExecutionStatus {
 export abstract class TestExecutionService {
   abstract execute(path: string): Promise<Response>;
   abstract getStatus(workspaceElement: WorkspaceElement): Promise<TestExecutionStatus>;
-  abstract getAllStatus(workspaceRoot: WorkspaceElement): Promise<TestExecutionStatus[]>;
+  abstract getAllStatus(): Promise<TestExecutionStatus[]>;
 
 }
 
@@ -42,7 +42,7 @@ export class DefaultTestExecutionService extends TestExecutionService {
     });
   }
 
-  getAllStatus(workspaceRoot: WorkspaceElement): Promise<TestExecutionStatus[]> {
+  getAllStatus(): Promise<TestExecutionStatus[]> {
     return this.http.get(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(response => {
       let status: TestExecutionStatus[] = response.json();
       return status;

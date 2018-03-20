@@ -120,7 +120,7 @@ describe('TestExecutionService', () => {
       );
 
       // when
-      executionService.getAllStatus(rootElement)
+      executionService.getAllStatus()
 
       // then
       .then(statusUpdates => {
