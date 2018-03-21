@@ -19,4 +19,4 @@ install:
   - yarn install
 script:
   - npm run build
-  - npm run testCIChrome
+  - npm run testCIFirefox
