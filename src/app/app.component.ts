@@ -8,6 +8,7 @@ import * as events from '@testeditor/workspace-navigator';
 import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { DocumentService } from 'service/document/document.service';
+import { TestExecutionService } from 'service/execution/test.execution.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,9 @@ import { DocumentService } from 'service/document/document.service';
 
 export class AppComponent {
 
+  TEST_EXECUTE_REQUEST = 'test.execute.request'; // TODO: copied from workspace navigator, please delete (asap)
+  TEST_EXECUTION_STARTED = 'test.execution.started'; // TODO: copied from workspace navigator, please delete (asap)
+
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
@@ -25,9 +29,12 @@ export class AppComponent {
   user: String;
 
 
-  constructor(private messagingService: MessagingService, public oidcSecurityService: OidcSecurityService,
-    private persistenceService: PersistenceService, private validationMarkerService: ValidationMarkerService,
-    private documentService: DocumentService) {
+  constructor(private messagingService: MessagingService,
+              public oidcSecurityService: OidcSecurityService,
+              private persistenceService: PersistenceService,
+              private validationMarkerService: ValidationMarkerService,
+              private documentService: DocumentService,
+              private testExecutionService: TestExecutionService) {
     if (isDevMode()) {
       // log all received events in development mode
       messagingService.subscribeAll((message: Message) => {
@@ -42,6 +49,7 @@ export class AppComponent {
       });
     }
     this.setupWorkspaceReloadResponse();
+    this.setupTestExecutionListener();
   }
 
   ngOnInit() {
@@ -114,4 +122,16 @@ export class AppComponent {
       )))
     });
   }
+
+  /**
+   * listen to test execution request events and start the respective test, sending an event that test execution was started
+   */
+  private setupTestExecutionListener() {
+    this.messagingService.subscribe(/*events.*/this.TEST_EXECUTE_REQUEST, (payload) => {
+      this.testExecutionService.execute(payload).then((response) => {
+        this.messagingService.publish(/*events.*/this.TEST_EXECUTION_STARTED, response);
+      });
+    });
+  }
+
 }
