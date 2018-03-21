@@ -1,4 +1,5 @@
-import { ElementType, ElementState, IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
+import { ElementType, IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
+import { ElementState } from '../../service/execution/element.state';
 
 /**
  * Note: the Angular AOT compiler does not support function expressions in decorators,
