@@ -51,7 +51,7 @@ export function isTclFile(element: WorkspaceElementInfo): boolean {
 }
 
 export function testIsRunning(marker: any): boolean {
-  return marker.testStatus === ElementState.Running;
+  return marker.testStatus.status === ElementState.Running;
 }
 
 export function testHasSucceeded(marker: any): boolean {

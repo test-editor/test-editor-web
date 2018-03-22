@@ -1,4 +1,4 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { TestBed, async, fakeAsync, ComponentFixture, tick } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 
@@ -68,25 +68,50 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('test-editor-web');
   }));
 
-  it('should listen to test execution events, start test in the test execution backend and send a test execution started event', async(() => {
+  it('should listen to test execution events, start test in the test execution backend and send a test execution started event', fakeAsync(() => {
     // given
     when(mockTestExecutionService.execute('some/path/to/test.tcl'))
       .thenReturn(Promise.resolve(new Response(new BaseResponseOptions().merge({ body: 'some/path/to/test_tcl_log_file.log' }))));
-    let callback = jasmine.createSpy('callback');
-    messagingService.subscribe('test.execution.started', callback);
+    let testExecStartedCallback = jasmine.createSpy('testExecStartedCallback');
+    messagingService.subscribe('test.execution.started', testExecStartedCallback);
+    let markerObserverCallback = jasmine.createSpy('markerObserverCallback');
+    messagingService.subscribe('workspace.marker.observe', markerObserverCallback);
 
     // when
     messagingService.publish('test.execute.request', 'some/path/to/test.tcl');
+    tick();
 
     // then
-    fixture.whenStable().then(() => {
-      expect(callback).toHaveBeenCalledTimes(1);
-      expect(callback).toHaveBeenCalledWith(jasmine.objectContaining({
-        status: 200,
-        _body: 'some/path/to/test_tcl_log_file.log'
-      }));
-    })
+    expect(testExecStartedCallback).toHaveBeenCalledTimes(1);
+    expect(testExecStartedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+      path: 'some/path/to/test.tcl',
+      message: 'Execution of "\${}" has been started.'
+    }));
+    expect(markerObserverCallback).toHaveBeenCalledTimes(1);
+    expect(markerObserverCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+      path: 'some/path/to/test.tcl',
+      field: 'testStatusField'
+    }));
 
+  }));
+
+  it('should listen to test execution events, failure to start tests should publish test execution start failure', fakeAsync(() => {
+    // given
+    when(mockTestExecutionService.execute('some/path/to/test.tcl')).thenReturn(Promise.reject('some reason'));
+    let testExecFailedCallback = jasmine.createSpy('testExecFailedCallback');
+    messagingService.subscribe('test.execution.start.failed', testExecFailedCallback);
+
+    // when
+    messagingService.publish('test.execute.request', 'some/path/to/test.tcl');
+    tick();
+
+    // then
+    expect(testExecFailedCallback).toHaveBeenCalledTimes(1);
+    expect(testExecFailedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+      path: 'some/path/to/test.tcl',
+      reason: 'some reason',
+      message: 'The test "\${}" could not be started.'
+    }));
   }));
 
 });

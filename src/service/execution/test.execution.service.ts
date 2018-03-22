@@ -8,12 +8,12 @@ import { ElementState } from './element.state';
 
 export interface TestExecutionStatus {
   path: string,
-  status: string
+  status: ElementState
 }
 
 export abstract class TestExecutionService {
   abstract execute(path: string): Promise<Response>;
-  abstract getStatus(workspaceElement: WorkspaceElement): Promise<TestExecutionStatus>;
+  abstract getStatus(path: string): Promise<TestExecutionStatus>;
   abstract getAllStatus(): Promise<TestExecutionStatus[]>;
 
 }
@@ -35,16 +35,17 @@ export class DefaultTestExecutionService extends TestExecutionService {
     return this.http.post(this.getURL(path, DefaultTestExecutionService.executeURLPath), '').toPromise();
   }
 
-  getStatus(workspaceElement: WorkspaceElement): Promise<TestExecutionStatus> {
-    return this.http.get(this.getURL(workspaceElement.path, DefaultTestExecutionService.statusURLPath) + '&wait=true').toPromise().then(response => {
-      let status: TestExecutionStatus = { path: workspaceElement.path, status: response.text() };
+  getStatus(path: string): Promise<TestExecutionStatus> {
+    return this.http.get(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true').toPromise().then(response => {
+      let status: TestExecutionStatus = { path: path, status: this.toElementState(response.text()) };
       return status;
     });
   }
 
   getAllStatus(): Promise<TestExecutionStatus[]> {
     return this.http.get(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(response => {
-      let status: TestExecutionStatus[] = response.json();
+      let status: any[] = response.json();
+      status.forEach((value) => { value.status = this.toElementState(value.status) })
       return status;
     });
   }
@@ -52,6 +53,16 @@ export class DefaultTestExecutionService extends TestExecutionService {
   private getURL(workspaceElementPath: string, urlPath: string = ''): string {
     let encodedPath = workspaceElementPath.split('/').map(encodeURIComponent).join('/');
     return `${this.serviceUrl}${urlPath}?resource=${encodedPath}`;
+  }
+
+  private toElementState(state: string): ElementState {
+    switch (state) {
+      case 'RUNNING': return ElementState.Running;
+      case 'FAILED': return ElementState.LastRunFailed;
+      case 'SUCCESS': return ElementState.LastRunSuccessful;
+      case 'IDLE': return ElementState.Idle;
+      default: return ElementState.Idle;
+    }
   }
 
 }

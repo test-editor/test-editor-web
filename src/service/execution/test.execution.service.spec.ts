@@ -9,6 +9,7 @@ import { inject } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { fakeAsync } from '@angular/core/testing';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
+import { ElementState } from './element.state';
 
 export const HTTP_STATUS_OK = 200;
 export const HTTP_STATUS_CREATED = 201;
@@ -19,14 +20,13 @@ describe('TestExecutionService', () => {
   beforeEach(() => {
     serviceConfig = new TestExecutionServiceConfig();
     serviceConfig.testExecutionServiceUrl = 'http://localhost:9080/tests';
-    // dummy jwt token
-    let authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
+    let dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
 
     TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [
         { provide: XHRBackend, useClass: MockBackend},
-        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => authToken}) },
+        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => dummyAuthToken}) },
         { provide: TestExecutionService, useClass: DefaultTestExecutionService },
         { provide: TestExecutionServiceConfig, useValue: serviceConfig },
         AuthHttp
@@ -60,12 +60,6 @@ describe('TestExecutionService', () => {
     (mockBackend: MockBackend, executionService: TestExecutionService) => {
     // given
     let tclFilePath = 'path/to/file.tcl';
-    const tclWorkspaceElement: WorkspaceElement = {
-      name: 'file.tcl',
-      path: tclFilePath,
-      type: ElementType.File,
-      children: []
-    };
     mockBackend.connections.subscribe(
       (connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Get);
@@ -85,24 +79,18 @@ describe('TestExecutionService', () => {
     );
 
     // when
-    executionService.getStatus(tclWorkspaceElement)
+    executionService.getStatus(tclFilePath)
 
     // then
     .then(testExecutionStatus => {
       expect(testExecutionStatus.path).toBe(tclFilePath);
-      expect(testExecutionStatus.status).toBe('IDLE');
+      expect(testExecutionStatus.status).toBe(ElementState.Idle);
     });
   })));
 
-  it('Translates server response to "statusAll" request to properly typed map', fakeAsync(inject([XHRBackend, TestExecutionService],
+  it('Translates server response to "statusAll" request', fakeAsync(inject([XHRBackend, TestExecutionService],
     (mockBackend: MockBackend, executionService: TestExecutionService) => {
       // given
-      const rootElement: WorkspaceElement = {
-        name: 'file.tcl',
-        path: 'src/test/java/file.tcl',
-        type: ElementType.File,
-        children: []
-      };
       mockBackend.connections.subscribe(
         (connection: MockConnection) => {
           expect(connection.request.method).toBe(RequestMethod.Get);
@@ -123,12 +111,9 @@ describe('TestExecutionService', () => {
       // then
       .then(statusUpdates => {
         expect(statusUpdates.length).toEqual(3);
-        expect(statusUpdates[0].path).toEqual('src/test/java/failures/failedTest.tcl');
-        expect(statusUpdates[0].status).toEqual('FAILED');
-        expect(statusUpdates[1].path).toEqual('runningTest.tcl');
-        expect(statusUpdates[1].status).toEqual('RUNNING');
-        expect(statusUpdates[2].path).toEqual('successfulTest.tcl');
-        expect(statusUpdates[2].status).toEqual('SUCCESS');
+        expect(statusUpdates[0]).toEqual({ path: 'src/test/java/failures/failedTest.tcl', status: ElementState.LastRunFailed });
+        expect(statusUpdates[1]).toEqual({ path: 'runningTest.tcl', status: ElementState.Running });
+        expect(statusUpdates[2]).toEqual({ path: 'successfulTest.tcl', status: ElementState.LastRunSuccessful });
       });
     })));
 });
