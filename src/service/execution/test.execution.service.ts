@@ -26,9 +26,9 @@ export class DefaultTestExecutionService extends TestExecutionService {
   private static readonly statusAllURLPath = '/status/all';
   private serviceUrl: string;
 
-  constructor(private http: AuthHttp, config: TestExecutionServiceConfig) {
+  constructor(private http: AuthHttp, private config: TestExecutionServiceConfig) {
     super();
-    this.serviceUrl = config.testExecutionServiceUrl;
+    this.serviceUrl = config.serviceUrl;
   }
 
   execute(path: string): Promise<Response> {

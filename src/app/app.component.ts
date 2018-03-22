@@ -153,7 +153,7 @@ export class AppComponent {
   private testExecutionStatusObserver(path: string): MarkerObserver<TestExecutionStatus> {
     return {
       path: path,
-      field: 'testStatusField',
+      field: 'testStatus',
       observe: () => this.testExecutionService.getStatus(path),
       stopOn: (value) => value.status !== ElementState.Running
     }

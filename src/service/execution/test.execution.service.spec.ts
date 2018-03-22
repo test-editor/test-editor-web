@@ -19,7 +19,7 @@ describe('TestExecutionService', () => {
 
   beforeEach(() => {
     serviceConfig = new TestExecutionServiceConfig();
-    serviceConfig.testExecutionServiceUrl = 'http://localhost:9080/tests';
+    serviceConfig.serviceUrl = 'http://localhost:9080/tests';
     let dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
 
     TestBed.configureTestingModule({
@@ -41,7 +41,7 @@ describe('TestExecutionService', () => {
     mockBackend.connections.subscribe(
       (connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Post);
-        expect(connection.request.url).toBe(serviceConfig.testExecutionServiceUrl + '/execute?resource=path/to/file%3F.tcl');
+        expect(connection.request.url).toBe(serviceConfig.serviceUrl + '/execute?resource=path/to/file%3F.tcl');
 
         connection.mockRespond(new Response( new ResponseOptions({status: HTTP_STATUS_CREATED})));
       }
@@ -63,7 +63,7 @@ describe('TestExecutionService', () => {
     mockBackend.connections.subscribe(
       (connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Get);
-        let expectedURL = new URL(serviceConfig.testExecutionServiceUrl);
+        let expectedURL = new URL(serviceConfig.serviceUrl);
         let actualURL = new URL(connection.request.url);
         expect(actualURL.protocol).toBe(expectedURL.protocol);
         expect(actualURL.host).toBe(expectedURL.host);
@@ -94,7 +94,7 @@ describe('TestExecutionService', () => {
       mockBackend.connections.subscribe(
         (connection: MockConnection) => {
           expect(connection.request.method).toBe(RequestMethod.Get);
-          expect(connection.request.url).toBe(serviceConfig.testExecutionServiceUrl + '/status/all');
+          expect(connection.request.url).toBe(serviceConfig.serviceUrl + '/status/all');
 
           connection.mockRespond(new Response(new ResponseOptions({
             status: HTTP_STATUS_OK,

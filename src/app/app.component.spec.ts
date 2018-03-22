@@ -90,7 +90,7 @@ describe('AppComponent', () => {
     expect(markerObserverCallback).toHaveBeenCalledTimes(1);
     expect(markerObserverCallback).toHaveBeenCalledWith(jasmine.objectContaining({
       path: 'some/path/to/test.tcl',
-      field: 'testStatusField'
+      field: 'testStatus'
     }));
 
   }));

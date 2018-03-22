@@ -51,27 +51,27 @@ export function isTclFile(element: WorkspaceElementInfo): boolean {
 }
 
 export function testIsRunning(marker: any): boolean {
-  return marker.testStatus.status === ElementState.Running;
+  return marker && marker.testStatus && marker.testStatus.status === ElementState.Running;
 }
 
 export function testHasSucceeded(marker: any): boolean {
-  return marker.testStatus === ElementState.LastRunSuccessful;
+  return marker && marker.testStatus && marker.testStatus.status === ElementState.LastRunSuccessful;
 }
 
 export function testHasFailed(marker: any): boolean {
-  return marker.testStatus === ElementState.LastRunFailed;
+  return marker && marker.testStatus && marker.testStatus.status === ElementState.LastRunFailed;
 }
 
 export function runningLabel(marker: any): string {
-  return `Test "${marker.name}" is running`;
+  return `Test "${marker.testStatus.path}" is running`;
 }
 
 export function succeededLabel(marker: any): string {
-  return `Last run of test "${marker.name}" was successful`;
+  return `Last run of test "${marker.testStatus.path}" was successful`;
 }
 
 export function failedLabel(marker: any): string {
-  return `Last run of test "${marker.name}" has failed`;
+  return `Last run of test "${marker.testStatus.path}" has failed`;
 }
 
 
