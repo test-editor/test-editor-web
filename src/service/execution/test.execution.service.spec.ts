@@ -9,6 +9,7 @@ import { inject } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { fakeAsync } from '@angular/core/testing';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
+import { TestExecutionState } from './test.execution.state';
 
 export const HTTP_STATUS_OK = 200;
 export const HTTP_STATUS_CREATED = 201;
@@ -18,15 +19,14 @@ describe('TestExecutionService', () => {
 
   beforeEach(() => {
     serviceConfig = new TestExecutionServiceConfig();
-    serviceConfig.testExecutionServiceUrl = 'http://localhost:9080/tests';
-    // dummy jwt token
-    let authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
+    serviceConfig.serviceUrl = 'http://localhost:9080/tests';
+    let dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
 
     TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [
         { provide: XHRBackend, useClass: MockBackend},
-        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => authToken}) },
+        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => dummyAuthToken}) },
         { provide: TestExecutionService, useClass: DefaultTestExecutionService },
         { provide: TestExecutionServiceConfig, useValue: serviceConfig },
         AuthHttp
@@ -41,7 +41,7 @@ describe('TestExecutionService', () => {
     mockBackend.connections.subscribe(
       (connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Post);
-        expect(connection.request.url).toBe(serviceConfig.testExecutionServiceUrl + '/execute?resource=path/to/file%3F.tcl');
+        expect(connection.request.url).toBe(serviceConfig.serviceUrl + '/execute?resource=path/to/file%3F.tcl');
 
         connection.mockRespond(new Response( new ResponseOptions({status: HTTP_STATUS_CREATED})));
       }
@@ -60,16 +60,10 @@ describe('TestExecutionService', () => {
     (mockBackend: MockBackend, executionService: TestExecutionService) => {
     // given
     let tclFilePath = 'path/to/file.tcl';
-    const tclWorkspaceElement: WorkspaceElement = {
-      name: 'file.tcl',
-      path: tclFilePath,
-      type: ElementType.File,
-      children: []
-    };
     mockBackend.connections.subscribe(
       (connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Get);
-        let expectedURL = new URL(serviceConfig.testExecutionServiceUrl);
+        let expectedURL = new URL(serviceConfig.serviceUrl);
         let actualURL = new URL(connection.request.url);
         expect(actualURL.protocol).toBe(expectedURL.protocol);
         expect(actualURL.host).toBe(expectedURL.host);
@@ -85,28 +79,22 @@ describe('TestExecutionService', () => {
     );
 
     // when
-    executionService.getStatus(tclWorkspaceElement)
+    executionService.getStatus(tclFilePath)
 
     // then
     .then(testExecutionStatus => {
       expect(testExecutionStatus.path).toBe(tclFilePath);
-      expect(testExecutionStatus.status).toBe('IDLE');
+      expect(testExecutionStatus.status).toBe(TestExecutionState.Idle);
     });
   })));
 
-  it('Translates server response to "statusAll" request to properly typed map', fakeAsync(inject([XHRBackend, TestExecutionService],
+  it('Translates server response to "statusAll" request', fakeAsync(inject([XHRBackend, TestExecutionService],
     (mockBackend: MockBackend, executionService: TestExecutionService) => {
       // given
-      const rootElement: WorkspaceElement = {
-        name: 'file.tcl',
-        path: 'src/test/java/file.tcl',
-        type: ElementType.File,
-        children: []
-      };
       mockBackend.connections.subscribe(
         (connection: MockConnection) => {
           expect(connection.request.method).toBe(RequestMethod.Get);
-          expect(connection.request.url).toBe(serviceConfig.testExecutionServiceUrl + '/status/all');
+          expect(connection.request.url).toBe(serviceConfig.serviceUrl + '/status/all');
 
           connection.mockRespond(new Response(new ResponseOptions({
             status: HTTP_STATUS_OK,
@@ -123,12 +111,9 @@ describe('TestExecutionService', () => {
       // then
       .then(statusUpdates => {
         expect(statusUpdates.length).toEqual(3);
-        expect(statusUpdates[0].path).toEqual('src/test/java/failures/failedTest.tcl');
-        expect(statusUpdates[0].status).toEqual('FAILED');
-        expect(statusUpdates[1].path).toEqual('runningTest.tcl');
-        expect(statusUpdates[1].status).toEqual('RUNNING');
-        expect(statusUpdates[2].path).toEqual('successfulTest.tcl');
-        expect(statusUpdates[2].status).toEqual('SUCCESS');
+        expect(statusUpdates[0]).toEqual({ path: 'src/test/java/failures/failedTest.tcl', status: TestExecutionState.LastRunFailed });
+        expect(statusUpdates[1]).toEqual({ path: 'runningTest.tcl', status: TestExecutionState.Running });
+        expect(statusUpdates[2]).toEqual({ path: 'successfulTest.tcl', status: TestExecutionState.LastRunSuccessful });
       });
     })));
 });

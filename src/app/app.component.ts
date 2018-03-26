@@ -8,7 +8,9 @@ import * as events from '@testeditor/workspace-navigator';
 import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { DocumentService } from 'service/document/document.service';
-import { TestExecutionService } from 'service/execution/test.execution.service';
+import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
+import { MarkerObserver } from '@testeditor/workspace-navigator/src/common/markers/marker.observer';
+import { TestExecutionState } from '../service/execution/test.execution.state';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +22,7 @@ export class AppComponent {
 
   TEST_EXECUTE_REQUEST = 'test.execute.request'; // TODO: copied from workspace navigator, please delete (asap)
   TEST_EXECUTION_STARTED = 'test.execution.started'; // TODO: copied from workspace navigator, please delete (asap)
+  TEST_EXECUTION_START_FAILED = 'test.execution.start.failed'; // TODO: copied from workspace navigator, please delete (asap)
 
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
@@ -30,11 +33,11 @@ export class AppComponent {
 
 
   constructor(private messagingService: MessagingService,
-              public oidcSecurityService: OidcSecurityService,
-              private persistenceService: PersistenceService,
-              private validationMarkerService: ValidationMarkerService,
-              private documentService: DocumentService,
-              private testExecutionService: TestExecutionService) {
+    public oidcSecurityService: OidcSecurityService,
+    private persistenceService: PersistenceService,
+    private validationMarkerService: ValidationMarkerService,
+    private documentService: DocumentService,
+    private testExecutionService: TestExecutionService) {
     if (isDevMode()) {
       // log all received events in development mode
       messagingService.subscribeAll((message: Message) => {
@@ -124,14 +127,36 @@ export class AppComponent {
   }
 
   /**
-   * listen to test execution request events and start the respective test, sending an event that test execution was started
+   * listen to test execution request events and start the respective test,
+   * sending an event that test execution was started and installing an observer
+   * for the update to the test execution status
    */
-  private setupTestExecutionListener() {
-    this.messagingService.subscribe(/*events.*/this.TEST_EXECUTE_REQUEST, (payload) => {
+  private setupTestExecutionListener(): void {
+    this.messagingService.subscribe(this.TEST_EXECUTE_REQUEST, (payload) => {
       this.testExecutionService.execute(payload).then((response) => {
-        this.messagingService.publish(/*events.*/this.TEST_EXECUTION_STARTED, response);
+        this.messagingService.publish(this.TEST_EXECUTION_STARTED, {
+          path: payload,
+          response: response,
+          message: 'Execution of "\${}" has been started.'
+        })
+        this.messagingService.publish(events.WORKSPACE_MARKER_OBSERVE, this.testExecutionStatusObserver(payload));
+      }).catch((reason) => {
+        this.messagingService.publish(this.TEST_EXECUTION_START_FAILED, {
+          path: payload,
+          reason: reason,
+          message: 'The test "\${}" could not be started.'
+        });
       });
     });
+  }
+
+  private testExecutionStatusObserver(path: string): MarkerObserver<TestExecutionStatus> {
+    return {
+      path: path,
+      field: 'testStatus',
+      observe: () => this.testExecutionService.getStatus(path),
+      stopOn: (value) => value.status !== TestExecutionState.Running
+    }
   }
 
 }
