@@ -9,7 +9,7 @@ import { inject } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { fakeAsync } from '@angular/core/testing';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
-import { ElementState } from './element.state';
+import { TestExecutionState } from './test.execution.state';
 
 export const HTTP_STATUS_OK = 200;
 export const HTTP_STATUS_CREATED = 201;
@@ -84,7 +84,7 @@ describe('TestExecutionService', () => {
     // then
     .then(testExecutionStatus => {
       expect(testExecutionStatus.path).toBe(tclFilePath);
-      expect(testExecutionStatus.status).toBe(ElementState.Idle);
+      expect(testExecutionStatus.status).toBe(TestExecutionState.Idle);
     });
   })));
 
@@ -111,9 +111,9 @@ describe('TestExecutionService', () => {
       // then
       .then(statusUpdates => {
         expect(statusUpdates.length).toEqual(3);
-        expect(statusUpdates[0]).toEqual({ path: 'src/test/java/failures/failedTest.tcl', status: ElementState.LastRunFailed });
-        expect(statusUpdates[1]).toEqual({ path: 'runningTest.tcl', status: ElementState.Running });
-        expect(statusUpdates[2]).toEqual({ path: 'successfulTest.tcl', status: ElementState.LastRunSuccessful });
+        expect(statusUpdates[0]).toEqual({ path: 'src/test/java/failures/failedTest.tcl', status: TestExecutionState.LastRunFailed });
+        expect(statusUpdates[1]).toEqual({ path: 'runningTest.tcl', status: TestExecutionState.Running });
+        expect(statusUpdates[2]).toEqual({ path: 'successfulTest.tcl', status: TestExecutionState.LastRunSuccessful });
       });
     })));
 });

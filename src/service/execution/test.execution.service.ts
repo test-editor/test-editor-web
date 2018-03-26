@@ -4,11 +4,11 @@ import { TestExecutionServiceConfig } from './test.execution.service.config';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { WorkspaceElement } from '@testeditor/workspace-navigator';
-import { ElementState } from './element.state';
+import { TestExecutionState } from './test.execution.state';
 
 export interface TestExecutionStatus {
   path: string,
-  status: ElementState
+  status: TestExecutionState
 }
 
 export abstract class TestExecutionService {
@@ -37,7 +37,7 @@ export class DefaultTestExecutionService extends TestExecutionService {
 
   getStatus(path: string): Promise<TestExecutionStatus> {
     return this.http.get(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true').toPromise().then(response => {
-      let status: TestExecutionStatus = { path: path, status: this.toElementState(response.text()) };
+      let status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(response.text()) };
       return status;
     });
   }
@@ -45,7 +45,7 @@ export class DefaultTestExecutionService extends TestExecutionService {
   getAllStatus(): Promise<TestExecutionStatus[]> {
     return this.http.get(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(response => {
       let status: any[] = response.json();
-      status.forEach((value) => { value.status = this.toElementState(value.status) })
+      status.forEach((value) => { value.status = this.toTestExecutionState(value.status) })
       return status;
     });
   }
@@ -55,13 +55,13 @@ export class DefaultTestExecutionService extends TestExecutionService {
     return `${this.serviceUrl}${urlPath}?resource=${encodedPath}`;
   }
 
-  private toElementState(state: string): ElementState {
+  private toTestExecutionState(state: string): TestExecutionState {
     switch (state) {
-      case 'RUNNING': return ElementState.Running;
-      case 'FAILED': return ElementState.LastRunFailed;
-      case 'SUCCESS': return ElementState.LastRunSuccessful;
-      case 'IDLE': return ElementState.Idle;
-      default: return ElementState.Idle;
+      case 'RUNNING': return TestExecutionState.Running;
+      case 'FAILED': return TestExecutionState.LastRunFailed;
+      case 'SUCCESS': return TestExecutionState.LastRunSuccessful;
+      case 'IDLE': return TestExecutionState.Idle;
+      default: return TestExecutionState.Idle;
     }
   }
 

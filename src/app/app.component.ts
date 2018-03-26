@@ -10,7 +10,7 @@ import { ValidationMarkerService } from 'service/validation/validation.marker.se
 import { DocumentService } from 'service/document/document.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
 import { MarkerObserver } from '@testeditor/workspace-navigator/src/common/markers/marker.observer';
-import { ElementState } from '../service/execution/element.state';
+import { TestExecutionState } from '../service/execution/test.execution.state';
 
 @Component({
   selector: 'app-root',
@@ -155,7 +155,7 @@ export class AppComponent {
       path: path,
       field: 'testStatus',
       observe: () => this.testExecutionService.getStatus(path),
-      stopOn: (value) => value.status !== ElementState.Running
+      stopOn: (value) => value.status !== TestExecutionState.Running
     }
   }
 

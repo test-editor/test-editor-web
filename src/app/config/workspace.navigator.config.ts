@@ -1,5 +1,5 @@
 import { ElementType, IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
-import { ElementState } from '../../service/execution/element.state';
+import { TestExecutionState } from '../../service/execution/test.execution.state';
 
 /**
  * Note: the Angular AOT compiler does not support function expressions in decorators,
@@ -51,15 +51,15 @@ export function isTclFile(element: WorkspaceElementInfo): boolean {
 }
 
 export function testIsRunning(marker: any): boolean {
-  return marker && marker.testStatus && marker.testStatus.status === ElementState.Running;
+  return marker && marker.testStatus && marker.testStatus.status === TestExecutionState.Running;
 }
 
 export function testHasSucceeded(marker: any): boolean {
-  return marker && marker.testStatus && marker.testStatus.status === ElementState.LastRunSuccessful;
+  return marker && marker.testStatus && marker.testStatus.status === TestExecutionState.LastRunSuccessful;
 }
 
 export function testHasFailed(marker: any): boolean {
-  return marker && marker.testStatus && marker.testStatus.status === ElementState.LastRunFailed;
+  return marker && marker.testStatus && marker.testStatus.status === TestExecutionState.LastRunFailed;
 }
 
 export function runningLabel(marker: any): string {

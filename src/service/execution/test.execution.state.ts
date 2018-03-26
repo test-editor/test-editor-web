@@ -1,4 +1,4 @@
-export enum ElementState {
+export enum TestExecutionState {
   Idle = 0,
   LastRunSuccessful = 1,
   LastRunFailed = 2,
