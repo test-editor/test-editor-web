@@ -120,9 +120,11 @@ export class AceComponent implements AfterViewInit {
       this.documentService.saveDocument(this.path, editor.getValue()).then(res => {
         this.setDirty(false);
         editor.setReadOnly(false);
+        this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path })
       }).catch(reason => {
         console.log(reason);
         editor.setReadOnly(false);
+        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: reason })
       });
     });
   }
