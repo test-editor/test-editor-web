@@ -166,7 +166,7 @@ export class AppComponent {
     }
   }
 
-  private refreshIndex(): void {
+  refreshIndex(): void {
     this.indexService.refresh();
   }
 
