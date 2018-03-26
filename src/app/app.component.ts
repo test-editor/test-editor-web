@@ -2,11 +2,12 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { MessagingService, Message } from '@testeditor/messaging-service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
-import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
+import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 
 import * as events from '@testeditor/workspace-navigator';
 import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
+import { IndexService } from '../service/index/index.service';
 import { DocumentService } from 'service/document/document.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
 import { MarkerObserver } from '@testeditor/workspace-navigator/src/common/markers/marker.observer';
@@ -30,6 +31,7 @@ export class AppComponent {
   hasToken: boolean;
   userDataSubscription: Subscription;
   user: String;
+  fileSavedSubscription: Subscription;
 
 
   constructor(private messagingService: MessagingService,
@@ -37,6 +39,7 @@ export class AppComponent {
     private persistenceService: PersistenceService,
     private validationMarkerService: ValidationMarkerService,
     private documentService: DocumentService,
+    private indexService: IndexService,
     private testExecutionService: TestExecutionService) {
     if (isDevMode()) {
       // log all received events in development mode
@@ -60,6 +63,9 @@ export class AppComponent {
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
       });
+    this.fileSavedSubscription = this.messagingService.subscribe(EDITOR_SAVE_COMPLETED, () => {
+      this.refreshIndex();
+    });
     this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
       (userData: any) => {
         if (userData && userData != '') {
@@ -81,6 +87,7 @@ export class AppComponent {
     this.userDataSubscription.unsubscribe();
     this.isAuthorizedSubscription.unsubscribe();
     this.oidcSecurityService.onModuleSetup.unsubscribe();
+    this.fileSavedSubscription.unsubscribe();
   }
 
   login() {
@@ -157,6 +164,10 @@ export class AppComponent {
       observe: () => this.testExecutionService.getStatus(path),
       stopOn: (value) => value.status !== TestExecutionState.Running
     }
+  }
+
+  private refreshIndex(): void {
+    this.indexService.refresh();
   }
 
 }

@@ -19,6 +19,9 @@ import { XtextDefaultValidationMarkerService } from '../service/validation/xtext
 import { XtextValidationMarkerServiceConfig } from 'service/validation/xtext.validation.marker.service.config';
 import { TestExecutionService, DefaultTestExecutionService } from '../service/execution/test.execution.service';
 import { TestExecutionServiceConfig } from '../service/execution/test.execution.service.config';
+import { IndexService } from 'service/index/index.service';
+import { XtextIndexService } from '../service/index/xtext.index.service';
+import { XtextIndexServiceConfig } from 'service/index/xtext.index.service.config';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
@@ -61,6 +64,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     { provide: TestExecutionServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.testExecutionService } },
     { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
     { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
+    { provide: IndexService, useClass: XtextIndexService },
+    { provide: XtextIndexServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.indexService }},
   ],
   bootstrap: [AppComponent]
 })
