@@ -1,4 +1,5 @@
-import { ElementType, ElementState, IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
+import { ElementType, IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
+import { TestExecutionState } from '../../service/execution/test.execution.state';
 
 /**
  * Note: the Angular AOT compiler does not support function expressions in decorators,
@@ -50,27 +51,27 @@ export function isTclFile(element: WorkspaceElementInfo): boolean {
 }
 
 export function testIsRunning(marker: any): boolean {
-  return marker.testStatus === ElementState.Running;
+  return marker && marker.testStatus && marker.testStatus.status === TestExecutionState.Running;
 }
 
 export function testHasSucceeded(marker: any): boolean {
-  return marker.testStatus === ElementState.LastRunSuccessful;
+  return marker && marker.testStatus && marker.testStatus.status === TestExecutionState.LastRunSuccessful;
 }
 
 export function testHasFailed(marker: any): boolean {
-  return marker.testStatus === ElementState.LastRunFailed;
+  return marker && marker.testStatus && marker.testStatus.status === TestExecutionState.LastRunFailed;
 }
 
 export function runningLabel(marker: any): string {
-  return `Test "${marker.name}" is running`;
+  return `Test "${marker.testStatus.path}" is running`;
 }
 
 export function succeededLabel(marker: any): string {
-  return `Last run of test "${marker.name}" was successful`;
+  return `Last run of test "${marker.testStatus.path}" was successful`;
 }
 
 export function failedLabel(marker: any): string {
-  return `Last run of test "${marker.name}" has failed`;
+  return `Last run of test "${marker.testStatus.path}" has failed`;
 }
 
 

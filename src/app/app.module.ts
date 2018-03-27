@@ -17,6 +17,8 @@ import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.conf
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
 import { XtextValidationMarkerServiceConfig } from 'service/validation/xtext.validation.marker.service.config';
+import { TestExecutionService, DefaultTestExecutionService } from '../service/execution/test.execution.service';
+import { TestExecutionServiceConfig } from '../service/execution/test.execution.service.config';
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
@@ -42,7 +44,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     WorkspaceNavigatorModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService
     }, {
-      testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService
+      testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService // remove when refactoring complete
     }, testEditorIndicatorFieldSetup),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
@@ -55,6 +57,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
       useFactory: authHttpServiceFactory,
       deps: [Http, RequestOptions]
     },
+    { provide: TestExecutionService, useClass: DefaultTestExecutionService },
+    { provide: TestExecutionServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.testExecutionService } },
     { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
     { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
   ],
