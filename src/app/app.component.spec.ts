@@ -10,10 +10,14 @@ import { Response, BaseResponseOptions, HttpModule } from '@angular/http';
 import { Routes, RouterModule } from '@angular/router'
 import { WorkspaceNavigatorModule, PersistenceService } from '@testeditor/workspace-navigator';
 import { MessagingService } from '@testeditor/messaging-service';
-import { mock, when, instance, anyString } from 'ts-mockito';
+import { mock, when, instance } from 'ts-mockito';
 import { ValidationMarkerService } from '../service/validation/validation.marker.service';
+import { XtextIndexService } from '../service/index/xtext.index.service';
+import { IndexService } from '../service/index/index.service';
+
 import { TestExecutionService, DefaultTestExecutionService } from '../service/execution/test.execution.service';
 import { DocumentService } from 'service/document/document.service';
+import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -21,9 +25,10 @@ const appRoutes: Routes = [
 
 describe('AppComponent', () => {
   const mockPersistenceService = mock(PersistenceService);
-  const mockValidationMarkerService = mock(ValidationMarkerService);
+  const mockValidationMarkerService = mock(XtextDefaultValidationMarkerService); // cannot use ValidationMarkerService, since its method is abstract and cannot be spied on by ts-mockito (yet)
   const mockDocumentService = mock(DocumentService);
   const mockTestExecutionService = mock(DefaultTestExecutionService);
+  const mockIndexService=mock(XtextIndexService);  // cannot use IndexService, since its method is abstract and cannot be spied on by ts-mockito (yet)
   let messagingService: MessagingService;
   let app: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -35,8 +40,7 @@ describe('AppComponent', () => {
         RouterModule.forRoot(appRoutes),
         MessagingModule.forRoot(),
         HttpModule,
-        AuthModule.forRoot(),
-        MessagingModule.forRoot()
+        AuthModule.forRoot()
       ],
       declarations: [
         AppComponent
@@ -46,7 +50,8 @@ describe('AppComponent', () => {
         { provide: PersistenceService, useValue: instance(mockPersistenceService) },
         { provide: ValidationMarkerService, useValue: instance(mockValidationMarkerService) },
         { provide: DocumentService, useValue: instance(mockDocumentService) },
-        { provide: TestExecutionService, useValue: instance(mockTestExecutionService) }
+        { provide: TestExecutionService, useValue: instance(mockTestExecutionService) },
+        { provide: IndexService, useValue: instance(mockIndexService) }
       ]
     }).compileComponents();
   }));
@@ -112,6 +117,19 @@ describe('AppComponent', () => {
       reason: 'some reason',
       message: 'The test "\${}" could not be started.'
     }));
+  }));
+
+  it('should listen to editor save completed events, starting index refresh (which will then refresh long poll on validation markers)', fakeAsync(() => {
+    // given
+    when(mockIndexService.refresh()).thenReturn(Promise.resolve([ ]));
+    spyOn(app, "refreshIndex");
+
+    // when
+    messagingService.publish('editor.save.completed', '');
+    tick();
+
+    // then
+    expect(app.refreshIndex).toHaveBeenCalledTimes(1);
   }));
 
 });

@@ -2,11 +2,12 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { MessagingService, Message } from '@testeditor/messaging-service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
-import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
+import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 
 import * as events from '@testeditor/workspace-navigator';
 import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
+import { IndexService } from '../service/index/index.service';
 import { DocumentService } from 'service/document/document.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
 import { MarkerObserver } from '@testeditor/workspace-navigator/src/common/markers/marker.observer';
@@ -20,16 +21,13 @@ import { TestExecutionState } from '../service/execution/test.execution.state';
 
 export class AppComponent {
 
-  TEST_EXECUTE_REQUEST = 'test.execute.request'; // TODO: copied from workspace navigator, please delete (asap)
-  TEST_EXECUTION_STARTED = 'test.execution.started'; // TODO: copied from workspace navigator, please delete (asap)
-  TEST_EXECUTION_START_FAILED = 'test.execution.start.failed'; // TODO: copied from workspace navigator, please delete (asap)
-
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
   hasToken: boolean;
   userDataSubscription: Subscription;
   user: String;
+  fileSavedSubscription: Subscription;
 
 
   constructor(private messagingService: MessagingService,
@@ -37,6 +35,7 @@ export class AppComponent {
     private persistenceService: PersistenceService,
     private validationMarkerService: ValidationMarkerService,
     private documentService: DocumentService,
+    private indexService: IndexService,
     private testExecutionService: TestExecutionService) {
     if (isDevMode()) {
       // log all received events in development mode
@@ -60,6 +59,9 @@ export class AppComponent {
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
       });
+    this.fileSavedSubscription = this.messagingService.subscribe(EDITOR_SAVE_COMPLETED, () => {
+      this.refreshIndex();
+    });
     this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
       (userData: any) => {
         if (userData && userData != '') {
@@ -81,6 +83,7 @@ export class AppComponent {
     this.userDataSubscription.unsubscribe();
     this.isAuthorizedSubscription.unsubscribe();
     this.oidcSecurityService.onModuleSetup.unsubscribe();
+    this.fileSavedSubscription.unsubscribe();
   }
 
   login() {
@@ -132,16 +135,16 @@ export class AppComponent {
    * for the update to the test execution status
    */
   private setupTestExecutionListener(): void {
-    this.messagingService.subscribe(this.TEST_EXECUTE_REQUEST, (payload) => {
+    this.messagingService.subscribe(events.TEST_EXECUTE_REQUEST, (payload) => {
       this.testExecutionService.execute(payload).then((response) => {
-        this.messagingService.publish(this.TEST_EXECUTION_STARTED, {
+        this.messagingService.publish(events.TEST_EXECUTION_STARTED, {
           path: payload,
           response: response,
           message: 'Execution of "\${}" has been started.'
         })
         this.messagingService.publish(events.WORKSPACE_MARKER_OBSERVE, this.testExecutionStatusObserver(payload));
       }).catch((reason) => {
-        this.messagingService.publish(this.TEST_EXECUTION_START_FAILED, {
+        this.messagingService.publish(events.TEST_EXECUTION_START_FAILED, {
           path: payload,
           reason: reason,
           message: 'The test "\${}" could not be started.'
@@ -157,6 +160,10 @@ export class AppComponent {
       observe: () => this.testExecutionService.getStatus(path),
       stopOn: (value) => value.status !== TestExecutionState.Running
     }
+  }
+
+  refreshIndex(): void {
+    this.indexService.refresh();
   }
 
 }
