@@ -25,10 +25,10 @@ const appRoutes: Routes = [
 
 describe('AppComponent', () => {
   const mockPersistenceService = mock(PersistenceService);
-  const mockValidationMarkerService = mock(XtextDefaultValidationMarkerService); // cannot use ValidationMarkerService, since its method is abstract and cannot be spied on by jasmine
+  const mockValidationMarkerService = mock(XtextDefaultValidationMarkerService); // cannot use ValidationMarkerService, since its method is abstract and cannot be spied on by ts-mockito (yet)
   const mockDocumentService = mock(DocumentService);
   const mockTestExecutionService = mock(DefaultTestExecutionService);
-  const mockIndexService=mock(XtextIndexService); // cannot use IndexService, since its method is abstract and cannot be spied on by jasmine
+  const mockIndexService=mock(XtextIndexService);  // cannot use IndexService, since its method is abstract and cannot be spied on by ts-mockito (yet)
   let messagingService: MessagingService;
   let app: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -40,8 +40,7 @@ describe('AppComponent', () => {
         RouterModule.forRoot(appRoutes),
         MessagingModule.forRoot(),
         HttpModule,
-        AuthModule.forRoot(),
-        MessagingModule.forRoot()
+        AuthModule.forRoot()
       ],
       declarations: [
         AppComponent
