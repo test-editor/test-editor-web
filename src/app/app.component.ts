@@ -21,10 +21,6 @@ import { TestExecutionState } from '../service/execution/test.execution.state';
 
 export class AppComponent {
 
-  TEST_EXECUTE_REQUEST = 'test.execute.request'; // TODO: copied from workspace navigator, please delete (asap)
-  TEST_EXECUTION_STARTED = 'test.execution.started'; // TODO: copied from workspace navigator, please delete (asap)
-  TEST_EXECUTION_START_FAILED = 'test.execution.start.failed'; // TODO: copied from workspace navigator, please delete (asap)
-
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
@@ -139,16 +135,16 @@ export class AppComponent {
    * for the update to the test execution status
    */
   private setupTestExecutionListener(): void {
-    this.messagingService.subscribe(this.TEST_EXECUTE_REQUEST, (payload) => {
+    this.messagingService.subscribe(events.TEST_EXECUTE_REQUEST, (payload) => {
       this.testExecutionService.execute(payload).then((response) => {
-        this.messagingService.publish(this.TEST_EXECUTION_STARTED, {
+        this.messagingService.publish(events.TEST_EXECUTION_STARTED, {
           path: payload,
           response: response,
           message: 'Execution of "\${}" has been started.'
         })
         this.messagingService.publish(events.WORKSPACE_MARKER_OBSERVE, this.testExecutionStatusObserver(payload));
       }).catch((reason) => {
-        this.messagingService.publish(this.TEST_EXECUTION_START_FAILED, {
+        this.messagingService.publish(events.TEST_EXECUTION_START_FAILED, {
           path: payload,
           reason: reason,
           message: 'The test "\${}" could not be started.'
