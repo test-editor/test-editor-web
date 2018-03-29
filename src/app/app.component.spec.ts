@@ -133,7 +133,7 @@ describe('AppComponent', () => {
     tick();
 
     // then
-    expect(markerUpdateCallback).toHaveBeenCalledWith(jasmine.arrayWithExactContents([{ path: root.path, markers: { validation: { errors: 1, warnings: 0, infos: 1 } } }]))
+    expect(markerUpdateCallback).toHaveBeenCalledWith(jasmine.arrayWithExactContents([{ path: root.path, markers: { validation: { errors: 1, warnings: 0, infos: 1 } } }]));
   }));
 
 });
