@@ -52,6 +52,7 @@ export class AppComponent {
     }
     this.setupWorkspaceReloadResponse();
     this.setupTestExecutionListener();
+    this.setupRepoChangeListeners();
   }
 
   ngOnInit() {
@@ -59,9 +60,6 @@ export class AppComponent {
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
       });
-    this.fileSavedSubscription = this.messagingService.subscribe(EDITOR_SAVE_COMPLETED, () => {
-      this.refreshIndex();
-    });
     this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
       (userData: any) => {
         if (userData && userData != '') {
@@ -159,11 +157,25 @@ export class AppComponent {
       field: 'testStatus',
       observe: () => this.testExecutionService.getStatus(path),
       stopOn: (value) => value.status !== TestExecutionState.Running
-    }
+    };
   }
 
-  refreshIndex(): void {
-    this.indexService.refresh();
+  /**
+   * listen to events that changed the repository (currently only editor save completed events)
+   * inform index to refresh itself
+   */
+  private setupRepoChangeListeners(): void {
+    this.fileSavedSubscription = this.messagingService.subscribe(EDITOR_SAVE_COMPLETED, (payload) => {
+      this.refreshIndex();
+    });
+  }
+
+  private refreshIndex(): void {
+    this.indexService.refresh().then(() => {
+      this.persistenceService.listFiles().then((root: WorkspaceElement) => {
+        this.updateValidationMarkers(root);
+      });
+    });
   }
 
 }
