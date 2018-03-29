@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { AuthModule } from 'angular-auth-oidc-client';
 import { Response, BaseResponseOptions, HttpModule } from '@angular/http';
 import { Routes, RouterModule } from '@angular/router'
-import { WorkspaceNavigatorModule, PersistenceService } from '@testeditor/workspace-navigator';
+import { WorkspaceNavigatorModule, PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { MessagingService } from '@testeditor/messaging-service';
 import { mock, when, instance } from 'ts-mockito';
 import { ValidationMarkerService } from '../service/validation/validation.marker.service';
@@ -119,17 +119,21 @@ describe('AppComponent', () => {
     }));
   }));
 
-  it('should listen to editor save completed events, starting index refresh (which will then refresh long poll on validation markers)', fakeAsync(() => {
+  it('should listen to editor save completed events, starting index refresh which will transitively issue a markerUpdateCallback', fakeAsync(() => {
     // given
+    const root:WorkspaceElement = {name: 'some-name', path: 'some/path', type: ElementType.File, children: []};
     when(mockIndexService.refresh()).thenReturn(Promise.resolve([ ]));
-    spyOn(app, "refreshIndex");
+    when(mockPersistenceService.listFiles()).thenReturn(Promise.resolve(root));
+    when(mockValidationMarkerService.getAllMarkerSummaries(root)).thenReturn(Promise.resolve([{ path: root.path, errors:1, warnings:0, infos:1 }]));
+    const markerUpdateCallback = jasmine.createSpy("markerUpdateCallback");
+    messagingService.subscribe("workspace.marker.update", markerUpdateCallback);
 
     // when
     messagingService.publish('editor.save.completed', '');
     tick();
 
     // then
-    expect(app.refreshIndex).toHaveBeenCalledTimes(1);
+    expect(markerUpdateCallback).toHaveBeenCalledWith(jasmine.arrayWithExactContents([{ path: root.path, markers: { validation: { errors: 1, warnings: 0, infos: 1 } } }]));
   }));
 
 });
