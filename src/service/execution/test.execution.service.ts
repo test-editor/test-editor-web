@@ -2,8 +2,6 @@ import { Response } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 import { TestExecutionServiceConfig } from './test.execution.service.config';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { WorkspaceElement } from '@testeditor/workspace-navigator';
 import { TestExecutionState } from './test.execution.state';
 
 export interface TestExecutionStatus {
@@ -26,7 +24,7 @@ export class DefaultTestExecutionService extends TestExecutionService {
   private static readonly statusAllURLPath = '/status/all';
   private serviceUrl: string;
 
-  constructor(private http: AuthHttp, private config: TestExecutionServiceConfig) {
+  constructor(private http: AuthHttp, config: TestExecutionServiceConfig) {
     super();
     this.serviceUrl = config.serviceUrl;
   }

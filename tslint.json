@@ -119,7 +119,7 @@
     "component-selector": [
       true,
       "element",
-      "app",
+      "(app|xtext)",
       "kebab-case"
     ],
     "use-input-property-decorator": true,

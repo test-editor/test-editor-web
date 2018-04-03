@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 import { IndexService, IndexDelta } from './index.service';
 import { XtextIndexServiceConfig } from './xtext.index.service.config';

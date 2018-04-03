@@ -1,7 +1,7 @@
-import { DebugElement, Component } from '@angular/core';
-import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { DebugElement, Component, AfterViewInit } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { mock, when, anything, instance, anyString } from 'ts-mockito';
+import { mock, when, instance, anyString } from 'ts-mockito';
 
 import { TabsModule, TooltipModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
@@ -9,13 +9,27 @@ import { MessagingModule, MessagingService } from '@testeditor/messaging-service
 import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
 import { DocumentService } from '../../service/document/document.service';
-import { DocumentServiceConfig } from '../../service/document/document.service.config';
 
 import { NAVIGATION_DELETED, NAVIGATION_OPEN,
          EDITOR_ACTIVE, EDITOR_CLOSE,
          NavigationDeletedPayload, NavigationOpenPayload } from './event-types';
 import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
+
+@Component({
+  selector: 'xtext-editor',
+  template: '<div>mocked-editor for path: "{{path}}" and tabId: "{{tabId}}"</div>'
+})
+class MockedAceComponent extends AceComponent implements AfterViewInit {
+
+  editorSpy: any;
+
+  ngAfterViewInit(): void {
+    this.editorSpy = jasmine.createSpyObj('editor', ['focus']);
+    this.editor = Promise.resolve(this.editorSpy);
+  }
+
+}
 
 describe('EditorTabsComponent', () => {
 
@@ -234,18 +248,3 @@ describe('EditorTabsComponent', () => {
   });
 
 });
-
-@Component({
-  selector: 'xtext-editor',
-  template: '<div>mocked-editor for path: "{{path}}" and tabId: "{{tabId}}"</div>'
-})
-class MockedAceComponent extends AceComponent {
-
-  editorSpy: any;
-
-  ngAfterViewInit(): void {
-    this.editorSpy = jasmine.createSpyObj('editor', ['focus']);
-    this.editor = Promise.resolve(this.editorSpy);
-  }
-
-}

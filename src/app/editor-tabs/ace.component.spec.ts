@@ -1,15 +1,27 @@
 import { AceComponent } from './ace.component';
-import { tick, fakeAsync, async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
-import { mock, when, anything, instance, anyString } from 'ts-mockito';
+import { tick, fakeAsync, async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { mock, when, instance, anyString } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
-import { Response, BaseResponseOptions, HttpModule } from '@angular/http';
+import { Response, BaseResponseOptions } from '@angular/http';
 
 import { DocumentService } from '../../service/document/document.service';
-import { Deferred } from 'prophecy/src/Deferred';
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 import { ViewChild, Component } from '@angular/core';
 import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
+
+@Component({
+  selector: `app-host-component`,
+  template: `<xtext-editor [path]="path" [tabId]="tabId"></xtext-editor>`
+})
+class TestHostComponent {
+  public path: string;
+  public tabId: string;
+
+  @ViewChild(AceComponent)
+  public aceComponentUnderTest: AceComponent;
+
+}
 
 describe('AceComponent', () => {
   let hostComponent: TestHostComponent;
@@ -59,19 +71,6 @@ describe('AceComponent', () => {
   it('should be created', () => {
     expect(hostComponent.aceComponentUnderTest).toBeTruthy();
   });
-
-  @Component({
-    selector: `app-host-component`,
-    template: `<xtext-editor [path]="path" [tabId]="tabId"></xtext-editor>`
-  })
-  class TestHostComponent {
-    public path: string;
-    public tabId: string;
-
-    @ViewChild(AceComponent)
-    public aceComponentUnderTest: AceComponent;
-
-  }
 
   it('publishes save completed event after successful save', fakeAsync(() => {
     // given

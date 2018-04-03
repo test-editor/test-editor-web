@@ -1,4 +1,4 @@
-import { Component, OnInit, isDevMode } from '@angular/core';
+import { Component, isDevMode, OnInit, OnDestroy } from '@angular/core';
 import { MessagingService, Message } from '@testeditor/messaging-service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
@@ -9,7 +9,6 @@ import { TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUE
          PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { IndexService } from '../service/index/index.service';
-import { DocumentService } from 'service/document/document.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
 import { MarkerObserver } from '@testeditor/workspace-navigator/src/common/markers/marker.observer';
 import { TestExecutionState } from '../service/execution/test.execution.state';
@@ -20,7 +19,7 @@ import { TestExecutionState } from '../service/execution/test.execution.state';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
 
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
@@ -35,7 +34,6 @@ export class AppComponent {
     public oidcSecurityService: OidcSecurityService,
     private persistenceService: PersistenceService,
     private validationMarkerService: ValidationMarkerService,
-    private documentService: DocumentService,
     private indexService: IndexService,
     private testExecutionService: TestExecutionService) {
     if (isDevMode()) {

@@ -1,12 +1,9 @@
 import { TestExecutionService, DefaultTestExecutionService } from './test.execution.service';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { TestExecutionServiceConfig } from './test.execution.service.config';
-import { Observable } from 'rxjs/Observable';
-import { Response, ResponseOptions, ConnectionBackend, XHRBackend, RequestMethod, HttpModule } from '@angular/http';
+import { Response, ResponseOptions, XHRBackend, RequestMethod, HttpModule } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { Injector, ReflectiveInjector } from '@angular/core';
 import { inject, TestBed, fakeAsync } from '@angular/core/testing';
-import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { TestExecutionState } from './test.execution.state';
 
 export const HTTP_STATUS_OK = 200;

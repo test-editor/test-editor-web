@@ -1,4 +1,4 @@
-import { ElementType, IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
+import { IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
 import { TestExecutionState } from '../../service/execution/test.execution.state';
 
 /**
