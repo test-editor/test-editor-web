@@ -5,7 +5,7 @@ import { MessagingService } from '@testeditor/messaging-service';
 import { DocumentService } from '../../service/document/document.service';
 import { DirtyState } from './dirty-state';
 
-import * as constants from '../config/app-config'
+import * as constants from '../config/app-config';
 import * as events from './event-types';
 
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
@@ -45,7 +45,7 @@ export class AceComponent implements AfterViewInit {
         resourceId: this.path,
         syntaxDefinition: syntaxDefinitionFilePath,
         enableSaveAction: false // don't want the default xtext-save action
-      }
+      };
       const deferred = createXtextEditor(config);
       return deferred.promise;
     });
@@ -71,7 +71,7 @@ export class AceComponent implements AfterViewInit {
     this.focus();
 
     // TODO for debugging only
-    window["editor"] = editor;
+    window['editor'] = editor;
   }
 
   private setContent(editor: any, content: string): void {
@@ -81,10 +81,10 @@ export class AceComponent implements AfterViewInit {
   }
 
   private onDirtyChange(dirty: boolean): void {
-    let dirtyState: DirtyState = {
+    const dirtyState: DirtyState = {
       path: this.path,
       dirty: dirty
-    }
+    };
     this.messagingService.publish(events.EDITOR_DIRTY_CHANGED, dirtyState);
   }
 

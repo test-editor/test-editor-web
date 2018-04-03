@@ -7,8 +7,8 @@ import { WorkspaceElement } from '@testeditor/workspace-navigator';
 import { TestExecutionState } from './test.execution.state';
 
 export interface TestExecutionStatus {
-  path: string,
-  status: TestExecutionState
+  path: string;
+  status: TestExecutionState;
 }
 
 export abstract class TestExecutionService {
@@ -37,21 +37,21 @@ export class DefaultTestExecutionService extends TestExecutionService {
 
   getStatus(path: string): Promise<TestExecutionStatus> {
     return this.http.get(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true').toPromise().then(response => {
-      let status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(response.text()) };
+      const status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(response.text()) };
       return status;
     });
   }
 
   getAllStatus(): Promise<TestExecutionStatus[]> {
     return this.http.get(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(response => {
-      let status: any[] = response.json();
-      status.forEach((value) => { value.status = this.toTestExecutionState(value.status) })
+      const status: any[] = response.json();
+      status.forEach((value) => { value.status = this.toTestExecutionState(value.status); });
       return status;
     });
   }
 
   private getURL(workspaceElementPath: string, urlPath: string = ''): string {
-    let encodedPath = workspaceElementPath.split('/').map(encodeURIComponent).join('/');
+    const encodedPath = workspaceElementPath.split('/').map(encodeURIComponent).join('/');
     return `${this.serviceUrl}${urlPath}?resource=${encodedPath}`;
   }
 

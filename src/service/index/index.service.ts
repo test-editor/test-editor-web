@@ -3,5 +3,5 @@ export abstract class IndexService {
 }
 
 export interface IndexDelta {
-  path: string
+  path: string;
 }

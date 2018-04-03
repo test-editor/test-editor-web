@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { Headers } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
-import { WorkspaceElement } from '@testeditor/workspace-navigator';
+import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
-import { ElementType } from '@testeditor/workspace-navigator';
 
 @Injectable()
 export class XtextDefaultValidationMarkerService extends ValidationMarkerService {
@@ -30,7 +29,7 @@ export class XtextDefaultValidationMarkerService extends ValidationMarkerService
     summaries.forEach((summary) => {
       if (leafSummaryMap.has(summary.path)) {
         const existingValidationSummary = leafSummaryMap.get(summary.path);
-        this.addToValidationSummary(existingValidationSummary, summary)
+        this.addToValidationSummary(existingValidationSummary, summary);
         existingValidationSummary.errors += summary.errors;
         existingValidationSummary.warnings += summary.warnings;
         existingValidationSummary.infos += summary.infos;

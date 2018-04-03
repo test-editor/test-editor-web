@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { Headers } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
-import { WorkspaceElement } from '@testeditor/workspace-navigator';
+import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
-import { ElementType } from '@testeditor/workspace-navigator';
 
 /**
  * This is a naive implementation using the REST endpoint for validation information
@@ -29,10 +28,10 @@ export class XtextNaiveValidationMarkerService extends ValidationMarkerService {
         return accumulatorPromise.then((accumulator) => {
           return this.getAllMarkerSummaries(child).then((childSummaries) => {
             accumulator.summaries = accumulator.summaries.concat(childSummaries);
-            const childSummary = childSummaries.find((summary) => summary.path === child.path)
-            accumulator.parentSummary.errors += childSummary.errors
-            accumulator.parentSummary.warnings += childSummary.warnings
-            accumulator.parentSummary.infos += childSummary.infos
+            const childSummary = childSummaries.find((summary) => summary.path === child.path);
+            accumulator.parentSummary.errors += childSummary.errors;
+            accumulator.parentSummary.warnings += childSummary.warnings;
+            accumulator.parentSummary.infos += childSummary.infos;
             return accumulator;
           });
         });
@@ -63,7 +62,7 @@ export class XtextNaiveValidationMarkerService extends ValidationMarkerService {
           errors: validationResponse.issues.filter(issue => issue.severity === Severity.ERROR).length,
           warnings: validationResponse.issues.filter(issue => issue.severity === Severity.WARNING).length,
           infos: validationResponse.issues.filter(issue => issue.severity === Severity.INFO).length,
-        }]
+        }];
       } catch (error) {
         return this.logErrorAndAssumeDefault(root.path, error);
       }
@@ -82,12 +81,12 @@ enum Severity { ERROR = 'error', WARNING = 'warning', INFO = 'info'}
 interface ValidationServiceResponseType {
   issues: {
     severity: Severity
-  }[]
+  }[];
 }
 
 interface ValidationSummaryAccumulator {
-  summaries: ValidationSummary[],
-  parentSummary: ValidationSummary
+  summaries: ValidationSummary[];
+  parentSummary: ValidationSummary;
 }
 
 function isValidationServiceResponseType(response: any): response is ValidationServiceResponseType {

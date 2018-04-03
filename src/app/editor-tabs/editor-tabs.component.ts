@@ -6,7 +6,9 @@ import { AceComponent } from './ace.component';
 import { Element } from './element';
 import { TabElement } from './tab-element';
 
-import { NAVIGATION_DELETED, NavigationDeletedPayload, NAVIGATION_OPEN, NavigationOpenPayload, EDITOR_ACTIVE, EDITOR_CLOSE, NAVIGATION_CLOSE } from './event-types';
+import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE,
+         EDITOR_ACTIVE, EDITOR_CLOSE,
+         NavigationDeletedPayload, NavigationOpenPayload } from './event-types';
 
 @Component({
   selector: 'app-editor-tabs',
@@ -20,7 +22,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
    * Provide unique id's for tabs to assign them a unique css class.
    * This is used for the dirty flag.
    */
-  static uniqueTabId: number = 0;
+  static uniqueTabId = 0;
 
   @ViewChildren(AceComponent) editorComponents: QueryList<AceComponent>;
   public tabs: TabElement[] = [];
@@ -47,7 +49,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   private handleNavigationDeleted(document: NavigationDeletedPayload): void {
-    if (document.type == 'folder') {
+    if (document.type === 'folder') {
       this.handleNavigationFolderDeleted(document.path);
     } else {
       this.handleNavigationFileDeleted(document.path);
@@ -55,19 +57,19 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   private handleNavigationFolderDeleted(path: string): void {
-    let tabsToRemove = this.findTabsBelowFolder(path);
+    const tabsToRemove = this.findTabsBelowFolder(path);
     tabsToRemove.forEach(tab => this.removeTab(tab));
   }
 
   private handleNavigationFileDeleted(path: string): void {
-    let existingTab = this.findTab(path);
+    const existingTab = this.findTab(path);
     if (existingTab) {
       this.removeTab(existingTab);
     } // else: no open tab -> nothing to do
   }
 
   private handleNavigationOpen(document: NavigationOpenPayload): void {
-    let existingTab = this.findTab(document.path);
+    const existingTab = this.findTab(document.path);
     if (existingTab) {
       this.selectTab(existingTab);
     } else {
@@ -77,7 +79,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   private createNewTab(document: NavigationOpenPayload): void {
-    let newElement = {
+    const newElement = {
       id: `editor-tab-${EditorTabsComponent.uniqueTabId++}`,
       title: document.name,
       path: document.path,
@@ -92,13 +94,13 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   private findTabsBelowFolder(folder: string): TabElement[] {
-    let folderNameWithSlash = folder.endsWith('/') ? folder : folder + '/';
+    const folderNameWithSlash = folder.endsWith('/') ? folder : folder + '/';
     return this.tabs.filter(tab => tab.path.startsWith(folderNameWithSlash));
   }
 
   public clearTabs(): void {
-    let originalLen = this.tabs.length
-    for (var i=0; i < originalLen; i++) { // iterated at most originalLen times!
+    const originalLen = this.tabs.length;
+    for (let i = 0; i < originalLen; i++) { // iterated at most originalLen times!
       this.removeTab(this.tabs[0]);
     }
   }
@@ -106,10 +108,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   public selectTab(tab: TabElement): void {
     if (!tab.active) {
       tab.active = true;
-      let element: Element = { path: tab.path };
+      const element: Element = { path: tab.path };
       this.messagingService.publish(EDITOR_ACTIVE, element);
     }
-    let component = this.editorComponents.find(element => element.tabId === tab.id);
+    const component = this.editorComponents.find(element => element.tabId === tab.id);
     if (component) {
       component.focus();
     }
@@ -123,15 +125,15 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   // see http://valor-software.com/ngx-bootstrap/#/modals - Static modal
   public removeTab(tab: TabElement): void {
     // Remove the tab from the list
-    let index = this.tabs.indexOf(tab);
+    const index = this.tabs.indexOf(tab);
     this.tabs.splice(index, 1);
-    let element: Element = { path: tab.path };
+    const element: Element = { path: tab.path };
     this.messagingService.publish(EDITOR_CLOSE, element);
 
     // If the tab was active, select a new one to be active
     if (tab.active) {
-      let nextIndexToSelect = index > 0 ? index - 1 : index;
-      let tabToSelect = this.tabs[nextIndexToSelect];
+      const nextIndexToSelect = index > 0 ? index - 1 : index;
+      const tabToSelect = this.tabs[nextIndexToSelect];
       if (tabToSelect) {
         this.selectTab(tabToSelect);
       }

@@ -1,4 +1,4 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { async, TestBed, inject } from '@angular/core/testing';
 import { HttpModule, XHRBackend, RequestMethod, Response, ResponseOptions } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 import { AuthConfig, AuthHttp } from 'angular2-jwt';
@@ -7,14 +7,13 @@ import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { mock } from 'ts-mockito/lib/ts-mockito';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
 import { XtextNaiveValidationMarkerService } from './xtext.naive.validation.marker.service';
-import { async } from '@angular/core/testing';
 
 describe('ValidationMarkerService', () => {
 
   beforeEach(() => {
     const serviceConfig: XtextValidationMarkerServiceConfig = {
       serviceUrl: ''
-    }
+    };
 
     const dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
 
@@ -39,7 +38,7 @@ describe('ValidationMarkerService', () => {
         status: 200,
         body: sampleResponseBody
       })));
-    })
+    });
 
     // when
     validationMarkerService.getAllMarkerSummaries(sampleFile)
@@ -62,7 +61,7 @@ describe('ValidationMarkerService', () => {
         status: 200,
         body: sampleResponseBody
       })));
-    })
+    });
 
     // when
     validationMarkerService.getAllMarkerSummaries(root)
@@ -107,7 +106,7 @@ describe('ValidationMarkerService', () => {
           status: 200,
           body: null
         })));
-      })
+      });
 
       // when
       validationMarkerService.getAllMarkerSummaries(sampleFile).then((summaries: ValidationSummary[]) => {
@@ -198,7 +197,7 @@ describe('ValidationMarkerService', () => {
     {path: middleChild.path, errors: 6, warnings: 4, infos: 12},
     {path: lastChild.path, errors: 3, warnings: 2, infos: 6},
     {path: root.path, errors: 12, warnings: 8, infos: 24},
-  ]
+  ];
 
   const expectedValdationMarkersWithErrors = [
     {path: firstChild.path, errors: 0, warnings: 0, infos: 0},
@@ -208,5 +207,5 @@ describe('ValidationMarkerService', () => {
     {path: middleChild.path, errors: 3, warnings: 2, infos: 6},
     {path: lastChild.path, errors: 3, warnings: 2, infos: 6},
     {path: root.path, errors: 6, warnings: 4, infos: 12},
-  ]
+  ];
 });

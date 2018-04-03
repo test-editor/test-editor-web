@@ -50,9 +50,9 @@ describe('AceComponent', () => {
     // after all changes applied, replace editor with (synchronous) dummy
     const editorMockForSave = {
       setReadOnly: () => { },
-      getValue: () => { return '' },
+      getValue: () => '',
       xtextServices: { editorContext: { setDirty: (flag) => { } } }
-    }
+    };
     hostComponent.aceComponentUnderTest.editor = Promise.resolve(editorMockForSave);
   });
 
@@ -78,7 +78,7 @@ describe('AceComponent', () => {
     when(documentServiceMock.saveDocument(anyString(), anyString())).thenReturn(
       Promise.resolve(new Response(new BaseResponseOptions()))
     );
-    let editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
+    const editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
     messagingService.subscribe('editor.save.completed', editorSaveCompletedCallback);
 
     // when
@@ -97,7 +97,7 @@ describe('AceComponent', () => {
     when(documentServiceMock.saveDocument(anyString(), anyString())).thenReturn(
       Promise.reject('some reason')
     );
-    let editorSaveFailedCallback = jasmine.createSpy('editorSaveFailedCallback');
+    const editorSaveFailedCallback = jasmine.createSpy('editorSaveFailedCallback');
     messagingService.subscribe('editor.save.failed', editorSaveFailedCallback);
 
     // when

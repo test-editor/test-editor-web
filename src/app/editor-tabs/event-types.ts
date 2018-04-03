@@ -7,22 +7,22 @@ export const NAVIGATION_OPEN = 'navigation.open';
 export const NAVIGATION_DELETED = 'navigation.deleted';
 export const NAVIGATION_CLOSE = 'navigation.close';
 
-export type NavigationDeletedPayload = {
-  name: string,
-  path: string,
-  type: string
-};
+export interface NavigationDeletedPayload {
+  name: string;
+  path: string;
+  type: string;
+}
 
-export type NavigationOpenPayload = {
-  name: string,
-  path: string
-};
+export interface NavigationOpenPayload {
+  name: string;
+  path: string;
+}
 
-export type EditorSaveFailedPayload = {
-  path: string,
-  reason: any
-};
+export interface EditorSaveFailedPayload {
+  path: string;
+  reason: any;
+}
 
-export type EditorSaveCompletedPayload = {
-  path: string
-};
+export interface EditorSaveCompletedPayload {
+  path: string;
+}

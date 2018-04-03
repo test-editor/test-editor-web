@@ -35,7 +35,7 @@ export class EditorTabsModule {
         { provide: SyntaxHighlightingService, useClass: AceClientsideSyntaxHighlightingService },
         DocumentService
       ]
-    }
+    };
   }
 
 }
