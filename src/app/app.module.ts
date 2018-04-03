@@ -10,7 +10,7 @@ import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
 
 import { AuthModule, OidcSecurityService, OpenIDImplicitFlowConfiguration } from 'angular-auth-oidc-client';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
-import { Routes, RouterModule } from '@angular/router'
+import { Routes, RouterModule } from '@angular/router';
 
 import * as constants from './config/app-config';
 import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
@@ -25,7 +25,7 @@ import { XtextIndexServiceConfig } from 'service/index/xtext.index.service.confi
 
 const appRoutes: Routes = [
     { path: '', component: AppComponent }
-  ]
+];
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   return new AuthHttp(new AuthConfig({
@@ -71,7 +71,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
 })
 export class AppModule {
     constructor(public oidcSecurityService: OidcSecurityService) {
-        let openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
+        const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
         openIDImplicitFlowConfiguration.stsServer = 'https://accounts.google.com';
         openIDImplicitFlowConfiguration.redirect_url = 'http://localhost:4200';
         openIDImplicitFlowConfiguration.client_id = '173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com';

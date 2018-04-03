@@ -4,8 +4,9 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 
-import * as events from '@testeditor/workspace-navigator';
-import { PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
+import { TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
+         WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
+         PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { IndexService } from '../service/index/index.service';
 import { DocumentService } from 'service/document/document.service';
@@ -62,11 +63,11 @@ export class AppComponent {
       });
     this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
       (userData: any) => {
-        if (userData && userData != '') {
+        if (userData && userData !== '') {
           this.user = userData.name;
-          let idToken = this.oidcSecurityService.getIdToken();
+          const idToken = this.oidcSecurityService.getIdToken();
           if (idToken !== '') {
-            this.hasToken = true
+            this.hasToken = true;
             sessionStorage.setItem('token', idToken);
             if (isDevMode()) {
               console.log('idToken ');
@@ -110,9 +111,9 @@ export class AppComponent {
   }
 
   private setupWorkspaceReloadResponse(): void {
-    this.messagingService.subscribe(events.WORKSPACE_RELOAD_REQUEST, () => {
+    this.messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, () => {
       this.persistenceService.listFiles().then((root: WorkspaceElement) => {
-        this.messagingService.publish(events.WORKSPACE_RELOAD_RESPONSE, root);
+        this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
         this.updateValidationMarkers(root);
       });
     });
@@ -121,9 +122,9 @@ export class AppComponent {
   private updateValidationMarkers(root: WorkspaceElement): void {
     this.validationMarkerService.getAllMarkerSummaries(root).then((summaries) => {
       console.log(JSON.stringify(summaries));
-      return this.messagingService.publish(events.WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
+      return this.messagingService.publish(WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
         { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos } } }
-      )))
+      )));
     });
   }
 
@@ -133,16 +134,16 @@ export class AppComponent {
    * for the update to the test execution status
    */
   private setupTestExecutionListener(): void {
-    this.messagingService.subscribe(events.TEST_EXECUTE_REQUEST, (payload) => {
+    this.messagingService.subscribe(TEST_EXECUTE_REQUEST, (payload) => {
       this.testExecutionService.execute(payload).then((response) => {
-        this.messagingService.publish(events.TEST_EXECUTION_STARTED, {
+        this.messagingService.publish(TEST_EXECUTION_STARTED, {
           path: payload,
           response: response,
           message: 'Execution of "\${}" has been started.'
-        })
-        this.messagingService.publish(events.WORKSPACE_MARKER_OBSERVE, this.testExecutionStatusObserver(payload));
+        });
+        this.messagingService.publish(WORKSPACE_MARKER_OBSERVE, this.testExecutionStatusObserver(payload));
       }).catch((reason) => {
-        this.messagingService.publish(events.TEST_EXECUTION_START_FAILED, {
+        this.messagingService.publish(TEST_EXECUTION_START_FAILED, {
           path: payload,
           reason: reason,
           message: 'The test "\${}" could not be started.'

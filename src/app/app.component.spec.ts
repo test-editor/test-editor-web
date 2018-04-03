@@ -2,14 +2,13 @@ import { TestBed, async, fakeAsync, ComponentFixture, tick } from '@angular/core
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 
-import { MessagingModule } from '@testeditor/messaging-service';
+import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
 import { AppComponent } from './app.component';
 import { AuthModule } from 'angular-auth-oidc-client';
 import { Response, BaseResponseOptions, HttpModule } from '@angular/http';
-import { Routes, RouterModule } from '@angular/router'
 import { WorkspaceNavigatorModule, PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
-import { MessagingService } from '@testeditor/messaging-service';
+import { Routes, RouterModule } from '@angular/router';
 import { mock, when, instance } from 'ts-mockito';
 import { ValidationMarkerService } from '../service/validation/validation.marker.service';
 import { XtextIndexService } from '../service/index/xtext.index.service';
@@ -25,10 +24,12 @@ const appRoutes: Routes = [
 
 describe('AppComponent', () => {
   const mockPersistenceService = mock(PersistenceService);
-  const mockValidationMarkerService = mock(XtextDefaultValidationMarkerService); // cannot use ValidationMarkerService, since its method is abstract and cannot be spied on by ts-mockito (yet)
+  // cannot use ValidationMarkerService, since its method is abstract and cannot be spied on by ts-mockito (yet)
+  const mockValidationMarkerService = mock(XtextDefaultValidationMarkerService);
   const mockDocumentService = mock(DocumentService);
   const mockTestExecutionService = mock(DefaultTestExecutionService);
-  const mockIndexService=mock(XtextIndexService);  // cannot use IndexService, since its method is abstract and cannot be spied on by ts-mockito (yet)
+  // cannot use IndexService, since its method is abstract and cannot be spied on by ts-mockito (yet)
+  const mockIndexService = mock(XtextIndexService);
   let messagingService: MessagingService;
   let app: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -73,37 +74,38 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('test-editor-web');
   }));
 
-  it('should listen to test execution events, start test in the test execution backend and send a test execution started event', fakeAsync(() => {
-    // given
-    when(mockTestExecutionService.execute('some/path/to/test.tcl'))
-      .thenReturn(Promise.resolve(new Response(new BaseResponseOptions().merge({ body: 'some/path/to/test_tcl_log_file.log' }))));
-    let testExecStartedCallback = jasmine.createSpy('testExecStartedCallback');
-    messagingService.subscribe('test.execution.started', testExecStartedCallback);
-    let markerObserverCallback = jasmine.createSpy('markerObserverCallback');
-    messagingService.subscribe('workspace.marker.observe', markerObserverCallback);
+  it('should listen to test execution events, start test in the test execution backend and send a test execution started event',
+    fakeAsync(() => {
+      // given
+      when(mockTestExecutionService.execute('some/path/to/test.tcl'))
+        .thenReturn(Promise.resolve(new Response(new BaseResponseOptions().merge({ body: 'some/path/to/test_tcl_log_file.log' }))));
+      const testExecStartedCallback = jasmine.createSpy('testExecStartedCallback');
+      messagingService.subscribe('test.execution.started', testExecStartedCallback);
+      const markerObserverCallback = jasmine.createSpy('markerObserverCallback');
+      messagingService.subscribe('workspace.marker.observe', markerObserverCallback);
 
-    // when
-    messagingService.publish('test.execute.request', 'some/path/to/test.tcl');
-    tick();
+      // when
+      messagingService.publish('test.execute.request', 'some/path/to/test.tcl');
+      tick();
 
-    // then
-    expect(testExecStartedCallback).toHaveBeenCalledTimes(1);
-    expect(testExecStartedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
-      path: 'some/path/to/test.tcl',
-      message: 'Execution of "\${}" has been started.'
+      // then
+      expect(testExecStartedCallback).toHaveBeenCalledTimes(1);
+      expect(testExecStartedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+        path: 'some/path/to/test.tcl',
+        message: 'Execution of "\${}" has been started.'
+      }));
+      expect(markerObserverCallback).toHaveBeenCalledTimes(1);
+      expect(markerObserverCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+        path: 'some/path/to/test.tcl',
+        field: 'testStatus'
+      }));
+
     }));
-    expect(markerObserverCallback).toHaveBeenCalledTimes(1);
-    expect(markerObserverCallback).toHaveBeenCalledWith(jasmine.objectContaining({
-      path: 'some/path/to/test.tcl',
-      field: 'testStatus'
-    }));
-
-  }));
 
   it('should listen to test execution events, failure to start tests should publish test execution start failure', fakeAsync(() => {
     // given
     when(mockTestExecutionService.execute('some/path/to/test.tcl')).thenReturn(Promise.reject('some reason'));
-    let testExecFailedCallback = jasmine.createSpy('testExecFailedCallback');
+    const testExecFailedCallback = jasmine.createSpy('testExecFailedCallback');
     messagingService.subscribe('test.execution.start.failed', testExecFailedCallback);
 
     // when
@@ -119,21 +121,24 @@ describe('AppComponent', () => {
     }));
   }));
 
-  it('should listen to editor save completed events, starting index refresh which will transitively issue a markerUpdateCallback', fakeAsync(() => {
-    // given
-    const root:WorkspaceElement = {name: 'some-name', path: 'some/path', type: ElementType.File, children: []};
-    when(mockIndexService.refresh()).thenReturn(Promise.resolve([ ]));
-    when(mockPersistenceService.listFiles()).thenReturn(Promise.resolve(root));
-    when(mockValidationMarkerService.getAllMarkerSummaries(root)).thenReturn(Promise.resolve([{ path: root.path, errors:1, warnings:0, infos:1 }]));
-    const markerUpdateCallback = jasmine.createSpy("markerUpdateCallback");
-    messagingService.subscribe("workspace.marker.update", markerUpdateCallback);
+  it('should listen to editor save completed events, starting index refresh (which will then refresh long poll on validation markers)',
+     fakeAsync(() => {
+       // given
+       const root: WorkspaceElement = { name: 'some-name', path: 'some/path', type: ElementType.File, children: [] };
+       when(mockIndexService.refresh()).thenReturn(Promise.resolve([]));
+       when(mockPersistenceService.listFiles()).thenReturn(Promise.resolve(root));
+       when(mockValidationMarkerService.getAllMarkerSummaries(root)).thenReturn(
+         Promise.resolve([{ path: root.path, errors: 1, warnings: 0, infos: 1 }]));
+       const markerUpdateCallback = jasmine.createSpy('markerUpdateCallback');
+       messagingService.subscribe('workspace.marker.update', markerUpdateCallback);
 
-    // when
-    messagingService.publish('editor.save.completed', '');
-    tick();
+       // when
+       messagingService.publish('editor.save.completed', '');
+       tick();
 
-    // then
-    expect(markerUpdateCallback).toHaveBeenCalledWith(jasmine.arrayWithExactContents([{ path: root.path, markers: { validation: { errors: 1, warnings: 0, infos: 1 } } }]));
+       // then
+       expect(markerUpdateCallback).toHaveBeenCalledWith(jasmine.arrayWithExactContents(
+         [{ path: root.path, markers: { validation: { errors: 1, warnings: 0, infos: 1 } } }]));
   }));
 
 });
