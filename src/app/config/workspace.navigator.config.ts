@@ -1,4 +1,4 @@
-import { ElementType, IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
+import { IndicatorFieldSetup, WorkspaceElementInfo } from '@testeditor/workspace-navigator';
 import { TestExecutionState } from '../../service/execution/test.execution.state';
 
 /**
@@ -40,7 +40,7 @@ const validationStatusField = {
     cssClasses: 'fa fa-info-circle validation-infos',
     label: validationStatusLabel
   }]
-}
+};
 
 export const testEditorIndicatorFieldSetup: IndicatorFieldSetup = {
   fields: [validationStatusField, testStatusField]
@@ -102,13 +102,13 @@ export function validationStatusLabel(marker: any): string {
       if (label.length > 0) {
         label += ', ';
       }
-      label += `${marker.validation.warnings} warning(s)`
+      label += `${marker.validation.warnings} warning(s)`;
     }
     if (marker.validation.infos > 0) {
       if (label.length > 0) {
         label += ', ';
       }
-      label += `${marker.validation.infos} info(s)`
+      label += `${marker.validation.infos} info(s)`;
     }
   }
   return label;

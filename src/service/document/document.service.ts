@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 
-import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -18,12 +17,12 @@ export class DocumentService {
   }
 
   loadDocument(path: string): Promise<Response> {
-    let url = `${this.serviceUrl}/documents/${path}`;
+    const url = `${this.serviceUrl}/documents/${path}`;
     return this.http.get(url).toPromise();
   }
 
   saveDocument(path: string, content: string): Promise<Response> {
-    let url = `${this.serviceUrl}/documents/${path}`;
+    const url = `${this.serviceUrl}/documents/${path}`;
     return this.http.put(url, content).toPromise();
   }
 

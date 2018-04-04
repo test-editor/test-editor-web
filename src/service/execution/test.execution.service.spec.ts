@@ -1,14 +1,9 @@
 import { TestExecutionService, DefaultTestExecutionService } from './test.execution.service';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { TestExecutionServiceConfig } from './test.execution.service.config';
-import { Observable } from 'rxjs/Observable';
-import { Response, ResponseOptions, ConnectionBackend, XHRBackend, RequestMethod, HttpModule } from '@angular/http';
+import { Response, ResponseOptions, XHRBackend, RequestMethod, HttpModule } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { Injector, ReflectiveInjector } from '@angular/core';
-import { inject } from '@angular/core/testing';
-import { TestBed } from '@angular/core/testing';
-import { fakeAsync } from '@angular/core/testing';
-import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
+import { inject, TestBed, fakeAsync } from '@angular/core/testing';
 import { TestExecutionState } from './test.execution.state';
 
 export const HTTP_STATUS_OK = 200;
@@ -20,7 +15,7 @@ describe('TestExecutionService', () => {
   beforeEach(() => {
     serviceConfig = new TestExecutionServiceConfig();
     serviceConfig.serviceUrl = 'http://localhost:9080/tests';
-    let dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
+    const dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
 
     TestBed.configureTestingModule({
       imports: [HttpModule],
@@ -37,7 +32,7 @@ describe('TestExecutionService', () => {
   it('invokes REST endpoint with encoded path', fakeAsync(inject([XHRBackend, TestExecutionService],
     (mockBackend: MockBackend, executionService: TestExecutionService) => {
     // given
-    let tclFilePath = 'path/to/file?.tcl';
+    const tclFilePath = 'path/to/file?.tcl';
     mockBackend.connections.subscribe(
       (connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Post);
@@ -59,12 +54,12 @@ describe('TestExecutionService', () => {
   it('invokes REST test status endpoint', fakeAsync(inject([XHRBackend, TestExecutionService],
     (mockBackend: MockBackend, executionService: TestExecutionService) => {
     // given
-    let tclFilePath = 'path/to/file.tcl';
+    const tclFilePath = 'path/to/file.tcl';
     mockBackend.connections.subscribe(
       (connection: MockConnection) => {
         expect(connection.request.method).toBe(RequestMethod.Get);
-        let expectedURL = new URL(serviceConfig.serviceUrl);
-        let actualURL = new URL(connection.request.url);
+        const expectedURL = new URL(serviceConfig.serviceUrl);
+        const actualURL = new URL(connection.request.url);
         expect(actualURL.protocol).toBe(expectedURL.protocol);
         expect(actualURL.host).toBe(expectedURL.host);
         expect(actualURL.pathname).toBe('/tests/status');

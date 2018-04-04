@@ -7,7 +7,7 @@ import { MessagingModule, MessagingService } from '@testeditor/messaging-service
 import { AppComponent } from './app.component';
 import { AuthModule } from 'angular-auth-oidc-client';
 import { Response, BaseResponseOptions, HttpModule } from '@angular/http';
-import { WorkspaceNavigatorModule, PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
+import { PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { Routes, RouterModule } from '@angular/router';
 import { mock, when, instance } from 'ts-mockito';
 import { ValidationMarkerService } from '../service/validation/validation.marker.service';

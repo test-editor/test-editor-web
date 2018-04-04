@@ -5,8 +5,8 @@ export abstract class ValidationMarkerService {
 }
 
 export interface ValidationSummary {
-  path: string,
-  errors: number,
-  warnings: number,
-  infos: number
+  path: string;
+  errors: number;
+  warnings: number;
+  infos: number;
 }

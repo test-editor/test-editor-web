@@ -1,15 +1,27 @@
 import { AceComponent } from './ace.component';
-import { tick, fakeAsync, async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
-import { mock, when, anything, instance, anyString } from 'ts-mockito';
+import { tick, fakeAsync, async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { mock, when, instance, anyString } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
-import { Response, BaseResponseOptions, HttpModule } from '@angular/http';
+import { Response, BaseResponseOptions } from '@angular/http';
 
 import { DocumentService } from '../../service/document/document.service';
-import { Deferred } from 'prophecy/src/Deferred';
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 import { ViewChild, Component } from '@angular/core';
 import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
+
+@Component({
+  selector: `app-host-component`,
+  template: `<xtext-editor [path]="path" [tabId]="tabId"></xtext-editor>`
+})
+class TestHostComponent {
+  public path: string;
+  public tabId: string;
+
+  @ViewChild(AceComponent)
+  public aceComponentUnderTest: AceComponent;
+
+}
 
 describe('AceComponent', () => {
   let hostComponent: TestHostComponent;
@@ -50,9 +62,9 @@ describe('AceComponent', () => {
     // after all changes applied, replace editor with (synchronous) dummy
     const editorMockForSave = {
       setReadOnly: () => { },
-      getValue: () => { return '' },
+      getValue: () => '',
       xtextServices: { editorContext: { setDirty: (flag) => { } } }
-    }
+    };
     hostComponent.aceComponentUnderTest.editor = Promise.resolve(editorMockForSave);
   });
 
@@ -60,25 +72,12 @@ describe('AceComponent', () => {
     expect(hostComponent.aceComponentUnderTest).toBeTruthy();
   });
 
-  @Component({
-    selector: `app-host-component`,
-    template: `<xtext-editor [path]="path" [tabId]="tabId"></xtext-editor>`
-  })
-  class TestHostComponent {
-    public path: string;
-    public tabId: string;
-
-    @ViewChild(AceComponent)
-    public aceComponentUnderTest: AceComponent;
-
-  }
-
   it('publishes save completed event after successful save', fakeAsync(() => {
     // given
     when(documentServiceMock.saveDocument(anyString(), anyString())).thenReturn(
       Promise.resolve(new Response(new BaseResponseOptions()))
     );
-    let editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
+    const editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
     messagingService.subscribe('editor.save.completed', editorSaveCompletedCallback);
 
     // when
@@ -97,7 +96,7 @@ describe('AceComponent', () => {
     when(documentServiceMock.saveDocument(anyString(), anyString())).thenReturn(
       Promise.reject('some reason')
     );
-    let editorSaveFailedCallback = jasmine.createSpy('editorSaveFailedCallback');
+    const editorSaveFailedCallback = jasmine.createSpy('editorSaveFailedCallback');
     messagingService.subscribe('editor.save.failed', editorSaveFailedCallback);
 
     // when
