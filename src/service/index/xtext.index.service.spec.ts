@@ -1,10 +1,10 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 import { HttpModule, XHRBackend, Response, ResponseOptions } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { AuthConfig, AuthHttp } from 'angular2-jwt';
 import { XtextIndexServiceConfig } from './xtext.index.service.config';
 import { XtextIndexService } from './xtext.index.service';
 import { IndexService, IndexDelta } from './index.service';
+import { HttpClient } from '@angular/common/http';
 
 describe('XtextIndexService', () => {
 
@@ -19,10 +19,9 @@ describe('XtextIndexService', () => {
       imports: [HttpModule],
       providers: [
         { provide: XHRBackend, useClass: MockBackend },
-        { provide: AuthConfig, useValue: new AuthConfig({ tokenGetter: () => dummyAuthToken }) },
         { provide: XtextIndexServiceConfig, useValue: serviceConfig },
         { provide: IndexService, useClass: XtextIndexService },
-        AuthHttp
+        HttpClient
       ]
     });
   });

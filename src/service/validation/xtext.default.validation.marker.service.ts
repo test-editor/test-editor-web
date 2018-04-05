@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { AuthHttp } from 'angular2-jwt';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class XtextDefaultValidationMarkerService extends ValidationMarkerService {
 
   private serviceUrl: string;
 
-  constructor(private http: AuthHttp, config: XtextValidationMarkerServiceConfig) {
+  constructor(private http: HttpClient, config: XtextValidationMarkerServiceConfig) {
     super();
     this.serviceUrl = config.serviceUrl;
   }
 
   getAllMarkerSummaries(workspaceRoot: WorkspaceElement): Promise<ValidationSummary[]> {
-    return this.http.get(this.serviceUrl).toPromise().then(response => response.json(), reject => [])
+    return this.http.get<Response>(this.serviceUrl).toPromise().then(response => response.json(), reject => [])
       .then((leafSummaries: ValidationSummary[]) => {
         const summaryMap = this.mapSummariesByPath(leafSummaries);
         this.recurseAndAggregateValidationSummaries(workspaceRoot, summaryMap);

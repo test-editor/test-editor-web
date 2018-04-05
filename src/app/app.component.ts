@@ -4,9 +4,11 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 
-import { TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
-         WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
-         PersistenceService, WorkspaceElement, MarkerObserver } from '@testeditor/workspace-navigator';
+import {
+  TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
+  WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
+  PersistenceService, WorkspaceElement, MarkerObserver
+} from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { IndexService } from '../service/index/index.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
@@ -31,6 +33,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private messagingService: MessagingService,
     public oidcSecurityService: OidcSecurityService,
+    // private router: Router,
     private persistenceService: PersistenceService,
     private validationMarkerService: ValidationMarkerService,
     private indexService: IndexService,
@@ -42,12 +45,17 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     }
     if (this.oidcSecurityService.moduleSetup) {
-      this.doCallbackLogicIfRequired();
+      this.onOidcModuleSetup();
     } else {
       this.oidcSecurityService.onModuleSetup.subscribe(() => {
-        this.doCallbackLogicIfRequired();
+        this.onOidcModuleSetup();
       });
     }
+    // this.oidcSecurityService.onAuthorizationResult.subscribe(
+    //   (authorizationResult: AuthorizationResult) => {
+    //     this.onAuthorizationResultComplete(authorizationResult);
+    //   });
+
     this.setupWorkspaceReloadResponse();
     this.setupTestExecutionListener();
     this.setupRepoChangeListeners();
@@ -100,12 +108,45 @@ export class AppComponent implements OnInit, OnDestroy {
     localStorage.removeItem('token');
   }
 
-  private doCallbackLogicIfRequired() {
+  private onOidcModuleSetup() {
     if (window.location.hash) {
       console.log('start authorized callback');
       this.oidcSecurityService.authorizedCallback();
+    // } else {
+    //   if ('/autologin' !== window.location.pathname) {
+    //     this.write('redirect', window.location.pathname);
+    //   }
+    //   console.log('AppComponent:onModuleSetup');
+    //   this.oidcSecurityService.getIsAuthorized().subscribe((authorized: boolean) => {
+    //     if (!authorized) {
+    //       this.router.navigate(['/autologin']);
+    //     }
+    //   });
     }
   }
+
+  // private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
+  //   console.log('AppComponent:onAuthorizationResultComplete');
+  //   const path = this.read('redirect');
+  //   if (authorizationResult === AuthorizationResult.authorized) {
+  //     this.router.navigate([path]);
+  //   } else {
+  //     this.router.navigate(['/Unauthorized']);
+  //   }
+  // }
+
+  // private read(key: string): any {
+  //   const data = localStorage.getItem(key);
+  //   if (data != null) {
+  //     return JSON.parse(data);
+  //   }
+
+  //   return;
+  // }
+
+  // private write(key: string, value: any): void {
+  //   localStorage.setItem(key, JSON.stringify(value));
+  // }
 
   private setupWorkspaceReloadResponse(): void {
     this.messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, () => {

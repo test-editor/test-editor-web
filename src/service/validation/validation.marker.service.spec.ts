@@ -1,11 +1,11 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 import { HttpModule, XHRBackend, Response, ResponseOptions } from '@angular/http';
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { AuthConfig, AuthHttp } from 'angular2-jwt';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
 import { XtextNaiveValidationMarkerService } from './xtext.naive.validation.marker.service';
+import { HttpClient } from '@angular/common/http';
 
 const sampleResponseBody = '{"issues":[\
     {"description":"WebBrowser cannot be resolved.","severity":"error","line":19,"column":13,"offset":553,"length":10},\
@@ -108,10 +108,9 @@ describe('ValidationMarkerService', () => {
       imports: [HttpModule],
       providers: [
         { provide: XHRBackend, useClass: MockBackend},
-        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => dummyAuthToken}) },
         { provide: XtextValidationMarkerServiceConfig, useValue: serviceConfig },
         { provide: ValidationMarkerService, useClass: XtextNaiveValidationMarkerService},
-        AuthHttp
+        HttpClient
       ]
     });
   });

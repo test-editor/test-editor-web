@@ -1,8 +1,8 @@
 import { Response } from '@angular/http';
-import { AuthHttp } from 'angular2-jwt';
 import { TestExecutionServiceConfig } from './test.execution.service.config';
 import { Injectable } from '@angular/core';
 import { TestExecutionState } from './test.execution.state';
+import { HttpClient } from '@angular/common/http';
 
 export interface TestExecutionStatus {
   path: string;
@@ -24,24 +24,24 @@ export class DefaultTestExecutionService extends TestExecutionService {
   private static readonly statusAllURLPath = '/status/all';
   private serviceUrl: string;
 
-  constructor(private http: AuthHttp, config: TestExecutionServiceConfig) {
+  constructor(private http: HttpClient, config: TestExecutionServiceConfig) {
     super();
     this.serviceUrl = config.serviceUrl;
   }
 
   execute(path: string): Promise<Response> {
-    return this.http.post(this.getURL(path, DefaultTestExecutionService.executeURLPath), '').toPromise();
+    return this.http.post<Response>(this.getURL(path, DefaultTestExecutionService.executeURLPath), '').toPromise();
   }
 
   getStatus(path: string): Promise<TestExecutionStatus> {
-    return this.http.get(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true').toPromise().then(response => {
+    return this.http.get<Response>(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true').toPromise().then(response => {
       const status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(response.text()) };
       return status;
     });
   }
 
   getAllStatus(): Promise<TestExecutionStatus[]> {
-    return this.http.get(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(response => {
+    return this.http.get<Response>(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(response => {
       const status: any[] = response.json();
       status.forEach((value) => { value.status = this.toTestExecutionState(value.status); });
       return status;
