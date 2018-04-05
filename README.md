@@ -93,3 +93,63 @@ Understands the following events:
 </pre></td>
   </tr>
 </table>
+
+## Linking local web-workspace-navigator into node_modules
+
+In order to work with non published artifacts of web-workspace-navigator within the test-editor-web, linking can be used.
+Given the following variables, this are the steps to have functional linking in place without modifying any sources.
+TODO: if deemed useful these steps should be put into scripts.
+
+``` shell
+WORKSPACE_NAVIGATOR="~/path/to/project"
+TEST_EDITOR_WEB="~/path/to/project"
+PREFIX=`npm prefix -g`
+```
+
+### bring linking into place
+
+``` shell
+cd $WORKSPACE_NAVIGATOR
+npm link
+cd $TEST_EDITOR_WEB
+npm link @testeditor/workspace-navigator
+cd $PREFIX/lib/node_modules/@testeditor
+rm workspace-navigator # old linking
+ln -s $WORKSPACE_NAVIGATOR/out-tsc/lib-es5/ workspace-navigator # new linking
+# check the link
+ls $TEST_EDITOR_WEB/node_modules/@testeditor/workspace-navigator
+```
+
+### build web-workspace-navigator initially
+
+``` shell
+cd $WORKSPACE_NAVIGATOR # only if not already there
+npm run build
+```
+
+### build and serve test-editor-web
+
+``` shell
+cd $TEST_EDITOR_WEB # only if not already there
+npm run start
+```
+
+
+### make changes to web-workspace-navigator
+
+``` shell
+cd $WORKSPACE_NAVIGATOR # only if not already there
+node build.js 
+```
+
+`node build.js` will not cleanup all old resources, so this works only for some changes, in all other cases use `npm run build`. If `npm run build` is run, the test editor web needs to be restarted!
+
+### undo linking and restore original modules
+
+``` shell
+rm $PREFIX/lib/node_modules/@testeditor/workspace-navigator
+cd $TEST_EDITOR_WEB
+rm node_modules/@testeditor/workspace-navigator
+yarn install --force
+npm run build
+```

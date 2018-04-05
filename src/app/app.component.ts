@@ -6,11 +6,10 @@ import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-typ
 
 import { TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
          WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
-         PersistenceService, WorkspaceElement } from '@testeditor/workspace-navigator';
+         PersistenceService, WorkspaceElement, MarkerObserver } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { IndexService } from '../service/index/index.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
-import { MarkerObserver } from '@testeditor/workspace-navigator/src/common/markers/marker.observer';
 import { TestExecutionState } from '../service/execution/test.execution.state';
 
 @Component({
