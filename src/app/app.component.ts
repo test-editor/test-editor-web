@@ -1,6 +1,6 @@
 import { Component, isDevMode, OnInit, OnDestroy } from '@angular/core';
 import { MessagingService, Message } from '@testeditor/messaging-service';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { OidcSecurityService, AuthorizationResult } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 
@@ -51,10 +51,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.onOidcModuleSetup();
       });
     }
-    // this.oidcSecurityService.onAuthorizationResult.subscribe(
-    //   (authorizationResult: AuthorizationResult) => {
-    //     this.onAuthorizationResultComplete(authorizationResult);
-    //   });
+    this.oidcSecurityService.onAuthorizationResult.subscribe(
+       (authorizationResult: AuthorizationResult) => {
+         this.onAuthorizationResultComplete(authorizationResult);
+       });
 
     this.setupWorkspaceReloadResponse();
     this.setupTestExecutionListener();
@@ -112,11 +112,11 @@ export class AppComponent implements OnInit, OnDestroy {
     if (window.location.hash) {
       console.log('start authorized callback');
       this.oidcSecurityService.authorizedCallback();
-    // } else {
-    //   if ('/autologin' !== window.location.pathname) {
-    //     this.write('redirect', window.location.pathname);
-    //   }
-    //   console.log('AppComponent:onModuleSetup');
+    } else {
+      if ('/autologin' !== window.location.pathname) {
+        this.write('redirect', window.location.pathname);
+      }
+      console.log('AppComponent:onModuleSetup');
     //   this.oidcSecurityService.getIsAuthorized().subscribe((authorized: boolean) => {
     //     if (!authorized) {
     //       this.router.navigate(['/autologin']);
@@ -125,28 +125,28 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
-  //   console.log('AppComponent:onAuthorizationResultComplete');
-  //   const path = this.read('redirect');
+  private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
+    console.log('AppComponent:onAuthorizationResultComplete');
+    const path = this.read('redirect');
   //   if (authorizationResult === AuthorizationResult.authorized) {
   //     this.router.navigate([path]);
   //   } else {
   //     this.router.navigate(['/Unauthorized']);
   //   }
-  // }
+  }
 
-  // private read(key: string): any {
-  //   const data = localStorage.getItem(key);
-  //   if (data != null) {
-  //     return JSON.parse(data);
-  //   }
+  private read(key: string): any {
+    const data = localStorage.getItem(key);
+    if (data != null) {
+      return JSON.parse(data);
+    }
 
-  //   return;
-  // }
+    return;
+  }
 
-  // private write(key: string, value: any): void {
-  //   localStorage.setItem(key, JSON.stringify(value));
-  // }
+  private write(key: string, value: any): void {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
 
   private setupWorkspaceReloadResponse(): void {
     this.messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, () => {

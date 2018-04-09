@@ -26,12 +26,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppTokenStorage } from './app.token.storage';
 
 const appRoutes: Routes = [
-    { path: '', component: AppComponent }
+  { path: '', component: AppComponent },
+  { path: 'home', component: AppComponent }
 ];
 
 export function loadConfig(oidcConfigService: OidcConfigService) {
     console.log('APP_INITIALIZER STARTING');
-    return () => oidcConfigService.load_using_stsServer('https://accounts.google.com');
+  return () => {
+    console.log('preload');
+    oidcConfigService.load_using_stsServer('http://accounts.google.com');
+    console.log('postload');
+  }
 }
 
 @NgModule({
@@ -55,6 +60,7 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
   ],
   providers: [
     OidcSecurityService,
+    OidcConfigService,
     {
       provide: APP_INITIALIZER,
       useFactory: loadConfig,
@@ -88,11 +94,11 @@ export class AppModule {
       openIDImplicitFlowConfiguration.client_id = '173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com';
       openIDImplicitFlowConfiguration.response_type = 'id_token token';
       openIDImplicitFlowConfiguration.scope = 'openid email profile';
-      openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'https://localhost:4200';
-      openIDImplicitFlowConfiguration.start_checksession = true;
-      openIDImplicitFlowConfiguration.silent_renew = false;
+      // openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'https://localhost:4200';
+      // openIDImplicitFlowConfiguration.start_checksession = true;
+      // openIDImplicitFlowConfiguration.silent_renew = false;
       // openIDImplicitFlowConfiguration.silent_renew_url = 'https://accounts.google.com/silent-renew.html';
-      openIDImplicitFlowConfiguration.post_login_route = '/';
+      openIDImplicitFlowConfiguration.post_login_route = '/home';
       // HTTP 403
       openIDImplicitFlowConfiguration.forbidden_route = '/Forbidden';
       openIDImplicitFlowConfiguration.unauthorized_route = '/Unauthorized';
@@ -105,6 +111,7 @@ export class AppModule {
       const authWellKnownEndpoints = new AuthWellKnownEndpoints();
       authWellKnownEndpoints.setWellKnownEndpoints(this.oidcConfigService.wellKnownEndpoints);
 
+      console.log(openIDImplicitFlowConfiguration);
       this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration, authWellKnownEndpoints);
 
     });
