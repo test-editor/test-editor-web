@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
 import { WorkspaceElement } from '@testeditor/workspace-navigator';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';

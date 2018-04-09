@@ -34,10 +34,11 @@ export class DefaultTestExecutionService extends TestExecutionService {
   }
 
   getStatus(path: string): Promise<TestExecutionStatus> {
-    return this.http.get<Response>(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true').toPromise().then(response => {
-      const status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(response.text()) };
-      return status;
-    });
+    return this.http.get<Response>(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true')
+      .toPromise().then(response => {
+        const status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(response.text()) };
+        return status;
+      });
   }
 
   getAllStatus(): Promise<TestExecutionStatus[]> {

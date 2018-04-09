@@ -21,7 +21,7 @@ import { TestExecutionServiceConfig } from '../service/execution/test.execution.
 import { IndexService } from 'service/index/index.service';
 import { XtextIndexService } from '../service/index/xtext.index.service';
 import { XtextIndexServiceConfig } from 'service/index/xtext.index.service.config';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppTokenStorage } from './app.token.storage';
 

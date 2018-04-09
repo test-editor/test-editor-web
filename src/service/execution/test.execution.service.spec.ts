@@ -1,7 +1,6 @@
 import { TestExecutionService, DefaultTestExecutionService } from './test.execution.service';
 import { TestExecutionServiceConfig } from './test.execution.service.config';
-import { Response, ResponseOptions, XHRBackend, RequestMethod, HttpModule } from '@angular/http';
-import { MockBackend, MockConnection } from '@angular/http/testing';
+import { Response, ResponseOptions } from '@angular/http';
 import { inject, TestBed, fakeAsync } from '@angular/core/testing';
 import { TestExecutionState } from './test.execution.state';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -16,7 +15,6 @@ describe('TestExecutionService', () => {
   beforeEach(() => {
     serviceConfig = new TestExecutionServiceConfig();
     serviceConfig.serviceUrl = 'http://localhost:9080/tests';
-    const dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, HttpClientModule],
