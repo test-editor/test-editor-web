@@ -1,6 +1,6 @@
 import { Component, isDevMode, OnInit, OnDestroy } from '@angular/core';
 import { MessagingService, Message } from '@testeditor/messaging-service';
-import { OidcSecurityService, AuthorizationResult } from 'angular-auth-oidc-client';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 
@@ -33,7 +33,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private messagingService: MessagingService,
     public oidcSecurityService: OidcSecurityService,
-    // private router: Router,
     private persistenceService: PersistenceService,
     private validationMarkerService: ValidationMarkerService,
     private indexService: IndexService,
@@ -51,10 +50,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.onOidcModuleSetup();
       });
     }
-    this.oidcSecurityService.onAuthorizationResult.subscribe(
-       (authorizationResult: AuthorizationResult) => {
-         this.onAuthorizationResultComplete(authorizationResult);
-       });
 
     this.setupWorkspaceReloadResponse();
     this.setupTestExecutionListener();
@@ -66,21 +61,22 @@ export class AppComponent implements OnInit, OnDestroy {
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
       });
-    this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
-      (userData: any) => {
-        if (userData && userData !== '') {
-          this.user = userData.name;
-          const idToken = this.oidcSecurityService.getIdToken();
-          if (idToken !== '') {
-            this.hasToken = true;
-            sessionStorage.setItem('token', idToken);
-            if (isDevMode()) {
-              console.log('idToken ');
-              console.log(idToken);
-            }
+    this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe((userData: any) => {
+      if (userData && userData !== '') {
+        this.user = userData.name;
+        const idToken = this.oidcSecurityService.getIdToken();
+        if (idToken !== '') {
+          this.hasToken = true;
+          // this makes sure that xtext services can provide the token, too
+          // since the xtext services do not make use of the intercepted HttpClient
+          sessionStorage.setItem('token', idToken);
+          if (isDevMode()) {
+            console.log('idToken ');
+            console.log(idToken);
           }
         }
-      });
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -105,47 +101,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.messagingService.publish(NAVIGATION_CLOSE, null);
     this.oidcSecurityService.logoff();
     this.user = null;
-    localStorage.removeItem('token');
   }
 
   private onOidcModuleSetup() {
     if (window.location.hash) {
       console.log('start authorized callback');
       this.oidcSecurityService.authorizedCallback();
-    } else {
-      if ('/autologin' !== window.location.pathname) {
-        this.write('redirect', window.location.pathname);
-      }
-      console.log('AppComponent:onModuleSetup');
-    //   this.oidcSecurityService.getIsAuthorized().subscribe((authorized: boolean) => {
-    //     if (!authorized) {
-    //       this.router.navigate(['/autologin']);
-    //     }
-    //   });
     }
-  }
-
-  private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
-    console.log('AppComponent:onAuthorizationResultComplete');
-    const path = this.read('redirect');
-  //   if (authorizationResult === AuthorizationResult.authorized) {
-  //     this.router.navigate([path]);
-  //   } else {
-  //     this.router.navigate(['/Unauthorized']);
-  //   }
-  }
-
-  private read(key: string): any {
-    const data = localStorage.getItem(key);
-    if (data != null) {
-      return JSON.parse(data);
-    }
-
-    return;
-  }
-
-  private write(key: string, value: any): void {
-    localStorage.setItem(key, JSON.stringify(value));
   }
 
   private setupWorkspaceReloadResponse(): void {

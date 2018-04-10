@@ -55,9 +55,8 @@ export class XtextNaiveValidationMarkerService extends ValidationMarkerService {
     };
     const fulltext = encodeURIComponent(root['fulltext']).replace(/%20/g, '+');
     return this.http.post<ValidationServiceResponseType>(`${this.serviceUrl}/validate?resource=${encodeURIComponent(root.path)}`,
-      `fullText=${fulltext}`, httpOptions).toPromise().then((response) => {
+      `fullText=${fulltext}`, httpOptions).toPromise().then((validationResponse) => {
       try {
-        const validationResponse: ValidationServiceResponseType = response;
         return [{
           path: root.path,
           errors: validationResponse.issues.filter(issue => issue.severity === Severity.ERROR).length,

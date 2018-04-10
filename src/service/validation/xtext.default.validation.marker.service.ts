@@ -15,12 +15,13 @@ export class XtextDefaultValidationMarkerService extends ValidationMarkerService
   }
 
   getAllMarkerSummaries(workspaceRoot: WorkspaceElement): Promise<ValidationSummary[]> {
-    return this.http.get<Response>(this.serviceUrl).toPromise().then(response => response.json(), reject => [])
+    return this.http.get<ValidationSummary[]>(this.serviceUrl).toPromise()
       .then((leafSummaries: ValidationSummary[]) => {
         const summaryMap = this.mapSummariesByPath(leafSummaries);
         this.recurseAndAggregateValidationSummaries(workspaceRoot, summaryMap);
         return Array.from(summaryMap.values());
-      });
+      },
+      reject => []);
   }
 
   private mapSummariesByPath(summaries: ValidationSummary[]): Map<string, ValidationSummary> {

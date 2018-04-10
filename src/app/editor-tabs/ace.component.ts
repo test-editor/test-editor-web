@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import { Component, Input, AfterViewInit, isDevMode } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
 import { MessagingService } from '@testeditor/messaging-service';
@@ -53,10 +53,13 @@ export class AceComponent implements AfterViewInit {
 
   private initializeEditor(editor: any): void {
     // Set initial content
-    this.documentService.loadDocument(this.path).then(response => {
-      this.setContent(editor, response.text());
+    this.documentService.loadDocument(this.path).then(text => {
+      this.setContent(editor, text);
       editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
     }).catch(reason => {
+      if (isDevMode()) {
+        console.log(reason);
+      }
       this.setContent(editor, `Could not load resource: ${this.path}\n\nReason:\n${reason}`);
       this.setReadOnly(true);
     });

@@ -1,5 +1,4 @@
 import { async, TestBed, inject } from '@angular/core/testing';
-import { Response, ResponseOptions } from '@angular/http';
 import { XtextIndexServiceConfig } from './xtext.index.service.config';
 import { XtextIndexService } from './xtext.index.service';
 import { IndexService, IndexDelta } from './index.service';
@@ -32,10 +31,7 @@ describe('XtextIndexService', () => {
         url: serviceConfig.serviceUrl + '/refresh',
         method: 'POST'
       };
-      const mockResponse = new Response(new ResponseOptions({
-        status: 204,
-        body: [ { path: 'some/path/to/file' } ]
-      }));
+      const mockResponse = [{ path: 'some/path/to/file' }];
 
       // when
       indexService.refresh().then((indexDelta: IndexDelta[]) => {
@@ -55,10 +51,7 @@ describe('XtextIndexService', () => {
         url: serviceConfig.serviceUrl + '/refresh',
         method: 'POST'
       };
-      const mockResponse = new Response(new ResponseOptions({
-        status: 204,
-        body: null
-      }));
+      const mockResponse = null;
 
       // when
       indexService.refresh().then((indexDelta: IndexDelta[]) => {

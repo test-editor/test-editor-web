@@ -1,5 +1,4 @@
 import { async, TestBed, inject } from '@angular/core/testing';
-import { Response, ResponseOptions } from '@angular/http';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
@@ -115,10 +114,6 @@ describe('ValidationMarkerService', () => {
     (httpMock: HttpTestingController, validationMarkerService: ValidationMarkerService) => {
       // given
       const sampleFile: WorkspaceElement = { path: 'sample/path/file.txt', name: 'file.txt', children: [], type: ElementType.File };
-      const mockResponse = new Response(new ResponseOptions({
-        status: 200,
-        body: expectedValidationMarkersForSampleResponse
-      }));
       const allMarkerSummariesRequest = {
         url: serviceConfig.serviceUrl,
         method: 'GET'
@@ -136,7 +131,7 @@ describe('ValidationMarkerService', () => {
           expect(summaries[7].infos).toEqual(0);
         });
 
-      httpMock.match(allMarkerSummariesRequest)[0].flush(mockResponse);
+      httpMock.match(allMarkerSummariesRequest)[0].flush(expectedValidationMarkersForSampleResponse);
     })));
 
 });

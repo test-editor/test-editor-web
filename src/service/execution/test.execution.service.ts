@@ -1,4 +1,3 @@
-import { Response } from '@angular/http';
 import { TestExecutionServiceConfig } from './test.execution.service.config';
 import { Injectable } from '@angular/core';
 import { TestExecutionState } from './test.execution.state';
@@ -10,10 +9,9 @@ export interface TestExecutionStatus {
 }
 
 export abstract class TestExecutionService {
-  abstract execute(path: string): Promise<Response>;
+  abstract execute(path: string): Promise<any>;
   abstract getStatus(path: string): Promise<TestExecutionStatus>;
   abstract getAllStatus(): Promise<TestExecutionStatus[]>;
-
 }
 
 @Injectable()
@@ -29,21 +27,20 @@ export class DefaultTestExecutionService extends TestExecutionService {
     this.serviceUrl = config.serviceUrl;
   }
 
-  execute(path: string): Promise<Response> {
-    return this.http.post<Response>(this.getURL(path, DefaultTestExecutionService.executeURLPath), '').toPromise();
+  execute(path: string): Promise<any> {
+    return this.http.post(this.getURL(path, DefaultTestExecutionService.executeURLPath), '').toPromise();
   }
 
   getStatus(path: string): Promise<TestExecutionStatus> {
-    return this.http.get<Response>(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true')
-      .toPromise().then(response => {
-        const status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(response.text()) };
+    return this.http.get(this.getURL(path, DefaultTestExecutionService.statusURLPath) + '&wait=true', { responseType: 'text' })
+      .toPromise().then(text => {
+        const status: TestExecutionStatus = { path: path, status: this.toTestExecutionState(text) };
         return status;
       });
   }
 
   getAllStatus(): Promise<TestExecutionStatus[]> {
-    return this.http.get<Response>(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(response => {
-      const status: any[] = response.json();
+    return this.http.get<any[]>(`${this.serviceUrl}${DefaultTestExecutionService.statusAllURLPath}`).toPromise().then(status => {
       status.forEach((value) => { value.status = this.toTestExecutionState(value.status); });
       return status;
     });

@@ -1,6 +1,5 @@
 import { TestExecutionService, DefaultTestExecutionService } from './test.execution.service';
 import { TestExecutionServiceConfig } from './test.execution.service.config';
-import { Response, ResponseOptions } from '@angular/http';
 import { inject, TestBed, fakeAsync } from '@angular/core/testing';
 import { TestExecutionState } from './test.execution.state';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -31,17 +30,17 @@ describe('TestExecutionService', () => {
       // given
       const tclFilePath = 'path/to/file?.tcl';
       const testExecutionRequest = {
-        url: serviceConfig.serviceUrl + '/execute?resource=path/to/file%3F.tcl',
-        method: 'POST'
+        method: 'POST',
+        url: serviceConfig.serviceUrl + '/execute?resource=path/to/file%3F.tcl'
       };
-      const mockResponse = new Response(new ResponseOptions({ status: HTTP_STATUS_CREATED }));
+      const mockResponse = 'something';
 
       // when
       executionService.execute(tclFilePath)
 
         // then
         .then(response => {
-          expect(response.status).toBe(HTTP_STATUS_CREATED);
+          expect(response).toBe('something');
         });
 
       httpMock.match(testExecutionRequest)[0].flush(mockResponse);
@@ -52,21 +51,20 @@ describe('TestExecutionService', () => {
       // given
       const tclFilePath = 'path/to/file.tcl';
       const resourceStatusRequest = {
-        url: serviceConfig.serviceUrl + '/status?resource=' + tclFilePath + '&wait=true',
-        method: 'GET'
+        method: 'GET',
+        url: serviceConfig.serviceUrl + '/status?resource=' + tclFilePath + '&wait=true'
       };
-      const mockResponse = new Response(new ResponseOptions({
-        body: 'IDLE',
-        status: HTTP_STATUS_OK
-      }));
+      const mockResponse = {
+        status: 'IDLE',
+        path: tclFilePath
+      };
 
       // when
       executionService.getStatus(tclFilePath)
 
         // then
         .then(testExecutionStatus => {
-          expect(testExecutionStatus.path).toBe(tclFilePath);
-          expect(testExecutionStatus.status).toBe(TestExecutionState.Idle);
+          expect(testExecutionStatus).toEqual({ path: tclFilePath, status: TestExecutionState.Idle});
         });
 
       httpMock.match(resourceStatusRequest)[0].flush(mockResponse);
@@ -79,22 +77,19 @@ describe('TestExecutionService', () => {
         url: serviceConfig.serviceUrl + '/status/all',
         method: 'GET'
       };
-      const mockResponse = new Response(new ResponseOptions({
-        status: HTTP_STATUS_OK,
-        body: '[ { "path": "src/test/java/failures/failedTest.tcl", "status": "FAILED"},\
-                     { "path": "runningTest.tcl",                       "status": "RUNNING"},\
-                     { "path": "successfulTest.tcl",                    "status": "SUCCESS"}]'
-      }));
+      const mockResponse =
+        [{ 'path': 'src/test/java/failures/failedTest.tcl', 'status': 'FAILED'},
+         { 'path': 'runningTest.tcl',                       'status': 'RUNNING'},
+         { 'path': 'successfulTest.tcl',                    'status': 'SUCCESS'}];
 
       // when
       executionService.getAllStatus()
 
         // then
         .then(statusUpdates => {
-          expect(statusUpdates.length).toEqual(3);
-          expect(statusUpdates[0]).toEqual({ path: 'src/test/java/failures/failedTest.tcl', status: TestExecutionState.LastRunFailed });
-          expect(statusUpdates[1]).toEqual({ path: 'runningTest.tcl', status: TestExecutionState.Running });
-          expect(statusUpdates[2]).toEqual({ path: 'successfulTest.tcl', status: TestExecutionState.LastRunSuccessful });
+          expect(statusUpdates).toEqual([{ path: 'src/test/java/failures/failedTest.tcl', status: TestExecutionState.LastRunFailed },
+                                         { path: 'runningTest.tcl',                       status: TestExecutionState.Running },
+                                         { path: 'successfulTest.tcl',                    status: TestExecutionState.LastRunSuccessful }]);
         });
 
       httpMock.match(statusAllRequest)[0].flush(mockResponse);

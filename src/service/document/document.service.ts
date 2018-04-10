@@ -14,9 +14,9 @@ export class DocumentService {
     this.serviceUrl = config.persistenceServiceUrl;
   }
 
-  loadDocument(path: string): Promise<any> {
+  loadDocument(path: string): Promise<string> {
     const url = `${this.serviceUrl}/documents/${path}`;
-    return this.http.get(url).toPromise();
+    return this.http.get(url, { responseType: 'text' }).toPromise();
   }
 
   saveDocument(path: string, content: string): Promise<any> {
