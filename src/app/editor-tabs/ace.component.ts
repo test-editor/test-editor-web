@@ -10,6 +10,9 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 
+import { HttpResponse } from '@angular/common/http';
+import { Conflict, isConflict } from 'service/document/conflict';
+
 declare var createXtextEditor: (config: any) => Deferred;
 
 @Component({
@@ -58,10 +61,10 @@ export class AceComponent implements AfterViewInit {
 
   private initializeEditor(editor: any): void {
     // Set initial content
-    this.documentService.loadDocument(this.path).then(text => {
+    this.documentService.loadDocument(this.path).subscribe(text => {
       this.setContent(editor, text);
       editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
-    }).catch(reason => {
+    }, reason => {
       if (isDevMode()) {
         console.log(reason);
       }
@@ -125,14 +128,24 @@ export class AceComponent implements AfterViewInit {
   public save(): void {
     this.editor.then(editor => {
       editor.setReadOnly(true);
-      this.documentService.saveDocument(this.path, editor.getValue()).then(res => {
-        this.setDirty(false);
+      this.documentService.saveDocument(this.path, editor.getValue()).subscribe((status) => {
+        if (isConflict(status)) {
+          this.documentService.loadDocument(this.path).subscribe(content => {
+            editor.setValue(content);
+            editor.setReadOnly(false);
+          });
+          console.log(status.message);
+          this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
+        } else {
+          this.setDirty(false);
+          editor.setReadOnly(false);
+          this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
+        }
+
+      }, error => {
+        console.log(error);
         editor.setReadOnly(false);
-        this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
-      }).catch(reason => {
-        console.log(reason);
-        editor.setReadOnly(false);
-        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: reason });
+        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
       });
     });
   }
