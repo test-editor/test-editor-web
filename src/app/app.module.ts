@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 
+import { ModalModule } from 'ngx-bootstrap/modal';
+
 import { MessagingModule } from '@testeditor/messaging-service';
 import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
 
@@ -37,6 +39,7 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     HttpClientModule,
+    ModalModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
