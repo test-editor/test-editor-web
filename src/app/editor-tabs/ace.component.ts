@@ -9,14 +9,9 @@ import * as constants from '../config/app-config';
 import * as events from './event-types';
 
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
-// see https://github.com/ionic-team/ionic-app-scripts/issues/1052 ionic issue
-// tslint:disable: no-unused-variable
-import { HttpResponse } from '@angular/common/http';
-// tslint:enable: no-unused-variable
 
-// tslint:disable: no-unused-variable
-import { Conflict, isConflict } from 'service/document/conflict';
-// tslint:enable: no-unused-variable
+import { HttpResponse } from '@angular/common/http';
+import { isConflict } from 'service/document/conflict';
 
 declare var createXtextEditor: (config: any) => Deferred;
 

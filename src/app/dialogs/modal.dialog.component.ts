@@ -1,20 +1,27 @@
 import { Component, ViewChild } from '@angular/core';
+import { ModalDirective, BsModalRef } from 'ngx-bootstrap';
+
+interface DialogConfig {
+  message: string;
+  title?: string;
+  buttons: {
+    label: string,
+    onClick: (modalRef: BsModalRef) => void
+  }[];
+}
 
 @Component({
     selector: 'app-modal-dialog',
     templateUrl: './modal.dialog.component.html',
     styleUrls: ['./modal.dialog.component.css']
   })
-
-  export class ModalDialogComponent {
+  export class ModalDialogComponent implements DialogConfig {
     message: string;
-    pathToBackupFile: string;
-    @ViewChild('staticModal') modal: any;
+    title = 'Warning';
+    buttons = [{
+      label: 'OK',
+      onClick: (modalRef: BsModalRef) => modalRef.hide()
+    }];
 
-    openDialog(message: string, pathToBackupFile ?: string) {
-
-        this.message = message;
-        this.modal.show();
-    }
-
+    constructor(public modalRef: BsModalRef) {}
   }
