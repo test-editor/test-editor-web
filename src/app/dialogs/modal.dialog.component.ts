@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { ModalDirective, BsModalRef } from 'ngx-bootstrap';
+import { Component } from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap';
 
 interface DialogConfig {
   message: string;

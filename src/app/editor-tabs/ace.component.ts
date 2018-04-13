@@ -10,8 +10,9 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 
-import { HttpResponse } from '@angular/common/http';
 import { isConflict } from 'service/document/conflict';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 
 declare var createXtextEditor: (config: any) => Deferred;
 
@@ -29,7 +30,7 @@ export class AceComponent implements AfterViewInit {
   editor: Promise<any>;
 
   constructor(private documentService: DocumentService, private messagingService: MessagingService,
-    private syntaxHighlightingService: SyntaxHighlightingService) {
+    private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService) {
   }
 
   ngAfterViewInit(): void {
@@ -131,6 +132,22 @@ export class AceComponent implements AfterViewInit {
       this.documentService.saveDocument(this.path, editor.getValue()).subscribe((status) => {
         if (isConflict(status)) {
           this.documentService.loadDocument(this.path).subscribe(content => {
+            this.modalService.show(ModalDialogComponent, {initialState: {
+              message: status.message,
+              buttons: [{
+                label: 'OK',
+                onClick: (modalRef: BsModalRef) => { modalRef.hide(); }
+              }, {
+                label: 'Open backup file',
+                onClick: (modalRef: BsModalRef) => {
+                  this.messagingService.publish(events.NAVIGATION_OPEN, {
+                    name: status.backupFilePath.substr(this.path.lastIndexOf('/') + 1),
+                    path: status.backupFilePath
+                  });
+                  modalRef.hide(); }
+              }]
+              }
+            });
             editor.setValue(content);
             editor.setReadOnly(false);
           });

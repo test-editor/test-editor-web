@@ -1,10 +1,9 @@
 import { ModalDialogComponent } from './modal.dialog.component';
-import { async, TestBed, ComponentFixture, fakeAsync, tick, flush } from '@angular/core/testing';
+import { async, TestBed, ComponentFixture, fakeAsync, flush } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ModalModule, BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { Component, ViewChild, NgModule, DebugElement, getDebugNode } from '@angular/core';
+import { Component, DebugElement, getDebugNode } from '@angular/core';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { lastChild } from '../../../../web-workspace-navigator/out-tsc/lib/src/common/workspace.spec.data';
 
 @Component({
   selector: `app-host-component`,

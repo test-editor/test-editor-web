@@ -1,20 +1,19 @@
 import { AceComponent } from './ace.component';
-import { tick, fakeAsync, async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { tick, fakeAsync, async, ComponentFixture, TestBed, flush } from '@angular/core/testing';
 import { mock, when, instance, anyString, spy, verify } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
-
-// import { Response, BaseResponseOptions } from '@angular/http';
-
 import { DocumentService } from '../../service/document/document.service';
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
-import { ViewChild, Component } from '@angular/core';
+import { ViewChild, Component, getDebugNode, DebugElement } from '@angular/core';
 import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
-// import { HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/throw';
 import { Conflict } from 'service/document/conflict';
+import { By } from '@angular/platform-browser';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
+import { NAVIGATION_OPEN } from './event-types';
 
 @Component({
   selector: `app-host-component`,
@@ -44,15 +43,20 @@ describe('AceComponent', () => {
     // Initialize TestBed
     TestBed.configureTestingModule({
       imports: [
-        MessagingModule.forRoot()
+        MessagingModule.forRoot(),
+        ModalModule.forRoot()
       ],
       declarations: [
-        TestHostComponent, AceComponent
+        TestHostComponent, AceComponent, ModalDialogComponent
       ],
       providers: [
         { provide: DocumentService, useValue: instance(documentServiceMock) },
         { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) }
       ]
+    }).overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ModalDialogComponent]
+      }
     }).compileComponents();
   }));
 
@@ -124,22 +128,62 @@ describe('AceComponent', () => {
       const resourceContentRemote = 'remote content';
       const backupPath = resourcePath + '.local-backup';
       const editorSpy = spy(editor);
-      const resourceContentLocal = 'local content';
+      const message = `The file '${resourcePath}' could not be saved due to concurrent modifications. ` +
+        `Local changes were instead backed up to '${backupPath}'.`;
 
-      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(
-        new Conflict(`The file '${resourcePath}' could not be saved due to concurrent modifications. ` +
-          `Local changes were instead backed up to '${backupPath}'.`, () => Observable.of(resourceContentLocal)
-        ))
-      );
+      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message, backupPath)));
       when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
 
       // when
       hostComponent.aceComponentUnderTest.save();
 
       // then
-      tick();
+      flush();
       verify(editorSpy.setValue(resourceContentRemote)).once();
+      const dialogDebugElement = getDebugNode(fixture.debugElement.nativeElement.parentNode.lastChild) as DebugElement;
+      expect(dialogDebugElement.query(By.css('#modal-dialog-message')).nativeElement.innerText).toEqual(message);
+      expect(dialogDebugElement.query(By.css('#modal-dialog-button-0')).nativeElement.innerText).toEqual('OK');
+      expect(dialogDebugElement.query(By.css('#modal-dialog-button-1')).nativeElement.innerText).toEqual('Open backup file');
+
+      // cleanup
+      dialogDebugElement.query(By.css('#modal-dialog-close')).nativeElement.click();
+      flush();
     });
+  }));
+
+    it('opens the backup file when the corresponding button in the conflict message dialog is clicked', fakeAsync(() => {
+      // given
+      hostComponent.aceComponentUnderTest.editor.then(editor => {
+        const resourcePath = hostComponent.path;
+        const resourceContentRemote = 'remote content';
+        const backupPath = resourcePath + '.local-backup';
+        const message = `The file '${resourcePath}' could not be saved due to concurrent modifications. ` +
+          `Local changes were instead backed up to '${backupPath}'.`;
+
+        when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message, backupPath)));
+        when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
+
+        hostComponent.aceComponentUnderTest.save();
+        flush();
+        const dialogDebugElement = getDebugNode(fixture.debugElement.nativeElement.parentNode.lastChild) as DebugElement;
+        const openBackupButton = dialogDebugElement.query(By.css('#modal-dialog-button-1')).nativeElement;
+
+        const openBackupFileCallback = jasmine.createSpy('openBackupFileCallback');
+        messagingService.subscribe(NAVIGATION_OPEN, openBackupFileCallback);
+
+        // when
+        openBackupButton.click();
+
+        // then
+        flush();
+        expect(dialogDebugElement.query(By.css('#modal-dialog-close'))).toBeNull();
+        expect(openBackupFileCallback).toHaveBeenCalledTimes(1);
+        expect(openBackupFileCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+          name: 'file.local-backup',
+          path: backupPath
+        }));
+
+      });
   }));
 
 });
