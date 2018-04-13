@@ -3,13 +3,13 @@ import { tick, fakeAsync, async, ComponentFixture, TestBed } from '@angular/core
 import { mock, when, instance, anyString, spy, verify } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
-import { Response, BaseResponseOptions } from '@angular/http';
+// import { Response, BaseResponseOptions } from '@angular/http';
 
 import { DocumentService } from '../../service/document/document.service';
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 import { ViewChild, Component } from '@angular/core';
 import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
-import { HttpResponse, HttpHeaders } from '@angular/common/http';
+// import { HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/empty';
@@ -120,7 +120,6 @@ describe('AceComponent', () => {
   it('opens message dialog on save when document provider reports conflict', fakeAsync(() => {
     // given
     hostComponent.aceComponentUnderTest.editor.then(editor => {
-      const documentServiceBaseURL = 'http://localhost/documents/';
       const resourcePath = hostComponent.path;
       const resourceContentRemote = 'remote content';
       const backupPath = resourcePath + '.local-backup';

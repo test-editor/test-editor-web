@@ -1,21 +1,20 @@
-import { Component, ViewChild } from "@angular/core";
- 
+import { Component, ViewChild } from '@angular/core';
+
 @Component({
-    selector: 'modal-dialog',
+    selector: 'app-modal-dialog',
     templateUrl: './modal.dialog.component.html',
     styleUrls: ['./modal.dialog.component.css']
   })
 
   export class ModalDialogComponent {
-    message: string
-    pathToBackupFile : string
+    message: string;
+    pathToBackupFile: string;
     @ViewChild('staticModal') modal: any;
 
+    openDialog(message: string, pathToBackupFile ?: string) {
 
-    openDialog(message: string, pathToBackupFile ? : string) {
-        
-        this.message = message
-        this.modal.show()
+        this.message = message;
+        this.modal.show();
     }
-      
+
   }
