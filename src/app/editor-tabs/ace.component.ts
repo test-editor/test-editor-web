@@ -19,6 +19,8 @@ declare var createXtextEditor: (config: any) => Deferred;
 })
 export class AceComponent implements AfterViewInit {
 
+  static readonly UNKNOWN_LANGUAGE_SYNTAX_PATH = 'none';
+
   @Input() path: string;
   @Input() tabId: string;
   editor: Promise<any>;
@@ -35,6 +37,7 @@ export class AceComponent implements AfterViewInit {
   private createEditor(): Promise<any> {
     const editorId = `${this.tabId}-editor`;
     return this.findSyntaxDefinitionFile().then(syntaxDefinitionFilePath => {
+      const isKnownLanguage = syntaxDefinitionFilePath !== AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
       const config = {
         baseUrl: window.location.origin,
         serviceUrl: constants.appConfig.serviceUrls.xtextService,
@@ -44,6 +47,8 @@ export class AceComponent implements AfterViewInit {
         sendFullText: true,
         resourceId: this.path,
         syntaxDefinition: syntaxDefinitionFilePath,
+        enableOccurrencesService: isKnownLanguage,
+        enableValidationService: isKnownLanguage,
         enableSaveAction: false // don't want the default xtext-save action
       };
       const deferred = createXtextEditor(config);
@@ -99,7 +104,7 @@ export class AceComponent implements AfterViewInit {
       })
       .catch(() => {
         console.log(`no syntax highlighting rules available for this file type ("${this.path}")`);
-        return 'none';
+        return AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
       });
   }
 
