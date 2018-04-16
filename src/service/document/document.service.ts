@@ -1,27 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
-import { AuthHttp } from 'angular2-jwt';
-
 
 import 'rxjs/add/operator/toPromise';
 
 import { DocumentServiceConfig } from '../../service/document/document.service.config';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class DocumentService {
 
   private serviceUrl: string;
 
-  constructor(private http: AuthHttp, config: DocumentServiceConfig) {
+  constructor(config: DocumentServiceConfig, private http: HttpClient) {
     this.serviceUrl = config.persistenceServiceUrl;
   }
 
-  loadDocument(path: string): Promise<Response> {
+  loadDocument(path: string): Promise<string> {
     const url = `${this.serviceUrl}/documents/${path}`;
-    return this.http.get(url).toPromise();
+    return this.http.get(url, { responseType: 'text' }).toPromise();
   }
 
-  saveDocument(path: string, content: string): Promise<Response> {
+  saveDocument(path: string, content: string): Promise<any> {
     const url = `${this.serviceUrl}/documents/${path}`;
     return this.http.put(url, content).toPromise();
   }

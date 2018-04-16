@@ -1,24 +1,23 @@
 import { async, TestBed, inject } from '@angular/core/testing';
-import { HttpModule, XHRBackend, Response, ResponseOptions } from '@angular/http';
-import { MockBackend, MockConnection } from '@angular/http/testing';
-import { AuthConfig, AuthHttp } from 'angular2-jwt';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
 import { ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
-import { XtextNaiveValidationMarkerService } from './xtext.naive.validation.marker.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { XtextDefaultValidationMarkerService } from './xtext.default.validation.marker.service';
 
-const sampleResponseBody = '{"issues":[\
-    {"description":"WebBrowser cannot be resolved.","severity":"error","line":19,"column":13,"offset":553,"length":10},\
-    {"description":"WebBrowser cannot be resolved.","severity":"error","line":33,"column":13,"offset":925,"length":10},\
-    {"description":"component/mask is not defined in aml","severity":"warning","line":19,"column":13,"offset":553,"length":10},\
-    {"description":"test step could not resolve fixture","severity":"info","line":20,"column":4,"offset":567,"length":5},\
-    {"description":"No ComponentElement found.","severity":"error","line":20,"column":10,"offset":573,"length":9},\
-    {"description":"test step could not resolve fixture","severity":"info","line":21,"column":4,"offset":586,"length":6},\
-    {"description":"test step could not resolve fixture","severity":"info","line":25,"column":4,"offset":709,"length":4},\
-    {"description":"test step could not resolve fixture","severity":"info","line":29,"column":12,"offset":815,"length":3},\
-    {"description":"component/mask is not defined in aml","severity":"warning","line":33,"column":13,"offset":925,"length":10},\
-    {"description":"test step could not resolve fixture","severity":"info","line":34,"column":4,"offset":939,"length":4},\
-    {"description":"test step could not resolve fixture","severity":"info","line":35,"column":4,"offset":961,"length":5}]}';
+// const sampleResponseBody = '{"issues":[\
+//     {"description":"WebBrowser cannot be resolved.","severity":"error","line":19,"column":13,"offset":553,"length":10},\
+//     {"description":"WebBrowser cannot be resolved.","severity":"error","line":33,"column":13,"offset":925,"length":10},\
+//     {"description":"component/mask is not defined in aml","severity":"warning","line":19,"column":13,"offset":553,"length":10},\
+//     {"description":"test step could not resolve fixture","severity":"info","line":20,"column":4,"offset":567,"length":5},\
+//     {"description":"No ComponentElement found.","severity":"error","line":20,"column":10,"offset":573,"length":9},\
+//     {"description":"test step could not resolve fixture","severity":"info","line":21,"column":4,"offset":586,"length":6},\
+//     {"description":"test step could not resolve fixture","severity":"info","line":25,"column":4,"offset":709,"length":4},\
+//     {"description":"test step could not resolve fixture","severity":"info","line":29,"column":12,"offset":815,"length":3},\
+//     {"description":"component/mask is not defined in aml","severity":"warning","line":33,"column":13,"offset":925,"length":10},\
+//     {"description":"test step could not resolve fixture","severity":"info","line":34,"column":4,"offset":939,"length":4},\
+//     {"description":"test step could not resolve fixture","severity":"info","line":35,"column":4,"offset":961,"length":5}]}';
 
 const firstChild: WorkspaceElement = {
   name: 'firstChild',
@@ -73,8 +72,6 @@ const root: WorkspaceElement = {
   children: [firstChild, middleChild, lastChild],
 };
 
-const numberOfWorkspaceLeafs = 4;
-
 const expectedValidationMarkersForSampleResponse = [
   { path: firstChild.path, errors: 3, warnings: 2, infos: 6 },
   { path: greatGrandChild1.path, errors: 3, warnings: 2, infos: 6 },
@@ -85,127 +82,56 @@ const expectedValidationMarkersForSampleResponse = [
   { path: root.path, errors: 12, warnings: 8, infos: 24 },
 ];
 
-const expectedValdationMarkersWithErrors = [
-  { path: firstChild.path, errors: 0, warnings: 0, infos: 0 },
-  { path: greatGrandChild1.path, errors: 3, warnings: 2, infos: 6 },
-  { path: greatGrandChild2.path, errors: 0, warnings: 0, infos: 0 },
-  { path: grandChild.path, errors: 3, warnings: 2, infos: 6 },
-  { path: middleChild.path, errors: 3, warnings: 2, infos: 6 },
-  { path: lastChild.path, errors: 3, warnings: 2, infos: 6 },
-  { path: root.path, errors: 6, warnings: 4, infos: 12 },
-];
+// const expectedValdationMarkersWithErrors = [
+//   { path: firstChild.path, errors: 0, warnings: 0, infos: 0 },
+//   { path: greatGrandChild1.path, errors: 3, warnings: 2, infos: 6 },
+//   { path: greatGrandChild2.path, errors: 0, warnings: 0, infos: 0 },
+//   { path: grandChild.path, errors: 3, warnings: 2, infos: 6 },
+//   { path: middleChild.path, errors: 3, warnings: 2, infos: 6 },
+//   { path: lastChild.path, errors: 3, warnings: 2, infos: 6 },
+//   { path: root.path, errors: 6, warnings: 4, infos: 12 },
+// ];
 
 describe('ValidationMarkerService', () => {
+  let serviceConfig: XtextValidationMarkerServiceConfig;
 
   beforeEach(() => {
-    const serviceConfig: XtextValidationMarkerServiceConfig = {
-      serviceUrl: ''
-    };
-
-    const dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
+    serviceConfig = new XtextValidationMarkerServiceConfig();
+    serviceConfig.serviceUrl = '';
 
     TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [HttpClientTestingModule, HttpClientModule],
       providers: [
-        { provide: XHRBackend, useClass: MockBackend},
-        { provide: AuthConfig, useValue: new AuthConfig({tokenGetter: () => dummyAuthToken}) },
         { provide: XtextValidationMarkerServiceConfig, useValue: serviceConfig },
-        { provide: ValidationMarkerService, useClass: XtextNaiveValidationMarkerService},
-        AuthHttp
+        { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
+        HttpClient
       ]
     });
   });
 
-  it('retrieves markers for single file', async(inject([XHRBackend, ValidationMarkerService],
-    (backend: MockBackend, validationMarkerService: ValidationMarkerService) => {
-    // given
-    const sampleFile: WorkspaceElement = { path: 'sample/path/file.txt', name: 'file.txt', children: [], type: ElementType.File };
-    backend.connections.subscribe((connection: MockConnection) => {
-      connection.mockRespond(new Response(new ResponseOptions({
-        status: 200,
-        body: sampleResponseBody
-      })));
-    });
-
-    // when
-    validationMarkerService.getAllMarkerSummaries(sampleFile)
-
-    // then
-    .then((summaries: ValidationSummary[]) => {
-      expect(summaries.length).toEqual(1);
-      expect(summaries[0].path).toEqual(sampleFile.path);
-      expect(summaries[0].errors).toEqual(3);
-      expect(summaries[0].warnings).toEqual(2);
-      expect(summaries[0].infos).toEqual(6);
-    });
-  })));
-
-  it('retrieves markers for multiple (nested) files and folders', async(inject([XHRBackend, ValidationMarkerService],
-    (backend: MockBackend, validationMarkerService: ValidationMarkerService) => {
-    // given
-    backend.connections.subscribe((connection: MockConnection) => {
-      connection.mockRespond(new Response(new ResponseOptions({
-        status: 200,
-        body: sampleResponseBody
-      })));
-    });
-
-    // when
-    validationMarkerService.getAllMarkerSummaries(root)
-
-    // then
-    .then((summaries: ValidationSummary[]) => {
-      expect(summaries).toEqual(expectedValidationMarkersForSampleResponse);
-    });
-  })));
-
-  it('handles errors in responses gracefully', async(inject([XHRBackend, ValidationMarkerService],
-    (backend: MockBackend, validationMarkerService: ValidationMarkerService) => {
-    // given
-    let connectionCounter = 0;
-    backend.connections.subscribe((connection: MockConnection) => {
-      if (connectionCounter++ % 2) {
-        connection.mockRespond(new Response(new ResponseOptions({
-          status: 200,
-          body: sampleResponseBody
-        })));
-      } else {
-        connection.mockError(new Error('Error while requesting validation markers'));
-      }
-    });
-
-    // when
-    validationMarkerService.getAllMarkerSummaries(root).then((summaries: ValidationSummary[]) => {
-
-    // then
-    expect(connectionCounter).toEqual(numberOfWorkspaceLeafs);
-    expect(summaries.sort()).toEqual(expectedValdationMarkersWithErrors.sort());
-  });
-  })));
-
-  [undefined, null, '', '{ issues:'].forEach((malformedBody) => {
-    it(`handles malformed bodies ("${malformedBody}") in responses gracefully`, async(inject([XHRBackend, ValidationMarkerService],
-      (backend: MockBackend, validationMarkerService: ValidationMarkerService) => {
+  // this test should be rewritten, too, I guess, since checking is done for all files
+  it('retrieves markers for single file', async(inject([HttpTestingController, ValidationMarkerService],
+    (httpMock: HttpTestingController, validationMarkerService: ValidationMarkerService) => {
       // given
       const sampleFile: WorkspaceElement = { path: 'sample/path/file.txt', name: 'file.txt', children: [], type: ElementType.File };
-      backend.connections.subscribe((connection: MockConnection) => {
-        connection.mockRespond(new Response(new ResponseOptions({
-          status: 200,
-          body: null
-        })));
-      });
+      const allMarkerSummariesRequest = {
+        url: serviceConfig.serviceUrl,
+        method: 'GET'
+      };
 
       // when
-      validationMarkerService.getAllMarkerSummaries(sampleFile).then((summaries: ValidationSummary[]) => {
+      validationMarkerService.getAllMarkerSummaries(sampleFile)
 
-      // then
-        expect(summaries.length).toEqual(1);
-        expect(summaries[0].path).toEqual(sampleFile.path);
-        expect(summaries[0].errors).toEqual(0);
-        expect(summaries[0].warnings).toEqual(0);
-        expect(summaries[0].infos).toEqual(0);
-      });
+        // then
+        .then((summaries: ValidationSummary[]) => {
+          expect(summaries.length).toEqual(8);
+          expect(summaries[7].path).toEqual(sampleFile.path);
+          expect(summaries[7].errors).toEqual(0);
+          expect(summaries[7].warnings).toEqual(0);
+          expect(summaries[7].infos).toEqual(0);
+        });
+
+      httpMock.match(allMarkerSummariesRequest)[0].flush(expectedValidationMarkersForSampleResponse);
     })));
-  });
 
 });

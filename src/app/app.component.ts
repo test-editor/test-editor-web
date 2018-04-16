@@ -4,9 +4,11 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 
-import { TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
-         WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
-         PersistenceService, WorkspaceElement, MarkerObserver } from '@testeditor/workspace-navigator';
+import {
+  TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
+  WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
+  PersistenceService, WorkspaceElement, MarkerObserver
+} from '@testeditor/workspace-navigator';
 import { ValidationMarkerService } from 'service/validation/validation.marker.service';
 import { IndexService } from '../service/index/index.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
@@ -42,12 +44,13 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     }
     if (this.oidcSecurityService.moduleSetup) {
-      this.doCallbackLogicIfRequired();
+      this.onOidcModuleSetup();
     } else {
       this.oidcSecurityService.onModuleSetup.subscribe(() => {
-        this.doCallbackLogicIfRequired();
+        this.onOidcModuleSetup();
       });
     }
+
     this.setupWorkspaceReloadResponse();
     this.setupTestExecutionListener();
     this.setupRepoChangeListeners();
@@ -58,21 +61,22 @@ export class AppComponent implements OnInit, OnDestroy {
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
       });
-    this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
-      (userData: any) => {
-        if (userData && userData !== '') {
-          this.user = userData.name;
-          const idToken = this.oidcSecurityService.getIdToken();
-          if (idToken !== '') {
-            this.hasToken = true;
-            sessionStorage.setItem('token', idToken);
-            if (isDevMode()) {
-              console.log('idToken ');
-              console.log(idToken);
-            }
+    this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe((userData: any) => {
+      if (userData && userData !== '') {
+        this.user = userData.name;
+        const idToken = this.oidcSecurityService.getIdToken();
+        if (idToken !== '') {
+          this.hasToken = true;
+          // this makes sure that xtext services can provide the token, too
+          // since the xtext services do not make use of the intercepted HttpClient
+          sessionStorage.setItem('token', idToken);
+          if (isDevMode()) {
+            console.log('idToken ');
+            console.log(idToken);
           }
         }
-      });
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -97,10 +101,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.messagingService.publish(NAVIGATION_CLOSE, null);
     this.oidcSecurityService.logoff();
     this.user = null;
-    localStorage.removeItem('token');
   }
 
-  private doCallbackLogicIfRequired() {
+  private onOidcModuleSetup() {
     if (window.location.hash) {
       console.log('start authorized callback');
       this.oidcSecurityService.authorizedCallback();

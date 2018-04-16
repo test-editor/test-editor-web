@@ -1,42 +1,37 @@
 import { async, TestBed, inject } from '@angular/core/testing';
-import { HttpModule, XHRBackend, Response, ResponseOptions } from '@angular/http';
-import { MockBackend, MockConnection } from '@angular/http/testing';
-import { AuthConfig, AuthHttp } from 'angular2-jwt';
 import { XtextIndexServiceConfig } from './xtext.index.service.config';
 import { XtextIndexService } from './xtext.index.service';
 import { IndexService, IndexDelta } from './index.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 describe('XtextIndexService', () => {
 
-  beforeEach(() => {
-    const serviceConfig: XtextIndexServiceConfig = {
-      serviceUrl: ''
-    };
+  let serviceConfig: XtextIndexServiceConfig;
 
-    const dummyAuthToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M';
+  beforeEach(() => {
+    serviceConfig = new XtextIndexServiceConfig();
+    serviceConfig.serviceUrl = '';
 
     TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [HttpClientTestingModule, HttpClientModule],
       providers: [
-        { provide: XHRBackend, useClass: MockBackend },
-        { provide: AuthConfig, useValue: new AuthConfig({ tokenGetter: () => dummyAuthToken }) },
         { provide: XtextIndexServiceConfig, useValue: serviceConfig },
         { provide: IndexService, useClass: XtextIndexService },
-        AuthHttp
+        HttpClient
       ]
     });
   });
 
 
-  it('processes results of type index delta', async(inject([XHRBackend, IndexService],
-    (backend: MockBackend, indexService: IndexService) => {
+  it('processes results of type index delta', async(inject([HttpTestingController, IndexService],
+    (httpMock: HttpTestingController, indexService: IndexService) => {
       // given
-      backend.connections.subscribe((connection: MockConnection) => {
-        connection.mockRespond(new Response(new ResponseOptions({
-          status: 204,
-          body: [ { path: 'some/path/to/file' } ]
-        })));
-      });
+      const indexServiceRefreshRequest = {
+        url: serviceConfig.serviceUrl + '/refresh',
+        method: 'POST'
+      };
+      const mockResponse = [{ path: 'some/path/to/file' }];
 
       // when
       indexService.refresh().then((indexDelta: IndexDelta[]) => {
@@ -45,17 +40,18 @@ describe('XtextIndexService', () => {
         expect(indexDelta.length).toEqual(1);
         expect(indexDelta[0]).toEqual({ path: 'some/path/to/file' });
       });
+
+      httpMock.match(indexServiceRefreshRequest)[0].flush(mockResponse);
     })));
 
-  it('processes empty results', async(inject([XHRBackend, IndexService],
-    (backend: MockBackend, indexService: IndexService) => {
+  it('processes empty results', async(inject([HttpTestingController, IndexService],
+    (httpMock: HttpTestingController, indexService: IndexService) => {
       // given
-      backend.connections.subscribe((connection: MockConnection) => {
-        connection.mockRespond(new Response(new ResponseOptions({
-          status: 204,
-          body: null
-        })));
-      });
+      const indexServiceRefreshRequest = {
+        url: serviceConfig.serviceUrl + '/refresh',
+        method: 'POST'
+      };
+      const mockResponse = null;
 
       // when
       indexService.refresh().then((indexDelta: IndexDelta[]) => {
@@ -63,6 +59,8 @@ describe('XtextIndexService', () => {
         // then
         expect(indexDelta).toBeNull();
       });
+
+      httpMock.match(indexServiceRefreshRequest)[0].flush(mockResponse);
     })));
 
 });

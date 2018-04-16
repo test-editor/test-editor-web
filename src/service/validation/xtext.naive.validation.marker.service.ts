@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http';
-import { AuthHttp } from 'angular2-jwt';
 import { ValidationMarkerService, ValidationSummary } from './validation.marker.service';
 import { WorkspaceElement } from '@testeditor/workspace-navigator';
 import { XtextValidationMarkerServiceConfig } from './xtext.validation.marker.service.config';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 enum Severity { ERROR = 'error', WARNING = 'warning', INFO = 'info'}
 
@@ -19,7 +18,7 @@ export class XtextNaiveValidationMarkerService extends ValidationMarkerService {
 
   private serviceUrl: string;
 
-  constructor(private http: AuthHttp, config: XtextValidationMarkerServiceConfig) {
+  constructor(private http: HttpClient, config: XtextValidationMarkerServiceConfig) {
     super();
     this.serviceUrl = config.serviceUrl;
   }
@@ -50,15 +49,14 @@ export class XtextNaiveValidationMarkerService extends ValidationMarkerService {
 
   private getMarkersForFile(root: WorkspaceElement): Promise<ValidationSummary[]> {
     const httpOptions = {
-      headers: new Headers({
+      headers: new HttpHeaders({
         'Content-Type':  'application/x-www-form-urlencoded; charset=UTF-8'
       })
     };
     const fulltext = encodeURIComponent(root['fulltext']).replace(/%20/g, '+');
-    return this.http.post(`${this.serviceUrl}/validate?resource=${encodeURIComponent(root.path)}`,
-      `fullText=${fulltext}`, httpOptions).toPromise().then((response) => {
+    return this.http.post<ValidationServiceResponseType>(`${this.serviceUrl}/validate?resource=${encodeURIComponent(root.path)}`,
+      `fullText=${fulltext}`, httpOptions).toPromise().then((validationResponse) => {
       try {
-        const validationResponse: ValidationServiceResponseType = response.json();
         return [{
           path: root.path,
           errors: validationResponse.issues.filter(issue => issue.severity === Severity.ERROR).length,

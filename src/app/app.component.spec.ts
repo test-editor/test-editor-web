@@ -5,8 +5,9 @@ import { APP_BASE_HREF } from '@angular/common';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
 import { AppComponent } from './app.component';
-import { AuthModule } from 'angular-auth-oidc-client';
-import { Response, BaseResponseOptions, HttpModule } from '@angular/http';
+import { Response, BaseResponseOptions } from '@angular/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { Routes, RouterModule } from '@angular/router';
 import { mock, when, instance } from 'ts-mockito';
@@ -17,6 +18,7 @@ import { IndexService } from '../service/index/index.service';
 import { TestExecutionService, DefaultTestExecutionService } from '../service/execution/test.execution.service';
 import { DocumentService } from 'service/document/document.service';
 import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
+import { OidcSecurityService, AuthModule } from 'angular-auth-oidc-client';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -40,19 +42,22 @@ describe('AppComponent', () => {
       imports: [
         RouterModule.forRoot(appRoutes),
         MessagingModule.forRoot(),
-        HttpModule,
+        HttpClientModule,
+        HttpClientTestingModule,
         AuthModule.forRoot()
       ],
       declarations: [
         AppComponent
       ],
       providers: [
+        OidcSecurityService,
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: PersistenceService, useValue: instance(mockPersistenceService) },
         { provide: ValidationMarkerService, useValue: instance(mockValidationMarkerService) },
         { provide: DocumentService, useValue: instance(mockDocumentService) },
         { provide: TestExecutionService, useValue: instance(mockTestExecutionService) },
-        { provide: IndexService, useValue: instance(mockIndexService) }
+        { provide: IndexService, useValue: instance(mockIndexService) },
+        HttpClient
       ]
     }).compileComponents();
   }));
