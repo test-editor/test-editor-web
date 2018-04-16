@@ -1,5 +1,5 @@
 export class Conflict {
-  constructor(readonly message: string, readonly backupFilePath: string) { }
+  constructor(readonly message: string, readonly backupFilePath?: string) { }
 }
 
 export function isConflict(conflict: Conflict | {}): conflict is Conflict {

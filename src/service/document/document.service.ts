@@ -29,13 +29,13 @@ export class DocumentService {
     const url = `${this.serviceUrl}/documents/${path}`;
     return this.http.put(url, content, { observe: 'response', responseType: 'text' }).map(response => {
       if (response.status === HTTP_STATUS_CONFLICT) {
-        let backupFileRetriever: () => Observable<string> = null;
+        let backupFilePath: string = null;
         if (response.headers.has(HTTP_HEADER_CONTENT_LOCATION)) {
           const backupFileURL = response.headers.get(HTTP_HEADER_CONTENT_LOCATION);
-          backupFileRetriever = () => this.http.get(backupFileURL, { responseType: 'text'});
+          backupFilePath = path + '.local-backup';
         }
 
-        return new Conflict(response.body, backupFileRetriever);
+        return new Conflict(response.body, backupFilePath);
       } else {
         return {};
       }

@@ -8,6 +8,7 @@ import { ViewChild, Component, getDebugNode, DebugElement } from '@angular/core'
 import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
 import { Conflict } from 'service/document/conflict';
 import { By } from '@angular/platform-browser';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -151,39 +152,58 @@ describe('AceComponent', () => {
     });
   }));
 
-    it('opens the backup file when the corresponding button in the conflict message dialog is clicked', fakeAsync(() => {
-      // given
-      hostComponent.aceComponentUnderTest.editor.then(editor => {
-        const resourcePath = hostComponent.path;
-        const resourceContentRemote = 'remote content';
-        const backupPath = resourcePath + '.local-backup';
-        const message = `The file '${resourcePath}' could not be saved due to concurrent modifications. ` +
-          `Local changes were instead backed up to '${backupPath}'.`;
+  it('sends bus message to open backup file and closes the dialog when the corresponding button is clicked', fakeAsync(() => {
+    // given
+    hostComponent.aceComponentUnderTest.editor.then(editor => {
+      const resourcePath = hostComponent.path;
+      const resourceContentRemote = 'remote content';
+      const backupPath = resourcePath + '.local-backup';
+      const message = `The file '${resourcePath}' could not be saved due to concurrent modifications. ` +
+        `Local changes were instead backed up to '${backupPath}'.`;
 
-        when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message, backupPath)));
-        when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
+      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message, backupPath)));
+      when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
 
-        hostComponent.aceComponentUnderTest.save();
-        flush();
-        const dialogDebugElement = getDebugNode(fixture.debugElement.nativeElement.parentNode.lastChild) as DebugElement;
-        const openBackupButton = dialogDebugElement.query(By.css('#modal-dialog-button-1')).nativeElement;
+      hostComponent.aceComponentUnderTest.save();
+      flush();
+      const dialogDebugElement = getDebugNode(fixture.debugElement.nativeElement.parentNode.lastChild) as DebugElement;
+      const openBackupButton = dialogDebugElement.query(By.css('#modal-dialog-button-1')).nativeElement;
 
-        const openBackupFileCallback = jasmine.createSpy('openBackupFileCallback');
-        messagingService.subscribe(NAVIGATION_OPEN, openBackupFileCallback);
+      const openBackupFileCallback = jasmine.createSpy('openBackupFileCallback');
+      messagingService.subscribe(NAVIGATION_OPEN, openBackupFileCallback);
 
-        // when
-        openBackupButton.click();
+      // when
+      openBackupButton.click();
 
-        // then
-        flush();
-        expect(dialogDebugElement.query(By.css('#modal-dialog-close'))).toBeNull();
-        expect(openBackupFileCallback).toHaveBeenCalledTimes(1);
-        expect(openBackupFileCallback).toHaveBeenCalledWith(jasmine.objectContaining({
-          name: 'file.local-backup',
-          path: backupPath
-        }));
-
-      });
+      // then
+      flush();
+      expect(dialogDebugElement.query(By.css('#modal-dialog-button-1'))).toBeFalsy();
+      expect(openBackupFileCallback).toHaveBeenCalledTimes(1);
+      expect(openBackupFileCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+        name: 'file.local-backup',
+        path: backupPath,
+      }));
+    });
   }));
 
+  it('does not provide a button to open the backup file if no such file is reported by the conflict', fakeAsync(() => {
+    // given
+    hostComponent.aceComponentUnderTest.editor.then(editor => {
+      const resourcePath = hostComponent.path;
+      const resourceContentRemote = 'remote content';
+      const message = `The file '${resourcePath}' could not be saved due to concurrent modifications.`;
+
+      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message)));
+      when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
+
+      // when
+      hostComponent.aceComponentUnderTest.save();
+
+      // then
+      flush();
+      const dialogDebugElement = getDebugNode(fixture.debugElement.nativeElement.parentNode.lastChild) as DebugElement;
+      const openBackupButton = dialogDebugElement.query(By.css('#modal-dialog-button-1'));
+      expect(openBackupButton).toBeFalsy();
+    });
+  }));
 });
