@@ -7,6 +7,9 @@ import { Observable } from 'rxjs/Observable';
 export class AuthInterceptor implements HttpInterceptor {
   private oidcSecurityService: OidcSecurityService;
 
+  // see https://github.com/damienbod/angular-auth-oidc-client/#http-interceptor
+  // Keep in mind that injecting OidcSecurityService into the interceptor via the constructor
+  // results in a cyclic dependency. To avoid this use the injector instead.
   constructor(private injector: Injector) {
   }
 

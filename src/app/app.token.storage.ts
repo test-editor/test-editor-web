@@ -16,7 +16,7 @@ export class AppTokenStorage implements OidcSecurityStorage {
     // => provide dummy if yet unknown
     if (key === 'authorizationDataIdToken' && !got) {
       if (isDevMode()) {
-        console.log('return crafted token');
+        console.log('return provisional token before authorization took place');
       }
       return AppTokenStorage.MINIMAL_ID_TOKEN;
     }

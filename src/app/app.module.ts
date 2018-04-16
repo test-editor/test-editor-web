@@ -30,13 +30,6 @@ const appRoutes: Routes = [
   { path: '', component: AppComponent }
 ];
 
-export function loadConfig(oidcConfigService: OidcConfigService) {
-  console.log('APP_INITIALIZER STARTING');
-  return () => {
-    oidcConfigService.load_using_stsServer('http://accounts.google.com');
-  };
-}
-
 @NgModule({
   declarations: [
     AppComponent
@@ -81,6 +74,7 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
 })
 export class AppModule {
 
+  // see https://github.com/damienbod/angular-auth-oidc-client/ for more configuration options
   constructor(
     private oidcSecurityService: OidcSecurityService,
     private oidcConfigService: OidcConfigService,
@@ -93,9 +87,8 @@ export class AppModule {
       openIDImplicitFlowConfiguration.client_id = '173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com';
       openIDImplicitFlowConfiguration.response_type = 'id_token';
       openIDImplicitFlowConfiguration.scope = 'openid email profile';
-      // openIDImplicitFlowConfiguration.start_checksession = true;
       openIDImplicitFlowConfiguration.silent_renew = true;
-      // openIDImplicitFlowConfiguration.silent_renew_url = 'https://accounts.google.com/silent-renew.html';
+      openIDImplicitFlowConfiguration.silent_renew_url = 'http://localhost:4200';
       openIDImplicitFlowConfiguration.post_login_route = '/';
       openIDImplicitFlowConfiguration.forbidden_route = '/';
       openIDImplicitFlowConfiguration.unauthorized_route = '/';
@@ -115,4 +108,11 @@ export class AppModule {
 
     console.log('APP STARTING');
   }
+}
+
+export function loadConfig(oidcConfigService: OidcConfigService) {
+  console.log('APP_INITIALIZER STARTING');
+  return () => {
+    oidcConfigService.load_using_stsServer('http://accounts.google.com');
+  };
 }
