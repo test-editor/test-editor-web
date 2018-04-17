@@ -10,7 +10,7 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 
-import { isConflict } from 'service/document/conflict';
+import { isConflict, Conflict } from 'service/document/conflict';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 
@@ -133,22 +133,7 @@ export class AceComponent implements AfterViewInit {
         if (isConflict(status)) {
           this.messagingService.publish(events.WORKSPACE_RELOAD_REQUEST, null);
           this.documentService.loadDocument(this.path).subscribe(content => {
-            this.modalService.show(ModalDialogComponent, {initialState: {
-              message: status.message,
-              buttons: [{
-                label: 'OK',
-                onClick: (modalRef: BsModalRef) => { modalRef.hide(); }
-              }, {
-                label: 'Open backup file',
-                onClick: (modalRef: BsModalRef) => {
-                  this.messagingService.publish(events.NAVIGATION_OPEN, {
-                    name: status.backupFilePath.substr(this.path.lastIndexOf('/') + 1),
-                    path: status.backupFilePath
-                  });
-                  modalRef.hide(); }
-              }]
-              }
-            });
+            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
             editor.setValue(content);
             editor.setReadOnly(false);
           });
@@ -174,6 +159,30 @@ export class AceComponent implements AfterViewInit {
 
   public setReadOnly(readOnly: boolean): void {
     this.editor.then(editor => editor.setReadOnly(readOnly));
+  }
+
+  private getConflictDialogState(status: Conflict) {
+    const buttons = [{
+      label: 'OK',
+      onClick: (modalRef: BsModalRef) => { modalRef.hide(); }
+    }];
+    if (status.backupFilePath != null) {
+      buttons.push({
+        label: 'Open backup file',
+        onClick: (modalRef: BsModalRef) => {
+          this.messagingService.publish(events.NAVIGATION_OPEN, {
+            name: status.backupFilePath.substr(this.path.lastIndexOf('/') + 1),
+            path: status.backupFilePath
+          });
+          modalRef.hide();
+        }
+      });
+    }
+
+    return {
+      message: status.message,
+      buttons: buttons
+    };
   }
 
 }

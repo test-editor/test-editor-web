@@ -204,6 +204,10 @@ describe('AceComponent', () => {
       const dialogDebugElement = getDebugNode(fixture.debugElement.nativeElement.parentNode.lastChild) as DebugElement;
       const openBackupButton = dialogDebugElement.query(By.css('#modal-dialog-button-1'));
       expect(openBackupButton).toBeFalsy();
+
+      // cleanup
+      dialogDebugElement.query(By.css('#modal-dialog-close')).nativeElement.click();
+      flush();
     });
   }));
 
