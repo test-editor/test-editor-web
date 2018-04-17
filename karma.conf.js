@@ -29,7 +29,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome', 'ChromeHeadless', 'Firefox'],
+    browsers: ['Chrome', 'ChromeHeadless', 'Firefox', 'ChromeDebugging'],
     customLaunchers: {
       ChromeHeadless: {
         base: 'Chrome',
@@ -41,6 +41,10 @@ module.exports = function (config) {
           // Without a remote debugging port, Google Chrome exits immediately.
           '--remote-debugging-port=9222',
         ]
+      },
+      ChromeDebugging: {
+        base: 'Chrome',
+        flags: [ '--remote-debugging-port=9333' ]
       }
     },
     singleRun: false,
