@@ -131,6 +131,7 @@ export class AceComponent implements AfterViewInit {
       editor.setReadOnly(true);
       this.documentService.saveDocument(this.path, editor.getValue()).subscribe((status) => {
         if (isConflict(status)) {
+          this.messagingService.publish(events.WORKSPACE_RELOAD_REQUEST, null);
           this.documentService.loadDocument(this.path).subscribe(content => {
             this.modalService.show(ModalDialogComponent, {initialState: {
               message: status.message,

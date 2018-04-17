@@ -3,6 +3,5 @@ export class Conflict {
 }
 
 export function isConflict(conflict: Conflict | {}): conflict is Conflict {
-  return (<Conflict>conflict).message !== undefined &&
-    (<Conflict>conflict).backupFilePath !== undefined;
+  return (<Conflict>conflict).message !== undefined;
 }

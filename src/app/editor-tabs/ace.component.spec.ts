@@ -14,7 +14,7 @@ import { By } from '@angular/platform-browser';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
-import { NAVIGATION_OPEN } from './event-types';
+import { NAVIGATION_OPEN, WORKSPACE_RELOAD_REQUEST } from './event-types';
 
 @Component({
   selector: `app-host-component`,
@@ -206,4 +206,30 @@ describe('AceComponent', () => {
       expect(openBackupButton).toBeFalsy();
     });
   }));
+
+  it('publishes WORKSPACE_RELOAD_REQUEST message on save when document provider reports conflict', fakeAsync(() => {
+    // given
+    hostComponent.aceComponentUnderTest.editor.then(editor => {
+      const resourcePath = hostComponent.path;
+
+      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict('message')));
+      when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of('remote content'));
+
+      const workspaceReloadCallback = jasmine.createSpy('workspaceReloadCallback');
+      messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, workspaceReloadCallback);
+
+      // when
+      hostComponent.aceComponentUnderTest.save();
+
+      // then
+      flush();
+      const dialogDebugElement = getDebugNode(fixture.debugElement.nativeElement.parentNode.lastChild) as DebugElement;
+      expect(workspaceReloadCallback).toHaveBeenCalledTimes(1);
+
+      // cleanup
+      dialogDebugElement.query(By.css('#modal-dialog-close')).nativeElement.click();
+      flush();
+    });
+  }));
+
 });
