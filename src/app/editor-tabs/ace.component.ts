@@ -134,16 +134,20 @@ export class AceComponent implements AfterViewInit {
           this.messagingService.publish(events.WORKSPACE_RELOAD_REQUEST, null);
           this.documentService.loadDocument(this.path).subscribe(content => {
             this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
-            editor.setValue(content);
-            editor.setReadOnly(false);
+            this.setContent(editor, content);
+          }, error => {
+            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
+            this.messagingService.publish(events.NAVIGATION_DELETED, {
+              name: this.path.substr(this.path.lastIndexOf('/') + 1),
+              path: this.path,
+              type: 'file'});
           });
-          console.log(status.message);
           this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
         } else {
           this.setDirty(false);
-          editor.setReadOnly(false);
           this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
         }
+        editor.setReadOnly(false);
 
       }, error => {
         console.log(error);
@@ -167,12 +171,13 @@ export class AceComponent implements AfterViewInit {
       onClick: (modalRef: BsModalRef) => { modalRef.hide(); }
     }];
     if (status.backupFilePath != null) {
+      const decodedBackupFilePath = decodeURIComponent(status.backupFilePath);
       buttons.push({
         label: 'Open backup file',
         onClick: (modalRef: BsModalRef) => {
           this.messagingService.publish(events.NAVIGATION_OPEN, {
-            name: status.backupFilePath.substr(this.path.lastIndexOf('/') + 1),
-            path: status.backupFilePath
+            name: decodedBackupFilePath.substr(this.path.lastIndexOf('/') + 1),
+            path: decodedBackupFilePath
           });
           modalRef.hide();
         }

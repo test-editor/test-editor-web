@@ -75,7 +75,8 @@ describe('AceComponent', () => {
       setReadOnly: () => { },
       getValue: () => '',
       setValue: (content: string) => {},
-      xtextServices: { editorContext: { setDirty: (flag) => { } } }
+      xtextServices: { editorContext: { setDirty: (flag) => { } } },
+      session: { selection: { clearSelection: () => {} } }
     };
     hostComponent.aceComponentUnderTest.editor = Promise.resolve(editorMockForSave);
   });
