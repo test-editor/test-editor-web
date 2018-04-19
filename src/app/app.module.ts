@@ -58,6 +58,7 @@ const appRoutes: Routes = [
       deps: [OidcConfigService],
       multi: true
     },
+    HttpClientModule,
     { provide: TestExecutionService, useClass: DefaultTestExecutionService },
     { provide: TestExecutionServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.testExecutionService } },
     { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
