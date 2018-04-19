@@ -27,6 +27,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppTokenStorage } from './app.token.storage';
 import { AuthInterceptor } from './auth.interceptor';
+import { ModalDialogComponent } from './dialogs/modal.dialog.component';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -34,7 +35,8 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ModalDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +75,8 @@ const appRoutes: Routes = [
       multi: true
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ModalDialogComponent]
 })
 export class AppModule {
 
