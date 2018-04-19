@@ -31,8 +31,7 @@ export class DocumentService {
       if (response.status === HTTP_STATUS_CONFLICT) {
         let backupFilePath: string = null;
         if (response.headers.has(HTTP_HEADER_CONTENT_LOCATION)) {
-          const backupFileURL = response.headers.get(HTTP_HEADER_CONTENT_LOCATION);
-          backupFilePath = path + '.local-backup';
+          backupFilePath = response.headers.get(HTTP_HEADER_CONTENT_LOCATION);
         }
 
         return new Conflict(response.body, backupFilePath);
