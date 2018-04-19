@@ -198,9 +198,9 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.4.0.tgz#a6ea5de45b1b59c8f0ecdb5af99b2899fb17d3e7"
 
-"@testeditor/workspace-navigator@~0.23.0":
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.23.0.tgz#183b058d5fae5a57e6ccbb0929409cd6891c9b4b"
+"@testeditor/workspace-navigator@~0.24.0":
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.24.0.tgz#bec6632f185100bcddf33855d9d6ae5a8a6559d6"
   dependencies:
     yarn "^1.5.1"
 
