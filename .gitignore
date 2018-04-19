@@ -58,3 +58,6 @@ flycheck_*.el
 
 # surefire reports
 target/
+
+# local scripts
+*.local.sh
