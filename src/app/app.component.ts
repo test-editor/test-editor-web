@@ -3,7 +3,7 @@ import { MessagingService, Message } from '@testeditor/messaging-service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
-
+import { HttpClientPayload, HTTP_CLIENT_NEEDED, HTTP_CLIENT_SUPPLIED } from './app-event-types';
 import {
   TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
   WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
@@ -13,6 +13,7 @@ import { ValidationMarkerService } from 'service/validation/validation.marker.se
 import { IndexService } from '../service/index/index.service';
 import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
 import { TestExecutionState } from '../service/execution/test.execution.state';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
   userDataSubscription: Subscription;
   user: String;
   fileSavedSubscription: Subscription;
+  httpClientSubscription: Subscription;
 
 
   constructor(private messagingService: MessagingService,
@@ -36,7 +38,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private persistenceService: PersistenceService,
     private validationMarkerService: ValidationMarkerService,
     private indexService: IndexService,
-    private testExecutionService: TestExecutionService) {
+    private testExecutionService: TestExecutionService,
+    private httpClient: HttpClient) {
     if (isDevMode()) {
       // log all received events in development mode
       messagingService.subscribeAll((message: Message) => {
@@ -54,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.setupWorkspaceReloadResponse();
     this.setupTestExecutionListener();
     this.setupRepoChangeListeners();
+    this.setupHttpClientListener();
   }
 
   ngOnInit() {
@@ -80,6 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.httpClientSubscription.unsubscribe();
     this.userDataSubscription.unsubscribe();
     this.isAuthorizedSubscription.unsubscribe();
     this.oidcSecurityService.onModuleSetup.unsubscribe();
@@ -176,6 +181,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.persistenceService.listFiles().then((root: WorkspaceElement) => {
         this.updateValidationMarkers(root);
       });
+    });
+  }
+
+  private setupHttpClientListener(): void {
+    this.httpClientSubscription = this.messagingService.subscribe(HTTP_CLIENT_NEEDED, () => {
+      const payload: HttpClientPayload =  { httpClient: this.httpClient };
+      this.messagingService.publish(HTTP_CLIENT_SUPPLIED, payload);
     });
   }
 
