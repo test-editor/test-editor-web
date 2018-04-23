@@ -10,7 +10,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { Routes, RouterModule } from '@angular/router';
-import { mock, when, instance } from 'ts-mockito';
+import { mock, when, instance, capture } from 'ts-mockito';
 import { ValidationMarkerService } from '../service/validation/validation.marker.service';
 import { XtextIndexService } from '../service/index/xtext.index.service';
 import { IndexService } from '../service/index/index.service';
@@ -131,7 +131,6 @@ describe('AppComponent', () => {
        // given
        const root: WorkspaceElement = { name: 'some-name', path: 'some/path', type: ElementType.File, children: [] };
        when(mockIndexService.refresh()).thenReturn(Promise.resolve([]));
-       when(mockPersistenceService.listFiles()).thenReturn(Promise.resolve(root));
        when(mockValidationMarkerService.getAllMarkerSummaries(root)).thenReturn(
          Promise.resolve([{ path: root.path, errors: 1, warnings: 0, infos: 1 }]));
        const markerUpdateCallback = jasmine.createSpy('markerUpdateCallback');
@@ -139,6 +138,11 @@ describe('AppComponent', () => {
 
        // when
        messagingService.publish('editor.save.completed', '');
+       tick();
+
+       // and given that
+       const [onSuccess, /* onError */] = capture(mockPersistenceService.listFiles).last();
+       onSuccess.apply(null, [root]);
        tick();
 
        // then

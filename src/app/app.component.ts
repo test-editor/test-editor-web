@@ -117,7 +117,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private setupWorkspaceReloadResponse(): void {
     this.messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, () => {
-      this.persistenceService.listFiles().then((root: WorkspaceElement) => {
+      this.persistenceService.listFiles((root: WorkspaceElement) => {
         this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
         this.updateValidationMarkers(root);
       });
@@ -178,7 +178,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private refreshIndex(): void {
     this.indexService.refresh().then(() => {
-      this.persistenceService.listFiles().then((root: WorkspaceElement) => {
+      this.persistenceService.listFiles((root: WorkspaceElement) => {
         this.updateValidationMarkers(root);
       });
     });
