@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { mock, when, instance, anyString } from 'ts-mockito';
 
-import { TabsModule, TooltipModule } from 'ngx-bootstrap';
+import { TabsModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
 import { AceComponent } from './ace.component';
@@ -80,7 +80,8 @@ describe('EditorTabsComponent', () => {
       imports: [
         TabsModule.forRoot(),
         TooltipModule.forRoot(),
-        MessagingModule.forRoot()
+        MessagingModule.forRoot(),
+        ModalModule.forRoot()
       ],
       declarations: [
         MockedAceComponent,

@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 
+import { ModalModule } from 'ngx-bootstrap/modal';
+
 import { MessagingModule } from '@testeditor/messaging-service';
 import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
 
@@ -25,6 +27,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppTokenStorage } from './app.token.storage';
 import { AuthInterceptor } from './auth.interceptor';
+import { ModalDialogComponent } from './dialogs/modal.dialog.component';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -32,11 +35,13 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ModalDialogComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    ModalModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
@@ -70,7 +75,8 @@ const appRoutes: Routes = [
       multi: true
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ModalDialogComponent]
 })
 export class AppModule {
 

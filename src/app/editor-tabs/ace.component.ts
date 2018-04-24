@@ -10,6 +10,10 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
 
+import { isConflict, Conflict } from 'service/document/conflict';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
+
 declare var createXtextEditor: (config: any) => Deferred;
 
 @Component({
@@ -26,7 +30,7 @@ export class AceComponent implements AfterViewInit {
   editor: Promise<any>;
 
   constructor(private documentService: DocumentService, private messagingService: MessagingService,
-    private syntaxHighlightingService: SyntaxHighlightingService) {
+    private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService) {
   }
 
   ngAfterViewInit(): void {
@@ -58,10 +62,10 @@ export class AceComponent implements AfterViewInit {
 
   private initializeEditor(editor: any): void {
     // Set initial content
-    this.documentService.loadDocument(this.path).then(text => {
+    this.documentService.loadDocument(this.path).subscribe(text => {
       this.setContent(editor, text);
       editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
-    }).catch(reason => {
+    }, reason => {
       if (isDevMode()) {
         console.log(reason);
       }
@@ -125,14 +129,30 @@ export class AceComponent implements AfterViewInit {
   public save(): void {
     this.editor.then(editor => {
       editor.setReadOnly(true);
-      this.documentService.saveDocument(this.path, editor.getValue()).then(res => {
-        this.setDirty(false);
+      this.documentService.saveDocument(this.path, editor.getValue()).subscribe((status) => {
+        if (isConflict(status)) {
+          this.messagingService.publish(events.WORKSPACE_RELOAD_REQUEST, null);
+          this.documentService.loadDocument(this.path).subscribe(content => {
+            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
+            this.setContent(editor, content);
+          }, error => {
+            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
+            this.messagingService.publish(events.NAVIGATION_DELETED, {
+              name: this.path.substr(this.path.lastIndexOf('/') + 1),
+              path: this.path,
+              type: 'file'});
+          });
+          this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
+        } else {
+          this.setDirty(false);
+          this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
+        }
         editor.setReadOnly(false);
-        this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
-      }).catch(reason => {
-        console.log(reason);
+
+      }, error => {
+        console.log(error);
         editor.setReadOnly(false);
-        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: reason });
+        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
       });
     });
   }
@@ -143,6 +163,31 @@ export class AceComponent implements AfterViewInit {
 
   public setReadOnly(readOnly: boolean): void {
     this.editor.then(editor => editor.setReadOnly(readOnly));
+  }
+
+  private getConflictDialogState(status: Conflict) {
+    const buttons = [{
+      label: 'OK',
+      onClick: (modalRef: BsModalRef) => { modalRef.hide(); }
+    }];
+    if (status.backupFilePath != null) {
+      const decodedBackupFilePath = decodeURIComponent(status.backupFilePath);
+      buttons.push({
+        label: 'Open backup file',
+        onClick: (modalRef: BsModalRef) => {
+          this.messagingService.publish(events.NAVIGATION_OPEN, {
+            name: decodedBackupFilePath.substr(this.path.lastIndexOf('/') + 1),
+            path: decodedBackupFilePath
+          });
+          modalRef.hide();
+        }
+      });
+    }
+
+    return {
+      message: status.message,
+      buttons: buttons
+    };
   }
 
 }

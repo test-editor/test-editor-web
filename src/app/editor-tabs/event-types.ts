@@ -6,6 +6,7 @@ export const EDITOR_SAVE_FAILED = 'editor.save.failed';
 export const NAVIGATION_OPEN = 'navigation.open';
 export const NAVIGATION_DELETED = 'navigation.deleted';
 export const NAVIGATION_CLOSE = 'navigation.close';
+export const WORKSPACE_RELOAD_REQUEST = 'workspace.reload.request';
 
 export interface NavigationDeletedPayload {
   name: string;
