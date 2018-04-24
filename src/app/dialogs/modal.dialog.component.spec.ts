@@ -24,6 +24,8 @@ describe('ModalDialogComponent', () => {
         declarations: [
           TestHostComponent, ModalDialogComponent
         ]
+      // TestBed does not support setting entryComponents directly, so the module used by default for testing needs to be overridden.
+      // See e.g. https://github.com/angular/angular/issues/12079
       }).overrideModule(BrowserDynamicTestingModule, {
         set: {
           entryComponents: [ModalDialogComponent]
