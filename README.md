@@ -1,6 +1,7 @@
 # test-editor-web
 
 [![Build Status](https://travis-ci.org/test-editor/test-editor-web.svg?branch=develop)](https://travis-ci.org/test-editor/test-editor-web)
+[![License](http://img.shields.io/badge/license-EPL-blue.svg?style=flat)](https://www.eclipse.org/legal/epl-v10.html)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.3.
 The regular commands apply, see [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
