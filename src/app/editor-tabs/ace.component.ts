@@ -144,6 +144,7 @@ export class AceComponent implements AfterViewInit {
           });
           this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
         } else {
+          this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
           this.setDirty(false);
           this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
         }

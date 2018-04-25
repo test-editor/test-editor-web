@@ -88,6 +88,7 @@ describe('AceComponent', () => {
   it('publishes save completed event after successful save', fakeAsync(() => {
     // given
     when(documentServiceMock.saveDocument(anyString(), anyString())).thenReturn(Observable.of({}));
+    when(documentServiceMock.loadDocument(hostComponent.path)).thenReturn(Observable.of('editor content reloaded from server after save'));
 
     const editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
     messagingService.subscribe('editor.save.completed', editorSaveCompletedCallback);
@@ -101,6 +102,24 @@ describe('AceComponent', () => {
     expect(editorSaveCompletedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
       path: 'path/to/file',
     }));
+  }));
+
+  it('reloads editor content on successful save to account for concurrent, non-conflicting, automatically merged changes', fakeAsync(() => {
+    // given
+    hostComponent.aceComponentUnderTest.editor.then((editor) => {
+      const editorSpy = spy(editor);
+      const localEditorContent = 'local editor content';
+      const editorContentAfterMerge = 'editor content after merge';
+      when(documentServiceMock.saveDocument(hostComponent.path, localEditorContent)).thenReturn(Observable.of({}));
+      when(documentServiceMock.loadDocument(hostComponent.path)).thenReturn(Observable.of(editorContentAfterMerge));
+
+      // when
+      hostComponent.aceComponentUnderTest.save();
+      tick();
+
+      // then
+      verify(editorSpy.setValue(editorContentAfterMerge)).once();
+  });
   }));
 
   it('publishes save failed event after unsuccessful save', fakeAsync(() => {
