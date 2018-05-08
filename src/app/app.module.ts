@@ -5,6 +5,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MessagingModule } from '@testeditor/messaging-service';
 import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
+import { NavigatorModule } from '@testeditor/testexec-navigator';
 
 import { AppComponent } from './app.component';
 import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
@@ -39,6 +40,7 @@ const appRoutes: Routes = [
     ModalDialogComponent
   ],
   imports: [
+    NavigatorModule,
     BrowserModule,
     HttpClientModule,
     ModalModule.forRoot(),
