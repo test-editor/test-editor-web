@@ -3,7 +3,7 @@
   height: 100vh;
 }
 
-#editor-area {
+#editor-area, #test-area {
   flex-grow: 1;
   height: 100%;
   width: 100%;
