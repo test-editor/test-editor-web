@@ -33,10 +33,12 @@ describe('AceComponent', () => {
   let hostComponent: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
   let messagingService: MessagingService;
-  const documentServiceMock = mock(DocumentService);
+  let documentServiceMock: DocumentService;
+  let editorContent: string;
 
   beforeEach(async(() => {
     // Mock DocumentService
+    documentServiceMock = mock(DocumentService);
     const syntaxHighlightingServiceMock = mock(AceClientsideSyntaxHighlightingService);
     when(syntaxHighlightingServiceMock.getSyntaxHighlighting(anyString()))
       .thenReturn(Promise.resolve('path/to/syntax-highlighting-file.js'));
@@ -71,10 +73,11 @@ describe('AceComponent', () => {
     fixture.detectChanges();
 
     // after all changes applied, replace editor with (synchronous) dummy
+    editorContent = '';
     const editorMockForSave = {
       setReadOnly: () => { },
-      getValue: () => '',
-      setValue: (content: string) => {},
+      getValue: () => editorContent,
+      setValue: (content: string) => editorContent = content,
       xtextServices: { editorContext: { setDirty: (flag) => { } } },
       session: { selection: { clearSelection: () => {} } }
     };
@@ -107,10 +110,11 @@ describe('AceComponent', () => {
   it('reloads editor content on successful save to account for concurrent, non-conflicting, automatically merged changes', fakeAsync(() => {
     // given
     hostComponent.aceComponentUnderTest.editor.then((editor) => {
-      const editorSpy = spy(editor);
-      const localEditorContent = 'local editor content';
+      editorContent = 'local editor content';
       const editorContentAfterMerge = 'editor content after merge';
-      when(documentServiceMock.saveDocument(hostComponent.path, localEditorContent)).thenReturn(Observable.of({}));
+      const editorSpy = spy(editor);
+
+      when(documentServiceMock.saveDocument(hostComponent.path, editorContent)).thenReturn(Observable.of({}));
       when(documentServiceMock.loadDocument(hostComponent.path)).thenReturn(Observable.of(editorContentAfterMerge));
 
       // when
