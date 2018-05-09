@@ -11,4 +11,7 @@
   <div id="editor-area">
     <app-editor-tabs></app-editor-tabs>
   </div>
+  <div *ngIf="isAuthorized && hasToken" id="testexec-nagigator-area">
+    <app-testexec-navigator></app-testexec-navigator>
+  </div>
 </div>
