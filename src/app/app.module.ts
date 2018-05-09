@@ -5,6 +5,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MessagingModule } from '@testeditor/messaging-service';
 import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
+import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
 
 import { AppComponent } from './app.component';
 import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
@@ -52,7 +53,8 @@ const appRoutes: Routes = [
     }, testEditorIndicatorFieldSetup),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
-    })
+    }),
+    TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService })
   ],
   providers: [
     OidcSecurityService,

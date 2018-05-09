@@ -25,6 +25,7 @@
     "@angular/router": "^5.2.10",
     "@testeditor/messaging-service": "^1.4.0",
     "@testeditor/workspace-navigator": "~0.26.0",
+    "@testeditor/testexec-navigator": "^0.2.13",
     "ace-builds": "^1.3.3",
     "angular-auth-oidc-client": "^4.1.0",
     "angular2-jwt": "^0.2.3",
