@@ -26,6 +26,10 @@
   height: calc(100% - 70px);
 }
 
+#testexec-nagigator-area {
+  background-color: #252525;
+}
+
 .navigation-text {
   background-color: #252525;
   color: rgb(187, 187, 187);
