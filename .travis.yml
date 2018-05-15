@@ -34,3 +34,14 @@ script:
   - npm run build
   - firefox --version
   - npm run testCIFirefox
+deploy:
+  skip_cleanup: true
+  provider: npm
+  email: service.eng@akquinet.de
+  api_key:
+    secure: Qjyy7EQa3DbWiOMM8xVA5ZAa7smoHbSZjIuOOJG2f+JLQFAUqFIhgOY4Hw4bmI6l1r8OTW3jWDmsB1VcqCud6lmPsSBuTbWJrG5zvXALyKwD58qTjgkih6FodDAkG6+0phoFzZp1/KGuziBIXICsMbzv0Yf0/6yDg59YfkdGfbGKTqU4SYlwsoKa4dEWj14xjW4kGvwljI4rDETHbAbLIz20vWLCZaPDmHJxfokhOUH7TJIQHoSmMCF2IMs/IjwRmiKOb3kC0f+P6ERSmpaxwo0M3Ru1Fan10VXa+UnhlsygTJsPEA2/xa1Hbk8q0ZYJl/fBeh7ZFNmxH99MaBZUvARHsgQwGGMJDvsRcoV02L0rf8Z5k1K7fKqRTOh6GZ9gnmQz6fuFPMj8Vks2LcOruDpPJxRQujr0KxmueVE5EY9ePENYJSNOHSoEzTfe0QUM4vkHqPGtDC1Gcq9AosxCvDb7Nzypk4KOxYAIg024VPcBrAVzzjGRogvG16sSpAacHUbypoxDqoNFWv3awOXKHR4GopMQUvBsnDIcbBfcAgS2Jt/6sTkMBihNoKLfQVKufPo4QVdB4IC4MmUa2pcx8nPLlapuEhfp9Fgz/Y/vHw02ZFGjxv9wztVMx08Nl/SDwgkVNAczmCeNo5hP+RuO5/UeBRD13GM+Fv0w+TWN3hU=
+  on:
+    condition: "$FIREFOX_VERSION = latest"
+    tags: true
+    repo: test-editor/test-editor-web
+
