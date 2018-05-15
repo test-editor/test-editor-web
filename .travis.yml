@@ -43,5 +43,5 @@ deploy:
   on:
     condition: "$FIREFOX_VERSION = latest"
     tags: true
-repo: test-editor/test-editor-web
+    repo: test-editor/test-editor-web
 
