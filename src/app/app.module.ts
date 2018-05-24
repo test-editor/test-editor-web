@@ -54,7 +54,8 @@ const appRoutes: Routes = [
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
-    TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService })
+    TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService },
+                                    { testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService })
   ],
   providers: [
     OidcSecurityService,

@@ -154,3 +154,11 @@ rm node_modules/@testeditor/workspace-navigator
 yarn install --force
 npm run build
 ```
+
+### use direct file references (e.g. for local web-testexec-navigator)
+
+Replace the dependency line within `package.json` with this reference to the local project.
+
+``` typescript
+  "@testeditor/testexec-navigator": "file:../web-testexec-navigator/dist",
+```

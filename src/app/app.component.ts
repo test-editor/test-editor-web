@@ -15,6 +15,8 @@ import { TestExecutionService, TestExecutionStatus } from 'service/execution/tes
 import { TestExecutionState } from '../service/execution/test.execution.state';
 import { HttpClient } from '@angular/common/http';
 
+const TEST_EXECUTION_FINISHED = 'test.execution.finished';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -162,7 +164,14 @@ export class AppComponent implements OnInit, OnDestroy {
       path: path,
       field: 'testStatus',
       observe: () => this.testExecutionService.getStatus(path),
-      stopOn: (value) => value.status !== TestExecutionState.Running
+      stopOn: (value) => {
+        const stopped = value.status !== TestExecutionState.Running;
+        if (stopped) {
+          console.log('send test execution finished event.');
+          this.messagingService.publish(TEST_EXECUTION_FINISHED, { path: path });
+        }
+        return stopped;
+      }
     };
   }
 
