@@ -162,3 +162,12 @@ Replace the dependency line within `package.json` with this reference to the loc
 ``` typescript
   "@testeditor/testexec-navigator": "file:../web-testexec-navigator/dist",
 ```
+
+### Running docker containers
+
+Make sure that the backend docker images can be pulled or are locally built.
+
+``` shell
+npm run docker:build
+GIT_PRIVATE_KEY="$(cat ~/.ssh/id_github_rsa)" KNOWN_HOSTS="$(cat ~/.ssh/known_hosts)" docker-compose up
+```

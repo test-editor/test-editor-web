@@ -10,7 +10,9 @@
     "testCIChrome": "ng test --browser ChromeHeadless --single-run --log-level debug",
     "testCIFirefox": "ng test --browser Firefox --single-run --log-level debug",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "docker:build" : "docker build -t testeditor/web .",
+    "docker:run" : "docker run -p 4200:4200 testeditor/web &"
   },
   "private": true,
   "dependencies": {
