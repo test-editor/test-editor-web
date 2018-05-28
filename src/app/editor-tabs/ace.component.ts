@@ -5,7 +5,6 @@ import { MessagingService } from '@testeditor/messaging-service';
 import { DocumentService } from '../service/document/document.service';
 import { DirtyState } from './dirty-state';
 
-import * as constants from '../config/app-config';
 import * as events from './event-types';
 
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
@@ -15,6 +14,8 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { Subscription } from 'rxjs/Subscription';
 import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/workspace-navigator';
+import '../../assets/configuration.js';
+declare var appConfig: Function;
 
 declare var createXtextEditor: (config: any) => Deferred;
 
@@ -76,7 +77,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
       const isKnownLanguage = syntaxDefinitionFilePath !== AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
       const config = {
         baseUrl: window.location.origin,
-        serviceUrl: constants.appConfig.serviceUrls.xtextService,
+        serviceUrl: appConfig().serviceUrls.xtextService,
         parent: editorId,
         dirtyElement: document.getElementsByClassName(this.tabId),
         loadFromServer: false,

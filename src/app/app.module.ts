@@ -16,7 +16,6 @@ import { AuthModule, OidcSecurityService, OidcConfigService,
          OpenIDImplicitFlowConfiguration, AuthWellKnownEndpoints } from 'angular-auth-oidc-client';
 import { Routes, RouterModule } from '@angular/router';
 
-import * as constants from './config/app-config';
 import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
 import { ValidationMarkerService } from './service/validation/validation.marker.service';
 import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
@@ -38,6 +37,9 @@ import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { AceEditorZoneConfiguration } from './editor-tabs/ace.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 
+import '../assets/configuration.js';
+declare var appConfig: Function;
+
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
 ];
@@ -58,15 +60,15 @@ const appRoutes: Routes = [
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService }, testEditorIndicatorFieldSetup),
+      persistenceServiceUrl: appConfig().serviceUrls.persistenceService }, testEditorIndicatorFieldSetup),
     EditorTabsModule.forRoot({
-      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
+      persistenceServiceUrl: appConfig().serviceUrls.persistenceService,
     }),
-    TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService },
-                                    { testExecutionServiceUrl: constants.appConfig.serviceUrls.testSuiteExecutionService }),
-    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testSuiteExecutionService },
-                                  { resourceServiceUrl: constants.appConfig.serviceUrls.persistenceService }),
-    TestStepSelectorModule.forRoot({ testStepServiceUrl: constants.appConfig.serviceUrls.indexService })
+    TestExecNavigatorModule.forRoot({ testCaseServiceUrl: appConfig().serviceUrls.testCaseService },
+                                    { testExecutionServiceUrl: appConfig().serviceUrls.testSuiteExecutionService }),
+    TestExecDetailsModule.forRoot({ url: appConfig().serviceUrls.testSuiteExecutionService },
+                                  { resourceServiceUrl: appConfig().serviceUrls.persistenceService }),
+    TestStepSelectorModule.forRoot({ testStepServiceUrl: appConfig().serviceUrls.indexService })
   ],
   providers: [
     OidcSecurityService,
@@ -80,11 +82,11 @@ const appRoutes: Routes = [
     { provide: TestExecutionService, useClass: TestExecutionSuiteAdapterService },
     { provide: TestSuiteExecutionService, useClass: DefaultTestSuiteExecutionService },
     { provide: TestSuiteExecutionServiceConfig,
-      useValue: { testSuiteExecutionServiceUrl: constants.appConfig.serviceUrls.testSuiteExecutionService } },
+      useValue: { testSuiteExecutionServiceUrl: appConfig().serviceUrls.testSuiteExecutionService } },
     { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
-    { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
+    { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: appConfig().serviceUrls.validationMarkerService }},
     { provide: IndexService, useClass: XtextIndexService },
-    { provide: XtextIndexServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.indexService }},
+    { provide: XtextIndexServiceConfig, useValue: { serviceUrl: appConfig().serviceUrls.indexService }},
     { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: true } },
     {
       provide: HTTP_INTERCEPTORS,
