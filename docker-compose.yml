@@ -1,9 +1,9 @@
 version: "3"
 services:
   persistence:
-    image: test-editor/persistence
+    image: testeditor/persistence
     ports:
-      - "8090:8080"
+      - "9080:8080"
     environment:
       GIT_PRIVATE_KEY: "${GIT_PRIVATE_KEY}"
       KNOWN_HOSTS: "${KNOWN_HOSTS}"
@@ -11,14 +11,14 @@ services:
       BRANCH_NAME: "feature/gonk"
       REPO_MODE: "pullPush"
   xtext:
-    image: test-editor/xtext
+    image: testeditor/xtext
     ports:
       - "8080:8080"
     environment:
       TARGET_REPO: "https://github.com/test-editor/language-examples.git"
       BRANCH_NAME: "feature/gonk"
   web:
-    image: test-editor/web
+    image: testeditor/web
     ports:
       - "4200:4200"
     depends_on:
