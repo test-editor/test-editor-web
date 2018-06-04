@@ -17,4 +17,7 @@ export class XtextIndexService extends IndexService {
     return this.http.post<IndexDelta[]>(this.serviceUrl + '/refresh', null).toPromise().catch(reject => []);
   }
 
+  reload(): Promise<any> {
+    return this.http.post(this.serviceUrl + '/reload', null).toPromise().catch(reject => null);
+  }
 }

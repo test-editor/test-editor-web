@@ -118,11 +118,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private setupWorkspaceReloadResponse(): void {
-    this.messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, () => {
-      this.persistenceService.listFiles((root: WorkspaceElement) => {
-        this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
-        this.updateValidationMarkers(root);
-      });
+    this.messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, (payload) => {
+      if (payload && payload.rebuild) {
+        this.reloadWorkspace();
+      } else {
+        this.refreshIndex();
+      }
     });
   }
 
@@ -169,6 +170,7 @@ export class AppComponent implements OnInit, OnDestroy {
         if (stopped) {
           console.log('send test execution finished event.');
           this.messagingService.publish(TEST_EXECUTION_FINISHED, { path: path });
+          this.messagingService.publish(WORKSPACE_RELOAD_REQUEST, null);
         }
         return stopped;
       }
@@ -185,9 +187,19 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
+  private reloadWorkspace(): void {
+    this.indexService.reload().then(() => {
+      this.persistenceService.listFiles((root: WorkspaceElement) => {
+        this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
+        this.updateValidationMarkers(root);
+      });
+    });
+  }
+
   private refreshIndex(): void {
     this.indexService.refresh().then(() => {
       this.persistenceService.listFiles((root: WorkspaceElement) => {
+        this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
         this.updateValidationMarkers(root);
       });
     });
