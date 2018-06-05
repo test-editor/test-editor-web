@@ -198,9 +198,15 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.4.0.tgz#a6ea5de45b1b59c8f0ecdb5af99b2899fb17d3e7"
 
-"@testeditor/testexec-navigator@0.3.0":
+"@testeditor/testexec-details@0.3.0":
   version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.3.0.tgz#c7221e16c6a2e0400e31ee3babca04490f104653"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.3.0.tgz#578bfd033658cc1a26b457c1b97c2c2b6f2c0c41"
+  dependencies:
+    tslib "^1.7.1"
+
+"@testeditor/testexec-navigator@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.0.tgz#de1c2f383f9b8e08fe0a2872d284cb64ae7711b6"
   dependencies:
     tslib "^1.7.1"
 

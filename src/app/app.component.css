@@ -3,12 +3,22 @@
   height: 100vh;
 }
 
-#editor-area {
+#navigation-area {
+  border-right: 2px solid rgb(187, 187, 187);
+}
+
+#main-area {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
+}
+
+#editor-area {
   height: 100%;
   width: 100%;
   padding: 15px;
   overflow-x: hidden;
+  resize: vertical;
 }
 
 #navigation-label {
@@ -26,8 +36,21 @@
   height: calc(100% - 70px);
 }
 
-#testexec-nagigator-area {
+#testexec-navigator-area {
+  display: flex;
+  flex-direction: row;
+  border-top: 2px solid rgb(187, 187, 187);
+  flex: 1;
+  flex-basis: 200px;
+}
+
+#testexec-tree {
   background-color: #252525;
+  flex-grow: 1;
+}
+
+#testexec-details {
+  flex-grow: 2;
 }
 
 .navigation-text {
