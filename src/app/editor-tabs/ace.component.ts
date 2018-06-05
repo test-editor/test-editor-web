@@ -41,11 +41,13 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     this.editor = this.createEditor();
     this.editor.then(editor => this.initializeEditor(editor));
     this.subscriptions.push(this.messagingService.subscribe(WORKSPACE_RELOAD_RESPONSE, () => {
-      console.log('editor ' + this.path + ' reload because of workspace reload completed');
       this.editor.then(editor => {
         const dirty = editor.xtextServices.editorContext.isDirty();
         if (!dirty) {
+          console.log('editor ' + this.path + ' reload because of workspace reload completed');
           this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
+        } else {
+          console.log('editor ' + this.path + ' reload skipped, because it is deemed dirty');
         }
       });
     }));
