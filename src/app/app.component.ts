@@ -187,22 +187,19 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  private reloadWorkspace(): void {
-    this.indexService.reload().then(() => {
-      this.persistenceService.listFiles((root: WorkspaceElement) => {
-        this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
-        this.updateValidationMarkers(root);
-      });
+  private refreshAfterIndexUpdate () {
+    this.persistenceService.listFiles((root: WorkspaceElement) => {
+      this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
+      this.updateValidationMarkers(root);
     });
   }
 
+  private reloadWorkspace(): void {
+    this.indexService.reload().then(() => { this.refreshAfterIndexUpdate(); });
+  }
+
   private refreshIndex(): void {
-    this.indexService.refresh().then(() => {
-      this.persistenceService.listFiles((root: WorkspaceElement) => {
-        this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
-        this.updateValidationMarkers(root);
-      });
-    });
+    this.indexService.refresh().then(() => { this.refreshAfterIndexUpdate(); });
   }
 
   private setupHttpClientListener(): void {
