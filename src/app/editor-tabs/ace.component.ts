@@ -31,7 +31,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   @Input() tabId: string;
   editor: Promise<any>;
 
-  subscriptions: Subscription[] = [];
+  subscription: Subscription;
 
   constructor(private documentService: DocumentService, private messagingService: MessagingService,
     private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService) {
@@ -40,7 +40,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.editor = this.createEditor();
     this.editor.then(editor => this.initializeEditor(editor));
-    this.subscriptions.push(this.messagingService.subscribe(WORKSPACE_RELOAD_RESPONSE, () => {
+    this.subscription = this.messagingService.subscribe(WORKSPACE_RELOAD_RESPONSE, () => {
       this.editor.then(editor => {
         const dirty = editor.xtextServices.editorContext.isDirty();
         if (!dirty) {
@@ -50,11 +50,13 @@ export class AceComponent implements AfterViewInit, OnDestroy {
           console.log('editor ' + this.path + ' reload skipped, because it is deemed dirty');
         }
       });
-    }));
+    });
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => { subscription.unsubscribe(); });
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   private createEditor(): Promise<any> {
