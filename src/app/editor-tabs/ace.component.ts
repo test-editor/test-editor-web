@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, isDevMode } from '@angular/core';
+import { Component, Input, AfterViewInit, isDevMode, OnDestroy } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
 import { MessagingService } from '@testeditor/messaging-service';
@@ -13,6 +13,8 @@ import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.hig
 import { isConflict, Conflict } from 'service/document/conflict';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
+import { Subscription } from 'rxjs/Subscription';
+import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/workspace-navigator';
 
 declare var createXtextEditor: (config: any) => Deferred;
 
@@ -21,13 +23,15 @@ declare var createXtextEditor: (config: any) => Deferred;
   templateUrl: './ace.component.html',
   styleUrls: ['./ace.component.css']
 })
-export class AceComponent implements AfterViewInit {
+export class AceComponent implements AfterViewInit, OnDestroy {
 
   static readonly UNKNOWN_LANGUAGE_SYNTAX_PATH = 'none';
 
   @Input() path: string;
   @Input() tabId: string;
   editor: Promise<any>;
+
+  subscription: Subscription;
 
   constructor(private documentService: DocumentService, private messagingService: MessagingService,
     private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService) {
@@ -36,6 +40,23 @@ export class AceComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.editor = this.createEditor();
     this.editor.then(editor => this.initializeEditor(editor));
+    this.subscription = this.messagingService.subscribe(WORKSPACE_RELOAD_RESPONSE, () => {
+      this.editor.then(editor => {
+        const dirty = editor.xtextServices.editorContext.isDirty();
+        if (!dirty) {
+          console.log('editor ' + this.path + ' reload because of workspace reload completed');
+          this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
+        } else {
+          console.log('editor ' + this.path + ' reload skipped, because it is deemed dirty');
+        }
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   private createEditor(): Promise<any> {
