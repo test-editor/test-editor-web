@@ -8,13 +8,13 @@ import { MessagingModule, MessagingService } from '@testeditor/messaging-service
 
 import { AceComponent } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
-import { DocumentService } from '../../service/document/document.service';
+import { DocumentService } from '../service/document/document.service';
 
 import { NAVIGATION_DELETED, NAVIGATION_OPEN,
          EDITOR_ACTIVE, EDITOR_CLOSE,
          NavigationDeletedPayload, NavigationOpenPayload } from './event-types';
-import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
-import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
+import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
+import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
 @Component({
   selector: 'xtext-editor',

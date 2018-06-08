@@ -16,14 +16,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 import * as constants from './config/app-config';
 import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
-import { ValidationMarkerService } from 'service/validation/validation.marker.service';
-import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
-import { XtextValidationMarkerServiceConfig } from 'service/validation/xtext.validation.marker.service.config';
-import { TestExecutionService, DefaultTestExecutionService } from '../service/execution/test.execution.service';
-import { TestExecutionServiceConfig } from '../service/execution/test.execution.service.config';
-import { IndexService } from 'service/index/index.service';
-import { XtextIndexService } from '../service/index/xtext.index.service';
-import { XtextIndexServiceConfig } from 'service/index/xtext.index.service.config';
+import { ValidationMarkerService } from './service/validation/validation.marker.service';
+import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
+import { XtextValidationMarkerServiceConfig } from './service/validation/xtext.validation.marker.service.config';
+import { TestExecutionService, DefaultTestExecutionService } from './service/execution/test.execution.service';
+import { TestExecutionServiceConfig } from './service/execution/test.execution.service.config';
+import { IndexService } from './service/index/index.service';
+import { XtextIndexService } from './service/index/xtext.index.service';
+import { XtextIndexServiceConfig } from './service/index/xtext.index.service.config';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppTokenStorage } from './app.token.storage';

@@ -1,4 +1,4 @@
-import { AceClientsideSyntaxHighlightingService } from 'service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
+import { AceClientsideSyntaxHighlightingService } from './ace.clientside.syntax.highlighting.service';
 
 describe('AceClientsideSyntaxHighlightingService', () => {
 

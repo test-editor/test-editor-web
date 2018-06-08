@@ -9,10 +9,10 @@ import {
   WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE, WORKSPACE_RELOAD_RESPONSE, WORKSPACE_RELOAD_REQUEST,
   PersistenceService, WorkspaceElement, MarkerObserver
 } from '@testeditor/workspace-navigator';
-import { ValidationMarkerService } from 'service/validation/validation.marker.service';
-import { IndexService } from '../service/index/index.service';
-import { TestExecutionService, TestExecutionStatus } from 'service/execution/test.execution.service';
-import { TestExecutionState } from '../service/execution/test.execution.state';
+import { ValidationMarkerService } from './service/validation/validation.marker.service';
+import { IndexService } from './service/index/index.service';
+import { TestExecutionService, TestExecutionStatus } from './service/execution/test.execution.service';
+import { TestExecutionState } from './service/execution/test.execution.state';
 import { HttpClient } from '@angular/common/http';
 
 const TEST_EXECUTION_FINISHED = 'test.execution.finished';

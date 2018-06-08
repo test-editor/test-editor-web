@@ -11,13 +11,13 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { Routes, RouterModule } from '@angular/router';
 import { mock, when, instance, capture } from 'ts-mockito';
-import { ValidationMarkerService } from '../service/validation/validation.marker.service';
-import { XtextIndexService } from '../service/index/xtext.index.service';
-import { IndexService } from '../service/index/index.service';
+import { ValidationMarkerService } from './service/validation/validation.marker.service';
+import { XtextIndexService } from './service/index/xtext.index.service';
+import { IndexService } from './service/index/index.service';
 
-import { TestExecutionService, DefaultTestExecutionService } from '../service/execution/test.execution.service';
-import { DocumentService } from 'service/document/document.service';
-import { XtextDefaultValidationMarkerService } from '../service/validation/xtext.default.validation.marker.service';
+import { TestExecutionService, DefaultTestExecutionService } from './service/execution/test.execution.service';
+import { DocumentService } from './service/document/document.service';
+import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
 import { OidcSecurityService, AuthModule } from 'angular-auth-oidc-client';
 
 const appRoutes: Routes = [

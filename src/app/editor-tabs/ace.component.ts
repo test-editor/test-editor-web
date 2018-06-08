@@ -2,15 +2,15 @@ import { Component, Input, AfterViewInit, isDevMode, OnDestroy } from '@angular/
 import { Deferred } from 'prophecy/src/Deferred';
 
 import { MessagingService } from '@testeditor/messaging-service';
-import { DocumentService } from '../../service/document/document.service';
+import { DocumentService } from '../service/document/document.service';
 import { DirtyState } from './dirty-state';
 
 import * as constants from '../config/app-config';
 import * as events from './event-types';
 
-import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
+import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
-import { isConflict, Conflict } from 'service/document/conflict';
+import { isConflict, Conflict } from '../service/document/conflict';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { Subscription } from 'rxjs/Subscription';
