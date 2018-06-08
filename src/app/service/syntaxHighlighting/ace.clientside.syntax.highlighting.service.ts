@@ -1,4 +1,4 @@
-import { SyntaxHighlightingService } from 'service/syntaxHighlighting/syntax.highlighting.service';
+import { SyntaxHighlightingService } from './syntax.highlighting.service';
 
 
 export class AceClientsideSyntaxHighlightingService implements SyntaxHighlightingService {
