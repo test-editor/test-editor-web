@@ -20,8 +20,7 @@ import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.conf
 import { ValidationMarkerService } from './service/validation/validation.marker.service';
 import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
 import { XtextValidationMarkerServiceConfig } from './service/validation/xtext.validation.marker.service.config';
-import { TestExecutionService, DefaultTestExecutionService } from './service/execution/test.execution.service';
-import { TestExecutionServiceConfig } from './service/execution/test.execution.service.config';
+import { TestExecutionService } from './service/execution/test.execution.service';
 import { IndexService } from './service/index/index.service';
 import { XtextIndexService } from './service/index/xtext.index.service';
 import { XtextIndexServiceConfig } from './service/index/xtext.index.service.config';
@@ -30,6 +29,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppTokenStorage } from './app.token.storage';
 import { AuthInterceptor } from './auth.interceptor';
 import { ModalDialogComponent } from './dialogs/modal.dialog.component';
+import { TestExecutionSuiteAdapterService } from './service/execution/test-execution-suite-adapter.service';
+import { TestSuiteExecutionServiceConfig } from './service/execution/test-suite-execution.service.config';
+import { TestSuiteExecutionService, DefaultTestSuiteExecutionService } from './service/execution/test-suite-execution.service';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -65,8 +67,9 @@ const appRoutes: Routes = [
       deps: [OidcConfigService],
       multi: true
     },
-    { provide: TestExecutionService, useClass: DefaultTestExecutionService },
-    { provide: TestExecutionServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.testExecutionService } },
+    { provide: TestExecutionService, useClass: TestExecutionSuiteAdapterService },
+    { provide: TestSuiteExecutionService, useClass: DefaultTestSuiteExecutionService },
+    { provide: TestSuiteExecutionServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.testExecutionService } },
     { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
     { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
     { provide: IndexService, useClass: XtextIndexService },
