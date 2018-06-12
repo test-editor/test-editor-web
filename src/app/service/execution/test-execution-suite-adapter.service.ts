@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestExecutionService, TestExecutionStatus } from './test.execution.service';
-import { TestSuiteExecutionService } from './test-suite-execution.service';
+import { TestSuiteExecutionService, TestSuiteExecutionStatus } from './test-suite-execution.service';
 import { TestExecutionState } from './test.execution.state';
 
 
@@ -18,13 +18,14 @@ export class TestExecutionSuiteAdapterService implements TestExecutionService {
     this.path2suite.set(path, resourceURL);
   }
 
-  async getStatus(path: string): Promise<TestExecutionStatus> {
+  async getStatus(path: string): Promise<TestExecutionStatus & TestSuiteExecutionStatus> {
     let status = TestExecutionState.Idle;
     if (this.path2suite.has(path)) {
       status = (await this.suiteService.getStatus(this.path2suite.get(path) + '?status')).status;
     }
     return {
       path: path,
+      resourceURL: this.path2suite.get(path),
       status: status
     };
   }

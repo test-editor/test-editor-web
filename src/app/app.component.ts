@@ -169,7 +169,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const stopped = value.status !== TestExecutionState.Running;
         if (stopped) {
           console.log('send test execution finished event.');
-          this.messagingService.publish(TEST_EXECUTION_FINISHED, { path: path });
+          this.messagingService.publish(TEST_EXECUTION_FINISHED, value);
           this.messagingService.publish(WORKSPACE_RELOAD_REQUEST, null);
         }
         return stopped;
