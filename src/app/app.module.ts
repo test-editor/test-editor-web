@@ -6,6 +6,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { MessagingModule } from '@testeditor/messaging-service';
 import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
 import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
+import { TestExecDetailsModule } from '@testeditor/testexec-details';
 
 import { AppComponent } from './app.component';
 import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
@@ -47,15 +48,13 @@ const appRoutes: Routes = [
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService
-    }, {
-      testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService // remove when refactoring complete
-    }, testEditorIndicatorFieldSetup),
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService }, testEditorIndicatorFieldSetup),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
     TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService },
-                                    { testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService })
+                                    { testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService }),
+    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testExecutionService })
   ],
   providers: [
     OidcSecurityService,
