@@ -15,7 +15,11 @@ export class TestExecutionSuiteAdapterService implements TestExecutionService {
 
   async execute(path: string): Promise<any> {
     const resourceURL = await this.suiteService.execute(path);
-    this.path2suite.set(path, resourceURL);
+    if (resourceURL) {
+      this.path2suite.set(path, resourceURL);
+    } else {
+      console.log(`warning: started a test suite run with test '${path}', but did not receive its resource URL.`);
+    }
   }
 
   async getStatus(path: string): Promise<TestExecutionStatus & TestSuiteExecutionStatus> {
