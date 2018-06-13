@@ -71,7 +71,7 @@ describe('TestSuiteExecutionService', () => {
     const testSuiteResourceURL = 'http://example.org/1234/5678';
     const testExecutionRequest: RequestMatch = {
       method: 'GET',
-      url: testSuiteResourceURL + '?status'
+      url: testSuiteResourceURL + '?status&wait'
     };
 
     // when
@@ -88,7 +88,7 @@ describe('TestSuiteExecutionService', () => {
     const testSuiteResourceURL = 'http://example.org/1234/5678';
     const testExecutionRequest: RequestMatch = {
       method: 'GET',
-      url: testSuiteResourceURL + '?status'
+      url: testSuiteResourceURL + '?status&wait'
     };
 
     // when

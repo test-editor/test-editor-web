@@ -36,7 +36,7 @@ export class DefaultTestSuiteExecutionService extends TestSuiteExecutionService 
 
   private static readonly executeURLPath = 'test-suite/launch-new';
   private static readonly statusAllURLPath = 'test-suite/status';
-  private static readonly statusURLPath = '?status';
+  private static readonly statusURLPath = '?status&wait';
   private serviceUrl: string;
 
   constructor(private http: HttpClient, config: TestSuiteExecutionServiceConfig) {
