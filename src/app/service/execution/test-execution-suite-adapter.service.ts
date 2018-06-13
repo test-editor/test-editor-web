@@ -21,7 +21,7 @@ export class TestExecutionSuiteAdapterService implements TestExecutionService {
   async getStatus(path: string): Promise<TestExecutionStatus & TestSuiteExecutionStatus> {
     let status = TestExecutionState.Idle;
     if (this.path2suite.has(path)) {
-      status = (await this.suiteService.getStatus(this.path2suite.get(path) + '?status')).status;
+      status = (await this.suiteService.getStatus(this.path2suite.get(path))).status;
     }
     return {
       path: path,
