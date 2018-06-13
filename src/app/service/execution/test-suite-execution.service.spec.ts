@@ -10,7 +10,7 @@ describe('TestSuiteExecutionService', () => {
   let serviceConfig: TestSuiteExecutionServiceConfig;
 
   beforeEach(() => {
-    serviceConfig = { serviceUrl: 'http://localhost:9080' };
+    serviceConfig = { testSuiteExecutionServiceUrl: 'http://localhost:9080' };
 
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule, HttpClientModule ],
@@ -30,7 +30,7 @@ describe('TestSuiteExecutionService', () => {
     const paths = [ 'path/to/first/test', 'path/to/a/differentTest' ];
     const testExecutionRequest: RequestMatch = {
       method: 'POST',
-      url: serviceConfig.serviceUrl + '/test-suite/launch-new'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/launch-new'
     };
     const mockResponse = 'http://example.org/1234/5678';
 
@@ -49,7 +49,7 @@ describe('TestSuiteExecutionService', () => {
     const paths = [ 'path/to/first/test', 'path/to/a/differentTest' ];
     const testExecutionRequest = {
       method: 'POST',
-      url: serviceConfig.serviceUrl + '/test-suite/launch-new'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/launch-new'
     };
     const mockResponse = 'http://example.org/1234/5678';
 
@@ -109,7 +109,7 @@ describe('TestSuiteExecutionService', () => {
     // given
     const testExecutionRequest: RequestMatch = {
       method: 'GET',
-      url: serviceConfig.serviceUrl + '/test-suite/status'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/status'
     };
 
     // when
@@ -125,7 +125,7 @@ describe('TestSuiteExecutionService', () => {
     // given
     const testExecutionRequest: RequestMatch = {
       method: 'GET',
-      url: serviceConfig.serviceUrl + '/test-suite/status'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/status'
     };
     const mockResponse: AllStatusResponse[] = [
       { key: { suiteId: '1234', suiteRunId: '5678' }, status: 'RUNNING' },
@@ -141,19 +141,19 @@ describe('TestSuiteExecutionService', () => {
     .then((actualStatus) => {
       expect(actualStatus.length).toEqual(4);
       expect(actualStatus).toContain({
-        resourceURL: serviceConfig.serviceUrl + '/1234/5678',
+        resourceURL: serviceConfig.testSuiteExecutionServiceUrl + '/1234/5678',
         status: TestExecutionState.Running
       });
       expect(actualStatus).toContain({
-        resourceURL: serviceConfig.serviceUrl + '/1234/4711',
+        resourceURL: serviceConfig.testSuiteExecutionServiceUrl + '/1234/4711',
         status: TestExecutionState.LastRunSuccessful
       });
       expect(actualStatus).toContain({
-        resourceURL: serviceConfig.serviceUrl + '/4321/1111',
+        resourceURL: serviceConfig.testSuiteExecutionServiceUrl + '/4321/1111',
         status: TestExecutionState.LastRunFailed
       });
       expect(actualStatus).toContain({
-        resourceURL: serviceConfig.serviceUrl + '/1234/9876',
+        resourceURL: serviceConfig.testSuiteExecutionServiceUrl + '/1234/9876',
         status: TestExecutionState.Idle
       });
     });

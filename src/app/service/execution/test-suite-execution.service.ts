@@ -41,7 +41,7 @@ export class DefaultTestSuiteExecutionService extends TestSuiteExecutionService 
 
   constructor(private http: HttpClient, config: TestSuiteExecutionServiceConfig) {
     super();
-    this.serviceUrl = config.serviceUrl;
+    this.serviceUrl = config.testSuiteExecutionServiceUrl;
   }
 
   async execute(...paths: string[]): Promise<string> {
