@@ -45,9 +45,9 @@ export class DefaultTestSuiteExecutionService extends TestSuiteExecutionService 
   }
 
   async execute(...paths: string[]): Promise<string> {
-    console.log(`URL: ${this.serviceUrl}/${DefaultTestSuiteExecutionService.executeURLPath}`);
     const response = await this.http.post(`${this.serviceUrl}/${DefaultTestSuiteExecutionService.executeURLPath}`,
       paths, {observe: 'response'}).toPromise();
+    console.log(`Execution of test suite was started. Test suite resource URL is ${response.headers.get('location')}.`);
     return response.headers.get('location');
   }
 
