@@ -48,10 +48,7 @@ const appRoutes: Routes = [
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
     WorkspaceNavigatorModule.forRoot({
-      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService
-    }, {
-      testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService // remove when refactoring complete
-    }, testEditorIndicatorFieldSetup),
+      persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService }, testEditorIndicatorFieldSetup),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
