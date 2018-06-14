@@ -12,7 +12,7 @@ describe('TestExecutionSuiteAdapterService', () => {
   beforeEach(async(() => {
     mockDelegateService = mock(DefaultTestSuiteExecutionService);
     when(mockDelegateService.execute(anyString())).thenReturn(Promise.resolve(suiteResourceUrlForTesting));
-    when(mockDelegateService.getStatus(suiteResourceUrlForTesting + '?status')).thenReturn(Promise.resolve({
+    when(mockDelegateService.getStatus(suiteResourceUrlForTesting)).thenReturn(Promise.resolve({
       resourceURL: suiteResourceUrlForTesting, status: TestExecutionState.Running }));
     TestBed.configureTestingModule({
       providers: [
@@ -50,7 +50,7 @@ describe('TestExecutionSuiteAdapterService', () => {
     // then
     expect(testExecutionStatus.path).toEqual(path);
     expect(testExecutionStatus.status).toEqual(TestExecutionState.Running);
-    verify(mockDelegateService.getStatus(suiteResourceUrlForTesting + '?status')).once();
+    verify(mockDelegateService.getStatus(suiteResourceUrlForTesting)).once();
   }));
 
   it('returns test status IDLE when there is no known test suite for a given path', inject([TestExecutionSuiteAdapterService],

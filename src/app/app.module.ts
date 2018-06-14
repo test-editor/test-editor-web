@@ -55,8 +55,8 @@ const appRoutes: Routes = [
       persistenceServiceUrl: constants.appConfig.serviceUrls.persistenceService,
     }),
     TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService },
-                                    { testExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService }),
-    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testExecutionService })
+                                    { testExecutionServiceUrl: constants.appConfig.serviceUrls.testSuiteExecutionService }),
+    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testSuiteExecutionService })
   ],
   providers: [
     OidcSecurityService,
@@ -70,7 +70,7 @@ const appRoutes: Routes = [
     { provide: TestExecutionService, useClass: TestExecutionSuiteAdapterService },
     { provide: TestSuiteExecutionService, useClass: DefaultTestSuiteExecutionService },
     { provide: TestSuiteExecutionServiceConfig,
-      useValue: { testSuiteExecutionServiceUrl: constants.appConfig.serviceUrls.testExecutionService } },
+      useValue: { testSuiteExecutionServiceUrl: constants.appConfig.serviceUrls.testSuiteExecutionService } },
     { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
     { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
     { provide: IndexService, useClass: XtextIndexService },

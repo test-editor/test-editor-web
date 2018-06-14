@@ -34,8 +34,8 @@ export abstract class TestSuiteExecutionService {
 @Injectable()
 export class DefaultTestSuiteExecutionService extends TestSuiteExecutionService {
 
-  private static readonly executeURLPath = 'test-suite/launch-new';
-  private static readonly statusAllURLPath = 'test-suite/status';
+  private static readonly executeURLPath = 'launch-new';
+  private static readonly statusAllURLPath = 'status';
   private static readonly statusURLPath = '?status&wait';
   private serviceUrl: string;
 
@@ -45,9 +45,9 @@ export class DefaultTestSuiteExecutionService extends TestSuiteExecutionService 
   }
 
   async execute(...paths: string[]): Promise<string> {
-    console.log(`URL: ${this.serviceUrl}/${DefaultTestSuiteExecutionService.executeURLPath}`);
     const response = await this.http.post(`${this.serviceUrl}/${DefaultTestSuiteExecutionService.executeURLPath}`,
       paths, {observe: 'response'}).toPromise();
+    console.log(`Execution of test suite was started. Test suite resource URL is ${response.headers.get('location')}.`);
     return response.headers.get('location');
   }
 

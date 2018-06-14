@@ -10,7 +10,7 @@ describe('TestSuiteExecutionService', () => {
   let serviceConfig: TestSuiteExecutionServiceConfig;
 
   beforeEach(() => {
-    serviceConfig = { testSuiteExecutionServiceUrl: 'http://localhost:9080' };
+    serviceConfig = { testSuiteExecutionServiceUrl: 'http://localhost:9080/test-suite' };
 
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule, HttpClientModule ],
@@ -30,7 +30,7 @@ describe('TestSuiteExecutionService', () => {
     const paths = [ 'path/to/first/test', 'path/to/a/differentTest' ];
     const testExecutionRequest: RequestMatch = {
       method: 'POST',
-      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/launch-new'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/launch-new'
     };
     const mockResponse = 'http://example.org/1234/5678';
 
@@ -49,7 +49,7 @@ describe('TestSuiteExecutionService', () => {
     const paths = [ 'path/to/first/test', 'path/to/a/differentTest' ];
     const testExecutionRequest = {
       method: 'POST',
-      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/launch-new'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/launch-new'
     };
     const mockResponse = 'http://example.org/1234/5678';
 
@@ -109,7 +109,7 @@ describe('TestSuiteExecutionService', () => {
     // given
     const testExecutionRequest: RequestMatch = {
       method: 'GET',
-      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/status'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/status'
     };
 
     // when
@@ -125,7 +125,7 @@ describe('TestSuiteExecutionService', () => {
     // given
     const testExecutionRequest: RequestMatch = {
       method: 'GET',
-      url: serviceConfig.testSuiteExecutionServiceUrl + '/test-suite/status'
+      url: serviceConfig.testSuiteExecutionServiceUrl + '/status'
     };
     const mockResponse: AllStatusResponse[] = [
       { key: { suiteId: '1234', suiteRunId: '5678' }, status: 'RUNNING' },
