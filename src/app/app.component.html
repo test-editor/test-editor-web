@@ -1,24 +1,34 @@
 <div id="page">
-  <div id="main-area">
-    <div id="navigation-area">
-      <div id="navigation-label">Test&#8209;Editor</div>
-      <div class="navigation-text" *ngIf="!isAuthorized" (click)="login()" title="uses google login for authentication">Login</div>
-      <div id="navigation-content">
-        <app-navigation *ngIf="isAuthorized && hasToken"></app-navigation>
-      </div>
-      <div class="navigation-text" *ngIf="isAuthorized" (click)="logout()" title="this will log the current user out and close the workspace">Logout {{user}}</div>
-      <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
-    </div>
-    <div id="editor-area">
-      <app-editor-tabs></app-editor-tabs>
-    </div>
-  </div>
-  <div *ngIf="isAuthorized && hasToken" id="testexec-navigator-area">
-      <div id="testexec-tree">
-        <app-testexec-navigator></app-testexec-navigator>
-      </div>
-      <div id="testexec-details">
-        <app-test-exec-details></app-test-exec-details>
-      </div>
-    </div>
+  <split direction="vertical" gutterSize="15">
+    <split-area size="65">
+      <split direction="horizontal" gutterSize="15">
+        <split-area size="20">
+          <div id="navigation-label">Test&#8209;Editor</div>
+          <div class="navigation-text" *ngIf="!isAuthorized" (click)="login()" title="uses google login for authentication">Login</div>
+          <div id="navigation-content">
+            <app-navigation *ngIf="isAuthorized && hasToken"></app-navigation>
+          </div>
+          <div class="navigation-text" *ngIf="isAuthorized" (click)="logout()" title="this will log the current user out and close the workspace">Logout {{user}}</div>
+          <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
+        </split-area>
+        <split-area size="60">
+          <app-editor-tabs></app-editor-tabs>
+        </split-area>
+        <split-area size="20">
+          <p>Test Step Selector</p>
+        </split-area>
+      </split>
+    </split-area>
+
+    <split-area *ngIf="isAuthorized && hasToken" size="35">
+      <split direction="horizontal" gutterSize="15">
+        <split-area id="testexec-tree" size="20">
+          <app-testexec-navigator></app-testexec-navigator>
+        </split-area>
+        <split-area id="testexec-details" size="80">
+          <app-test-exec-details></app-test-exec-details>
+        </split-area>
+      </split>
+    </split-area>
+  </split>
 </div>

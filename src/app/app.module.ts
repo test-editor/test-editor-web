@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 
+import { AngularSplitModule } from 'angular-split';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MessagingModule } from '@testeditor/messaging-service';
@@ -43,6 +44,7 @@ const appRoutes: Routes = [
     ModalDialogComponent
   ],
   imports: [
+    AngularSplitModule,
     BrowserModule,
     HttpClientModule,
     ModalModule.forRoot(),
