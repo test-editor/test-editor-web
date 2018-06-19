@@ -11,8 +11,8 @@
     "testCIFirefox": "ng test --browser Firefox --single-run --log-level debug",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "docker:build" : "docker build -t testeditor/web .",
-    "docker:run" : "docker run -p 4200:4200 testeditor/web &"
+    "docker:build": "docker build -t testeditor/web .",
+    "docker:run": "docker run -p 4200:4200 testeditor/web &"
   },
   "private": true,
   "dependencies": {
@@ -26,11 +26,12 @@
     "@angular/platform-browser-dynamic": "^5.2.10",
     "@angular/router": "^5.2.10",
     "@testeditor/messaging-service": "^1.4.0",
-    "@testeditor/workspace-navigator": "~0.27.0",
     "@testeditor/testexec-details": "~0.3.2",
     "@testeditor/testexec-navigator": "~0.4.1",
+    "@testeditor/workspace-navigator": "~0.27.0",
     "ace-builds": "^1.3.3",
     "angular-auth-oidc-client": "^4.1.0",
+    "angular-split": "^1.0.0-rc.3",
     "angular2-jwt": "^0.2.3",
     "bootstrap": "^4.1.0",
     "core-js": "^2.5.5",

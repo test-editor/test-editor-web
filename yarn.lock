@@ -342,6 +342,12 @@ angular-auth-oidc-client@^4.1.0:
   dependencies:
     jsrsasign "8.0.3"
 
+angular-split@^1.0.0-rc.3:
+  version "1.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/angular-split/-/angular-split-1.0.0-rc.3.tgz#eb63fd60d8fd94587d75c19524d90d8712f136e0"
+  dependencies:
+    tslib "^1.7.1"
+
 angular2-jwt@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/angular2-jwt/-/angular2-jwt-0.2.3.tgz#54efdda3ceedba85f6a37b165f22ac22b8adf021"

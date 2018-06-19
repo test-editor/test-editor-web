@@ -1,25 +1,5 @@
 #page {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
-}
-
-#navigation-area {
-  border-right: 2px solid rgb(187, 187, 187);
-}
-
-#main-area {
-  display: flex;
-  flex-direction: row;
-  flex: 1 1 auto;
-  resize: vertical;
-  overflow: auto;
-}
-
-#editor-area {
-  width: 100%;
-  padding: 15px;
-  overflow-x: hidden;
 }
 
 #navigation-label {
@@ -35,13 +15,6 @@
 #navigation-content {
   background-color: #252525;
   height: calc(100% - 70px);
-}
-
-#testexec-navigator-area {
-  display: flex;
-  flex-direction: row;
-  border-top: 2px solid rgb(187, 187, 187);
-  flex: 1 1 auto;
 }
 
 #testexec-tree {

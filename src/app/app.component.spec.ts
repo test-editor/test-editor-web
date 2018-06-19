@@ -19,6 +19,7 @@ import { TestExecutionService, DefaultTestExecutionService } from './service/exe
 import { DocumentService } from './service/document/document.service';
 import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
 import { OidcSecurityService, AuthModule } from 'angular-auth-oidc-client';
+import { AngularSplitModule } from 'angular-split';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -40,6 +41,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
+        AngularSplitModule,
         RouterModule.forRoot(appRoutes),
         MessagingModule.forRoot(),
         HttpClientModule,
