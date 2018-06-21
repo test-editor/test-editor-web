@@ -34,6 +34,7 @@ import { TestExecutionSuiteAdapterService } from './service/execution/test-execu
 import { TestStepSelectorModule } from '@testeditor/teststep-selector';
 import { TestSuiteExecutionServiceConfig } from './service/execution/test-suite-execution.service.config';
 import { TestSuiteExecutionService, DefaultTestSuiteExecutionService } from './service/execution/test-suite-execution.service';
+import { SnackBarComponent } from './snack-bar/snack-bar.component';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -42,7 +43,8 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    ModalDialogComponent
+    ModalDialogComponent,
+    SnackBarComponent
   ],
   imports: [
     AngularSplitModule,
