@@ -14,7 +14,7 @@
         <split-area size="60">
           <app-editor-tabs></app-editor-tabs>
         </split-area>
-        <split-area size="20" *ngIf="isAuthorized && hasToken">
+        <split-area id="test-step-selector-area" size="20" *ngIf="isAuthorized && hasToken">
           <app-test-step-selector></app-test-step-selector>
         </split-area>
       </split>

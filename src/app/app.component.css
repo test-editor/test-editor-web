@@ -37,3 +37,7 @@
 .navigation-text:hover {
   cursor: pointer;
 }
+
+#test-step-selector-area {
+  background-color: #252525;
+}
