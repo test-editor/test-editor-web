@@ -31,6 +31,7 @@ import { AppTokenStorage } from './app.token.storage';
 import { AuthInterceptor } from './auth.interceptor';
 import { ModalDialogComponent } from './dialogs/modal.dialog.component';
 import { TestExecutionSuiteAdapterService } from './service/execution/test-execution-suite-adapter.service';
+import { TestStepSelectorModule } from '@testeditor/teststep-selector';
 import { TestSuiteExecutionServiceConfig } from './service/execution/test-suite-execution.service.config';
 import { TestSuiteExecutionService, DefaultTestSuiteExecutionService } from './service/execution/test-suite-execution.service';
 
@@ -58,7 +59,8 @@ const appRoutes: Routes = [
     }),
     TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService },
                                     { testExecutionServiceUrl: constants.appConfig.serviceUrls.testSuiteExecutionService }),
-    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testSuiteExecutionService })
+    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testSuiteExecutionService }),
+    TestStepSelectorModule.forRoot({ testStepServiceUrl: constants.appConfig.serviceUrls.indexService })
   ],
   providers: [
     OidcSecurityService,
