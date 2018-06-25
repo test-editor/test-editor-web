@@ -1,6 +1,6 @@
-<div (click)="$event.preventDefault()">
+<div id="editor-tabs" (click)="$event.preventDefault()">
   <tabset>
-    <tab *ngFor="let tab of tabs" 
+    <tab *ngFor="let tab of tabs"
       [heading]="tab.title"
       [id]="tab.id"
       [active]="tab.active"
