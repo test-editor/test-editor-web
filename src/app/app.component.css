@@ -41,3 +41,11 @@
 #test-step-selector-area {
   background-color: #252525;
 }
+
+:host ::ng-deep #test-step-selector-area .tree-view-element::selection {
+  background: transparent;
+}
+
+:host ::ng-deep #test-step-selector-area .tree-view-element > span::selection {
+  background: transparent;
+}
