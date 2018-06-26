@@ -30,10 +30,10 @@ before_install:
   - export PATH="$HOME/.yarn/bin:$PATH"
 install:
   - yarn install
-script: 
-  - npm run build
+script:
+  - yarn run build
   - firefox --version
-  - npm run testCIFirefox
+  - yarn run testCIFirefox
 deploy:
   skip_cleanup: true
   provider: npm
@@ -44,4 +44,3 @@ deploy:
     condition: "$FIREFOX_VERSION = latest"
     tags: true
     repo: test-editor/test-editor-web
-
