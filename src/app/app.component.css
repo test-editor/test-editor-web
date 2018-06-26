@@ -2,13 +2,34 @@
   height: 100vh;
 }
 
-#navigation-label {
+#nav-headline {
+  white-space: nowrap;
+}
+
+#nav-area {
   background-color: #252525;
+  width: 100%;
+}
+
+#nav-icon-area {
+  display: inline;
+}
+
+#navigation-icon {
+  height: 21px;
+  padding-left: 5px;
+  padding-right: 5px;
+  float: none;
+  display: inline;
+}
+
+#navigation-label {
   color: rgb(187, 187, 187);
   line-height: 35px;
-  padding-left: 17px;
+  padding-left: 8px;
   padding-right: 17px;
   text-transform: uppercase;
+  display: inline;
   height: 35px;
 }
 
@@ -24,6 +45,10 @@
 
 #testexec-details {
   flex-grow: 2;
+}
+
+.navigation-text.login {
+  padding-left: 40px;
 }
 
 .navigation-text {
