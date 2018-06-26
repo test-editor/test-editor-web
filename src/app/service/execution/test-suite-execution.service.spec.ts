@@ -79,6 +79,7 @@ describe('TestSuiteExecutionService', () => {
 
     // then
     httpMock.expectOne(testExecutionRequest);
+    expect().nothing();
   })));
 
   it('getStatus returns TestSuiteExecutionStatus object containing the test state returned by the server',
@@ -117,6 +118,7 @@ describe('TestSuiteExecutionService', () => {
 
     // then
     httpMock.expectOne(testExecutionRequest);
+    expect().nothing();
   })));
 
   it('getAllStatus returns an array of TestSuiteExecutionStatus object',

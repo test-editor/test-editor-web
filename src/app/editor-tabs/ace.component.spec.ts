@@ -123,6 +123,7 @@ describe('AceComponent', () => {
 
       // then
       verify(editorSpy.setValue(editorContentAfterMerge)).once();
+      expect().nothing();
   });
   }));
 

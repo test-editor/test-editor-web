@@ -1,4 +1,5 @@
 import { AceClientsideSyntaxHighlightingService } from './ace.clientside.syntax.highlighting.service';
+import { async } from '@angular/core/testing';
 
 describe('AceClientsideSyntaxHighlightingService', () => {
 
@@ -8,7 +9,7 @@ describe('AceClientsideSyntaxHighlightingService', () => {
     serviceUnderTest = new AceClientsideSyntaxHighlightingService();
   });
 
-  it('throws exception for unknown language', () => {
+  it('throws exception for unknown language', async(() => {
     // given
     const unknownLanguageExtension = 'unknown';
 
@@ -20,7 +21,7 @@ describe('AceClientsideSyntaxHighlightingService', () => {
       .catch(actualReason => {
         expect(actualReason).toEqual(`No syntax highlighting available for language extension "${unknownLanguageExtension}"`);
       });
-  });
+  }));
 
 
   // given
@@ -32,7 +33,7 @@ describe('AceClientsideSyntaxHighlightingService', () => {
     ['aml', 'xtext-resources/generated/mode-aml']
   ].forEach(([knownLanguageExtension, expectedSyntaxHighlightingFile]) => {
 
-    it(`provides Ace syntax highlighting file "${expectedSyntaxHighlightingFile}" for language "${knownLanguageExtension}"`, () => {
+    it(`provides Ace syntax highlighting file "${expectedSyntaxHighlightingFile}" for language "${knownLanguageExtension}"`, async(() => {
       // when
       const syntaxHighlightingResult = serviceUnderTest.getSyntaxHighlighting(knownLanguageExtension);
 
@@ -40,7 +41,7 @@ describe('AceClientsideSyntaxHighlightingService', () => {
       syntaxHighlightingResult.then(actualHighlighting => {
         expect(actualHighlighting).toEqual(expectedSyntaxHighlightingFile);
       }).catch(exceptionReason => fail(`unexpected exception: ${exceptionReason}`));
-    });
+    }));
 
   });
 });
