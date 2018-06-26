@@ -36,6 +36,7 @@ describe('TestExecutionSuiteAdapterService', () => {
 
     // then
     verify(mockDelegateService.execute(path)).once();
+    expect().nothing();
   }));
 
   it('returns the status of a previously started test suite', inject([TestExecutionSuiteAdapterService],
