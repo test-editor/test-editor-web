@@ -15,26 +15,27 @@ task npmClean(type: Delete) {
     delete "$rootDir/coverage"
 }
 
-task upgradeTesteditorDeps(type: Exec) {
-  dependsOn(yarnInstall)
-  group = 'build'
-  commandLine "./yarn-upgrade-testeditor-deps.sh"
-}
-
-task bareBuild(type: Exec) {
-  dependsOn(upgradeTesteditorDeps)
-  group = 'build'
-  commandLine "./ng", "build"
-}
-
-task clean {
-  dependsOn(npmClean)
-}
-
 task yarnInstall(type: YarnTask) {
     outputs.upToDateWhen { false }
     group = 'build'
     args = ['install']
+}
+
+task upgradeTesteditorDeps(type: YarnTask) {
+  outputs.upToDateWhen { false }
+  dependsOn(yarnInstall)
+  group = 'build'
+  args = ['upgrade', '@testeditor']
+}
+
+task bareBuild(type: NpmTask, dependsOn: 'upgradeTesteditorDeps') {
+  group = 'build'
+  description = 'Run ng build'
+  args = ['run', 'bareBuild'] // corresponds with script @ package.json/scripts.build
+}
+
+task clean {
+  dependsOn(npmClean)
 }
 
 task build(type: NpmTask, dependsOn: 'yarnInstall') {

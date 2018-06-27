@@ -9,6 +9,7 @@
     "start": "ng serve -H 0.0.0.0 --preserve-symlinks",
     "prebuild": "yarn run upgradeTesteditorOrgDependencies && ng lint",
     "build": "ng build",
+    "bareBuild": "ng build",
     "pretest": "yarn run upgradeTesteditorOrgDependencies",
     "test": "ng test",
     "pretestCIChrome": "yarn run upgradeTesteditorOrgDependencies",
