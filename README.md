@@ -192,18 +192,12 @@ fi
 # Redirect output to stderr.
 exec 1>&2
 
-# Cross platform projects tend to avoid non-ASCII filenames; prevent
-# them from being added to the repository. We exploit the fact that the
-# printable range starts at the space character and ends with tilde.
-if 	test $(git diff -U0 -G"\"file:" HEAD package.json | wc -l) != 0
+if 	test $(git diff -U0 -G"\"file:" $against package.json | wc -l) != 0
 then
 	cat <<\EOF
-Error: Attempt commit references to local files in package.json.
+Error: Attempt commit with references to local files in package.json.
 
 EOF
 	exit 1
 fi
-
-# If there are whitespace errors, print the offending file names and fail.
-exec git diff-index --check --cached $against --
 ```
