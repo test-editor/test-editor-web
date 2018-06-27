@@ -13,11 +13,15 @@
           <div class="navigation-text" *ngIf="isAuthorized" (click)="logout()" title="this will log the current user out and close the workspace">Logout {{user}}</div>
           <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
         </split-area>
-        <split-area size="60">
-          <app-editor-tabs></app-editor-tabs>
-        </split-area>
-        <split-area id="test-step-selector-area" size="20" *ngIf="isAuthorized && hasToken">
-          <app-test-step-selector></app-test-step-selector>
+        <split-area size="80">
+          <split direction="horizontal" gutterSize="15">
+            <split-area *ngIf="isAuthorized && hasToken" size="66">
+              <app-editor-tabs></app-editor-tabs>
+            </split-area>
+            <split-area id="test-step-selector-area" size="34" *ngIf="isAuthorized && hasToken">
+              <app-test-step-selector></app-test-step-selector>
+            </split-area>
+          </split>
         </split-area>
       </split>
     </split-area>
