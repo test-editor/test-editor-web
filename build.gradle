@@ -31,7 +31,7 @@ task upgradeTesteditorDeps(type: YarnTask) {
 task bareBuild(type: NpmTask, dependsOn: 'upgradeTesteditorDeps') {
   group = 'build'
   description = 'Run ng build'
-  args = ['run', 'bareBuild'] // corresponds with script @ package.json/scripts.build
+  args = ['run', 'bareBuild'] // corresponds with script @ package.json/scripts.bareBuild
 }
 
 task clean {
