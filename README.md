@@ -171,3 +171,39 @@ Make sure that the backend docker images can be pulled or are locally built.
 npm run docker:build
 GIT_PRIVATE_KEY="$(cat ~/.ssh/id_github_rsa)" KNOWN_HOSTS="$(cat ~/.ssh/known_hosts)" docker-compose up
 ```
+
+### install git commit hook to prevent commits with local file references
+
+In order to prevent commits with local file references within `package.json` the following git commit hook can be installed. To activate this pre commit hook, copy the following script to `.git/hooks/pre-commit` and make it executable!
+
+``` shell
+#!/bin/sh
+
+# check that package.json has no "file:" references!
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=`git rev-list --max-parents=0 HEAD`
+fi
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Cross platform projects tend to avoid non-ASCII filenames; prevent
+# them from being added to the repository. We exploit the fact that the
+# printable range starts at the space character and ends with tilde.
+if 	test $(git diff -U0 -G"\"file:" HEAD package.json | wc -l) != 0
+then
+	cat <<\EOF
+Error: Attempt commit references to local files in package.json.
+
+EOF
+	exit 1
+fi
+
+# If there are whitespace errors, print the offending file names and fail.
+exec git diff-index --check --cached $against --
+```
