@@ -16,16 +16,19 @@ task npmClean(type: Delete) {
 }
 
 task upgradeTesteditorDeps(type: Exec) {
+  dependsOn(yarnInstall)
+  group = 'build'
   commandLine "./yarn-upgrade-testeditor-deps.sh"
 }
 
 task bareBuild(type: Exec) {
   dependsOn(upgradeTesteditorDeps)
+  group = 'build'
   commandLine "./ng", "build"
 }
 
 task clean {
-    dependsOn(npmClean)
+  dependsOn(npmClean)
 }
 
 task yarnInstall(type: YarnTask) {
