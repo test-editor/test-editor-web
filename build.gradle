@@ -15,6 +15,15 @@ task npmClean(type: Delete) {
     delete "$rootDir/coverage"
 }
 
+task upgradeTesteditorDeps(type: Exec) {
+  commandLine "./yarn-upgrade-testeditor-deps.sh"
+}
+
+task bareBuild(type: Exec) {
+  dependsOn(upgradeTesteditorDeps)
+  commandLine "./ng", "build"
+}
+
 task clean {
     dependsOn(npmClean)
 }
