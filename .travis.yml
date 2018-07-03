@@ -34,7 +34,7 @@ script:
   - yarn run build
   - firefox --version
   - yarn run testCIFirefox
-  - yarn run e2e
+  # - yarn run e2e # currently non functional
 deploy:
   skip_cleanup: true
   provider: npm
