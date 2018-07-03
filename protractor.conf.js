@@ -9,7 +9,10 @@ exports.config = {
     './e2e/**/*.e2e-spec.ts'
   ],
   capabilities: {
-    'browserName': 'firefox'
+    // want firefox, but webdriver-manager download of gecko driver fails on github rate limit
+    // (see https://github.com/angular/webdriver-manager/issues/303)
+    // (see https://github.com/hetznercloud/protractor-test-helper/issues/6)
+    'browserName': 'chrome'
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
