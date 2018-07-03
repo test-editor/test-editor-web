@@ -17,8 +17,8 @@
     "pretestCIFirefox": "yarn run upgradeTesteditorOrgDependencies",
     "testCIFirefox": "ng test --browser Firefox --single-run --log-level debug",
     "lint": "ng lint",
-    "pree2e": "webdriver-manager update --ignore_ssl --gecko=false",
-    "e2e": "ng e2e --webdriver-update=false",
+    "pree2e": "webdriver-manager update --ignore_ssl --gecko false --standalone false",
+    "e2e": "ng e2e -wu false",
     "docker:build": "docker build -t testeditor/web .",
     "docker:run": "docker run -p 4200:4200 testeditor/web &"
   },
