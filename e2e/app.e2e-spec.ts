@@ -1,4 +1,5 @@
 import { MyAppPage } from './app.po';
+import { element, by } from 'protractor';
 
 describe('test-editor-web App', () => {
   let page: MyAppPage;
@@ -7,8 +8,10 @@ describe('test-editor-web App', () => {
     page = new MyAppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display initial screen', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to app!!');
+    element(by.id('navigation-label')).getText().then((navText) => {
+      expect(navText).toEqual('TEST‑EDITOR');
+    });
   });
 });
