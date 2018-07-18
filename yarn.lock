@@ -204,9 +204,9 @@
   dependencies:
     tslib "^1.7.1"
 
-"@testeditor/testexec-details@~0.3.13":
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.3.13.tgz#98ac780f6a66242749f50d502e0bbe6c80123618"
+"@testeditor/testexec-details@~0.3.0":
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.3.14.tgz#560cfaad687acfb91c16debdbf14052c5d3407d3"
   dependencies:
     tslib "^1.7.1"
 
