@@ -61,7 +61,8 @@ const appRoutes: Routes = [
     }),
     TestExecNavigatorModule.forRoot({ testCaseServiceUrl: constants.appConfig.serviceUrls.testCaseService },
                                     { testExecutionServiceUrl: constants.appConfig.serviceUrls.testSuiteExecutionService }),
-    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testSuiteExecutionService }),
+    TestExecDetailsModule.forRoot({ url: constants.appConfig.serviceUrls.testSuiteExecutionService },
+                                  { resourceServiceUrl: constants.appConfig.serviceUrls.persistenceService }),
     TestStepSelectorModule.forRoot({ testStepServiceUrl: constants.appConfig.serviceUrls.indexService })
   ],
   providers: [
