@@ -4,7 +4,7 @@
   "license": "EPL",
   "scripts": {
     "ng": "node_modules/@angular/cli/bin/ng",
-    "upgradeTesteditorOrgDependencies": "yarn upgrade @testeditor",
+    "upgradeTesteditorOrgDependencies": "yarn upgrade -S @testeditor",
     "prestart": "yarn run upgradeTesteditorOrgDependencies",
     "start": "ng serve -H 0.0.0.0 --preserve-symlinks",
     "prebuild": "yarn run upgradeTesteditorOrgDependencies && ng lint",
