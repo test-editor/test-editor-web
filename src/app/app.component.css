@@ -45,6 +45,7 @@
 
 #testexec-details {
   flex-grow: 2;
+  overflow-y: hidden!important
 }
 
 .navigation-text.login {
