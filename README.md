@@ -15,6 +15,12 @@ yarn install
 ng serve
 ```
 
+### Development notes
+
+#### Project dependencies
+
+* angular-split is currently pinned to version 1.0.0-rc.1 because of a bug documented in [issue 85](https://github.com/bertrandg/angular-split/issues/85) of the respective project.
+
 ## EditorTabsComponent
 
 Emits the following events:
