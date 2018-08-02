@@ -27,7 +27,7 @@ task upgradeTesteditorDeps {
     doLast {
         exec {
             workingDir '.'
-            commandLine 'bash', '-c', 'for package in `.gradle/yarn/yarn-v1.7.0/bin/yarn list --pattern @testeditor --flat | awk \'{ print $2 }\' | head -n -1 | grep "@" | sed -e \'s/\\(.*\\)@.*/\\1/g\'`; do echo "upgrading package $package"; .gradle/yarn/yarn-v1.7.0/bin/yarn upgrade $package; done'
+            commandLine 'bash', '-c', 'for package in `.gradle/nodejs/node-v9.3.0-linux-x64/bin/node .gradle/yarn/yarn-v1.7.0/bin/yarn list --pattern @testeditor --flat | awk \'{ print $2 }\' | head -n -1 | grep "@" | sed -e \'s/\\(.*\\)@.*/\\1/g\'`; do echo "upgrading package $package"; .gradle/nodejs/node-v9.3.0-linux-x64/bin/node .gradle/yarn/yarn-v1.7.0/bin/yarn upgrade $package; done'
         }
     }
 }
