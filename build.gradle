@@ -22,12 +22,22 @@ task yarnInstall(type: YarnTask) {
     args = ['install']
 }
 
-task upgradeTesteditorDeps(type: YarnTask) {
-  outputs.upToDateWhen { false }
-  dependsOn(yarnInstall, yarn_cache_clean)
-  group = 'build'
-  args = ['upgrade', '-S', '@testeditor/']
+task upgradeTesteditorDeps {
+  dependsOn(yarnInstall)
+    doLast {
+        exec {
+            workingDir '.'
+            commandLine 'bash', '-c', 'for package in `.gradle/yarn/yarn-v1.7.0/bin/yarn list --pattern @testeditor --flat | awk \'{ print $2 }\' | head -n -1 | grep "@" | sed -e \'s/\\(.*\\)@.*/\\1/g\'`; do echo "upgrading package $package"; .gradle/yarn/yarn-v1.7.0/bin/yarn upgrade $package; done'
+        }
+    }
 }
+
+// task upgradeTesteditorDeps(type: YarnTask) {
+//   outputs.upToDateWhen { false }
+//   dependsOn(yarnInstall, yarn_cache_clean)
+//   group = 'build'
+//   args = ['upgrade', '-S', '@testeditor/']
+// }
 
 task bareBuild(type: NpmTask, dependsOn: 'upgradeTesteditorDeps') {
   group = 'build'
