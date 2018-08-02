@@ -205,14 +205,14 @@
     tslib "^1.7.1"
 
 "@testeditor/testexec-details@~0.3.0":
-  version "0.3.15"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.3.15.tgz#361afd68aa739eff5dc829c4d1e4ac62599ad3e9"
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.3.19.tgz#3d5a805e17d7542a4eced60095f3ae71e71d2e74"
   dependencies:
     tslib "^1.7.1"
 
 "@testeditor/testexec-navigator@~0.4.0":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.3.tgz#981ee47b7a2a151e4ba73faa8f7f03c2159b546f"
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.4.tgz#2db7fd0440114eed3461d3dc92b6e34dfb868193"
   dependencies:
     tslib "^1.7.1"
 
