@@ -26,7 +26,7 @@ task upgradeTesteditorDeps(type: YarnTask) {
   outputs.upToDateWhen { false }
   dependsOn(yarnInstall, yarn_cache_clean)
   group = 'build'
-  args = ['upgrade', '-S', '@testeditor']
+  args = ['upgrade', '-S', '@testeditor/']
 }
 
 task bareBuild(type: NpmTask, dependsOn: 'upgradeTesteditorDeps') {
