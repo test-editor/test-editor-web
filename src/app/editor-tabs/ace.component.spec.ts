@@ -40,7 +40,6 @@ describe('AceComponent', () => {
     // Mock DocumentService
     documentServiceMock = mock(DocumentService);
     const syntaxHighlightingServiceMock = mock(AceClientsideSyntaxHighlightingService);
-    const zoneConfiguration = mock(AceEditorZoneConfiguration);
     when(syntaxHighlightingServiceMock.getSyntaxHighlighting(anyString()))
       .thenReturn(Promise.resolve('path/to/syntax-highlighting-file.js'));
 
