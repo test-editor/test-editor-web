@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, isDevMode, OnDestroy } from '@angular/core';
+import { Component, Input, AfterViewInit, isDevMode, OnDestroy, NgZone } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
 import { MessagingService } from '@testeditor/messaging-service';
@@ -18,6 +18,10 @@ import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/workspace-navigator';
 
 declare var createXtextEditor: (config: any) => Deferred;
 
+export class AceEditorZoneConfiguration {
+  useOutsideZone: boolean;
+}
+
 @Component({
   selector: 'xtext-editor',
   templateUrl: './ace.component.html',
@@ -33,12 +37,19 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(private documentService: DocumentService, private messagingService: MessagingService,
-    private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService) {
+  constructor(public zone: NgZone, private documentService: DocumentService, private messagingService: MessagingService,
+              private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService,
+              private zoneConfiguration: AceEditorZoneConfiguration) {
   }
 
   ngAfterViewInit(): void {
-    this.editor = this.createEditor();
+    if (this.zoneConfiguration.useOutsideZone) {
+      this.zone.runOutsideAngular(() => {
+        this.editor = this.createEditor();
+      });
+    } else {
+      this.editor = this.createEditor();
+    }
     this.editor.then(editor => this.initializeEditor(editor));
     this.subscription = this.messagingService.subscribe(WORKSPACE_RELOAD_RESPONSE, () => {
       this.editor.then(editor => {

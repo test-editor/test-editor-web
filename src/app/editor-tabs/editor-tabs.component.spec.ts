@@ -6,7 +6,7 @@ import { mock, when, instance, anyString } from 'ts-mockito';
 import { TabsModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
-import { AceComponent } from './ace.component';
+import { AceComponent, AceEditorZoneConfiguration } from './ace.component';
 import { EditorTabsComponent } from './editor-tabs.component';
 import { DocumentService } from '../service/document/document.service';
 
@@ -89,7 +89,8 @@ describe('EditorTabsComponent', () => {
       ],
       providers: [
         { provide: DocumentService, useValue: instance(documentServiceMock) },
-        { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) }
+        { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) },
+        { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: false } }
       ]
     })
       .compileComponents();
