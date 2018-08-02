@@ -3,7 +3,8 @@ plugins {
 }
 
 node {
-    version = '8.1.3'
+    version = '9.3.0'
+    yarnVersion = '1.7.0'
     download = true
 }
 
@@ -23,9 +24,9 @@ task yarnInstall(type: YarnTask) {
 
 task upgradeTesteditorDeps(type: YarnTask) {
   outputs.upToDateWhen { false }
-  dependsOn(yarnInstall)
+  dependsOn(yarnInstall, yarn_cache_clean)
   group = 'build'
-  args = ['upgrade', '@testeditor']
+  args = ['upgrade', '-S', '@testeditor']
 }
 
 task bareBuild(type: NpmTask, dependsOn: 'upgradeTesteditorDeps') {
