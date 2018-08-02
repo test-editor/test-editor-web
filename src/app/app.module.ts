@@ -35,6 +35,7 @@ import { TestStepSelectorModule } from '@testeditor/teststep-selector';
 import { TestSuiteExecutionServiceConfig } from './service/execution/test-suite-execution.service.config';
 import { TestSuiteExecutionService, DefaultTestSuiteExecutionService } from './service/execution/test-suite-execution.service';
 import { SnackBarComponent } from './snack-bar/snack-bar.component';
+import { AceEditorZoneConfiguration } from './editor-tabs/ace.component';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -82,6 +83,7 @@ const appRoutes: Routes = [
     { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.validationMarkerService }},
     { provide: IndexService, useClass: XtextIndexService },
     { provide: XtextIndexServiceConfig, useValue: { serviceUrl: constants.appConfig.serviceUrls.indexService }},
+    { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: true } },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

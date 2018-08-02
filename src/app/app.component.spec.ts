@@ -1,4 +1,4 @@
-import { TestBed, async, fakeAsync, ComponentFixture, tick } from '@angular/core/testing';
+import { TestBed, async, fakeAsync, ComponentFixture, tick, flush } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 
@@ -107,6 +107,7 @@ describe('AppComponent', () => {
         field: 'testStatus'
       }));
 
+      flush();
     }));
 
   it('should listen to test execution events, failure to start tests should publish test execution start failure', fakeAsync(() => {
@@ -150,6 +151,8 @@ describe('AppComponent', () => {
        // then
        expect(markerUpdateCallback).toHaveBeenCalledWith(jasmine.arrayWithExactContents(
          [{ path: root.path, markers: { validation: { errors: 1, warnings: 0, infos: 1 } } }]));
+
+       flush();
   }));
 
 });

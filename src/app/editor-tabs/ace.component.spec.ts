@@ -1,4 +1,4 @@
-import { AceComponent } from './ace.component';
+import { AceComponent, AceEditorZoneConfiguration } from './ace.component';
 import { tick, fakeAsync, async, ComponentFixture, TestBed, flush } from '@angular/core/testing';
 import { mock, when, instance, anyString, spy, verify } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
@@ -54,7 +54,8 @@ describe('AceComponent', () => {
       ],
       providers: [
         { provide: DocumentService, useValue: instance(documentServiceMock) },
-        { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) }
+        { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) },
+        { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: false } }
       ]
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {
@@ -105,6 +106,7 @@ describe('AceComponent', () => {
     expect(editorSaveCompletedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
       path: 'path/to/file',
     }));
+    flush();
   }));
 
   it('reloads editor content on successful save to account for concurrent, non-conflicting, automatically merged changes', fakeAsync(() => {
@@ -124,7 +126,8 @@ describe('AceComponent', () => {
       // then
       verify(editorSpy.setValue(editorContentAfterMerge)).once();
       expect().nothing();
-  });
+      flush();
+    });
   }));
 
   it('publishes save failed event after unsuccessful save', fakeAsync(() => {
@@ -145,6 +148,7 @@ describe('AceComponent', () => {
       path: 'path/to/file',
       reason: 'some reason'
     }));
+    flush();
   }));
 
   it('opens message dialog on save when document provider reports conflict', fakeAsync(() => {
@@ -208,6 +212,7 @@ describe('AceComponent', () => {
         name: 'file.local-backup',
         path: backupPath,
       }));
+      flush();
     });
   }));
 
