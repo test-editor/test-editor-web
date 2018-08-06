@@ -36,6 +36,7 @@ import { TestSuiteExecutionServiceConfig } from './service/execution/test-suite-
 import { TestSuiteExecutionService, DefaultTestSuiteExecutionService } from './service/execution/test-suite-execution.service';
 import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { AceEditorZoneConfiguration } from './editor-tabs/ace.component';
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -49,6 +50,7 @@ const appRoutes: Routes = [
   ],
   imports: [
     AngularSplitModule,
+    Ng4LoadingSpinnerModule.forRoot(),
     BrowserModule,
     HttpClientModule,
     ModalModule.forRoot(),

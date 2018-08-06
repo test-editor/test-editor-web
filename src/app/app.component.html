@@ -7,8 +7,9 @@
             <div id="nav-icon-area"><img alt="test-editor icon" src="favicon.ico" id="navigation-icon"/></div><div id="navigation-label">Test&#8209;Editor</div>
           </div>
           <div class="navigation-text login" *ngIf="!isAuthorized" (click)="login()" title="uses google login for authentication">Login</div>
-          <div id="navigation-content">
-            <app-navigation *ngIf="isAuthorized && hasToken"></app-navigation>
+          <div id="navigation-content" *ngIf="isAuthorized && hasToken">
+            <ng4-loading-spinner [threshold]="200" [timeout]="30000" [loadingText]="'Loading workspace...'"></ng4-loading-spinner>
+            <app-navigation></app-navigation>
           </div>
           <div class="navigation-text" *ngIf="isAuthorized" (click)="logout()" title="this will log the current user out and close the workspace">Logout {{user}}</div>
           <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
