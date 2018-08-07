@@ -14,6 +14,10 @@ import { IndexService } from './service/index/index.service';
 import { TestExecutionService, TestExecutionStatus } from './service/execution/test.execution.service';
 import { TestExecutionState } from './service/execution/test.execution.state';
 import { HttpClient } from '@angular/common/http';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
+
+export const WORKSPACE_LOAD_RETRY_COUNT = 3;
 
 const TEST_EXECUTION_FINISHED = 'test.execution.finished';
 
@@ -37,6 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private messagingService: MessagingService,
     public oidcSecurityService: OidcSecurityService,
+    private spinnerService: Ng4LoadingSpinnerService,
     private persistenceService: PersistenceService,
     private validationMarkerService: ValidationMarkerService,
     private indexService: IndexService,
@@ -66,6 +71,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
       (isAuthorized: boolean) => {
         this.isAuthorized = isAuthorized;
+        this.spinnerService.show();
+        if (isDevMode()) {
+          console.log('spinner turned on');
+        }
       });
     this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe((userData: any) => {
       if (userData && userData !== '') {
@@ -187,19 +196,37 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refreshAfterIndexUpdate () {
+  private refreshAfterIndexUpdate (retryCount: number) {
     this.persistenceService.listFiles((root: WorkspaceElement) => {
+      this.spinnerService.hide();
+      if (isDevMode()) {
+        console.log('spinner turned off');
+      }
       this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
       this.updateValidationMarkers(root);
+    }, (error) => {
+      if (retryCount > 0) {
+        if (isDevMode()) {
+          console.log('retry (re)load of workspace after failure');
+        }
+        this.refreshAfterIndexUpdate(retryCount - 1);
+      } else {
+        this.spinnerService.hide();
+        this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, 'Loading workspace timed out!');
+        if (isDevMode()) {
+          console.log('spinner turned off');
+          console.error('failed to load workspace');
+        }
+      }
     });
   }
 
   private reloadWorkspace(): void {
-    this.indexService.reload().then(() => { this.refreshAfterIndexUpdate(); });
+    this.indexService.reload().then(() => { this.refreshAfterIndexUpdate(WORKSPACE_LOAD_RETRY_COUNT); });
   }
 
   private refreshIndex(): void {
-    this.indexService.refresh().then(() => { this.refreshAfterIndexUpdate(); });
+    this.indexService.refresh().then(() => { this.refreshAfterIndexUpdate(WORKSPACE_LOAD_RETRY_COUNT); });
   }
 
   private setupHttpClientListener(): void {

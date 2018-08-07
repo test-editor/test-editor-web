@@ -4,13 +4,13 @@ import { APP_BASE_HREF } from '@angular/common';
 
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
-import { AppComponent } from './app.component';
+import { AppComponent, WORKSPACE_LOAD_RETRY_COUNT } from './app.component';
 import { Response, BaseResponseOptions } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PersistenceService, ElementType, WorkspaceElement } from '@testeditor/workspace-navigator';
 import { Routes, RouterModule } from '@angular/router';
-import { mock, when, instance, capture } from 'ts-mockito';
+import { mock, when, instance, capture, verify, anything, resetCalls } from 'ts-mockito';
 import { ValidationMarkerService } from './service/validation/validation.marker.service';
 import { XtextIndexService } from './service/index/xtext.index.service';
 import { IndexService } from './service/index/index.service';
@@ -20,6 +20,8 @@ import { DocumentService } from './service/document/document.service';
 import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
 import { OidcSecurityService, AuthModule } from 'angular-auth-oidc-client';
 import { AngularSplitModule } from 'angular-split';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -33,6 +35,7 @@ describe('AppComponent', () => {
   const mockTestExecutionService = mock(DefaultTestExecutionService);
   // cannot use IndexService, since its method is abstract and cannot be spied on by ts-mockito (yet)
   const mockIndexService = mock(XtextIndexService);
+  const mockNg4SpinnerService = mock(Ng4LoadingSpinnerService);
   let messagingService: MessagingService;
   let app: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -59,6 +62,7 @@ describe('AppComponent', () => {
         { provide: DocumentService, useValue: instance(mockDocumentService) },
         { provide: TestExecutionService, useValue: instance(mockTestExecutionService) },
         { provide: IndexService, useValue: instance(mockIndexService) },
+        { provide: Ng4LoadingSpinnerService, useValue: instance(mockNg4SpinnerService) },
         HttpClient
       ]
     }).compileComponents();
@@ -153,6 +157,72 @@ describe('AppComponent', () => {
          [{ path: root.path, markers: { validation: { errors: 1, warnings: 0, infos: 1 } } }]));
 
        flush();
+  }));
+
+  // spinner is shown when user is authorized, the following tests check whether the spinner is removed appropriately
+
+  it('should hide the spinner, after workspace is (intially) loaded', fakeAsync(() => {
+    resetCalls(mockNg4SpinnerService);
+    when(mockIndexService.reload()).thenReturn(Promise.resolve());
+    when(mockIndexService.refresh()).thenReturn(Promise.resolve([]));
+    when(mockValidationMarkerService.getAllMarkerSummaries(anything())).thenReturn(Promise.resolve([]));
+
+    // when
+    messagingService.publish('workspace.reload.request', null);
+    tick();
+    const [onFilesReceived] = capture(mockPersistenceService.listFiles).last();
+    onFilesReceived(null);
+
+    // expect
+    verify(mockNg4SpinnerService.hide()).once();
+    expect().nothing();
+    flush();
+  }));
+
+  it('should still show the spinner, if list files ran into an error', fakeAsync(() => {
+    resetCalls(mockNg4SpinnerService);
+    when(mockIndexService.reload()).thenReturn(Promise.resolve());
+    when(mockIndexService.refresh()).thenReturn(Promise.resolve([]));
+    when(mockValidationMarkerService.getAllMarkerSummaries(anything())).thenReturn(Promise.resolve([]));
+
+    // when
+    messagingService.publish('workspace.reload.request', null);
+    tick();
+    const [, error] = capture(mockPersistenceService.listFiles).last();
+    error(null);
+
+    // expect
+    verify(mockNg4SpinnerService.hide()).never();
+
+    expect().nothing();
+    flush();
+  }));
+
+  it('should make 3 attempts to list files until spinner is hidden!', fakeAsync(() => {
+
+    resetCalls(mockNg4SpinnerService);
+    when(mockIndexService.reload()).thenReturn(Promise.resolve());
+    when(mockIndexService.refresh()).thenReturn(Promise.resolve([]));
+    when(mockValidationMarkerService.getAllMarkerSummaries(anything())).thenReturn(Promise.resolve([]));
+    const snackbarCallback = jasmine.createSpy('snackbarCallback');
+    messagingService.subscribe(SNACKBAR_DISPLAY_NOTIFICATION, snackbarCallback);
+
+    // when
+    messagingService.publish('workspace.reload.request', null);
+    for (let i = 0; i <= WORKSPACE_LOAD_RETRY_COUNT; i++) {
+      tick();
+      const [, error] = capture(mockPersistenceService.listFiles).last();
+      error(null);
+      if (i < WORKSPACE_LOAD_RETRY_COUNT) {
+        verify(mockNg4SpinnerService.hide()).never();
+      }
+    }
+
+    // expect
+    verify(mockNg4SpinnerService.hide()).once();
+    expect(snackbarCallback).toHaveBeenCalledWith('Loading workspace timed out!');
+
+    flush();
   }));
 
 });
