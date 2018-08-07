@@ -212,7 +212,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.refreshAfterIndexUpdate(retryCount - 1);
       } else {
         this.spinnerService.hide();
-        this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, 'Loading workspace timed out!');
+        this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, { message: 'Loading workspace timed out!', timeout: 15000 });
         if (isDevMode()) {
           console.log('spinner turned off');
           console.error('failed to load workspace');
