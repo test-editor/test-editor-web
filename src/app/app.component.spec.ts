@@ -170,8 +170,8 @@ describe('AppComponent', () => {
     // when
     messagingService.publish('workspace.reload.request', null);
     tick();
-    const [onFilesRecieved] = capture(mockPersistenceService.listFiles).last();
-    onFilesRecieved(null);
+    const [onFilesReceived] = capture(mockPersistenceService.listFiles).last();
+    onFilesReceived(null);
 
     // expect
     verify(mockNg4SpinnerService.hide()).once();
