@@ -220,7 +220,10 @@ describe('AppComponent', () => {
 
     // expect
     verify(mockNg4SpinnerService.hide()).once();
-    expect(snackbarCallback).toHaveBeenCalledWith('Loading workspace timed out!');
+    expect(snackbarCallback).toHaveBeenCalledWith(jasmine.objectContaining({
+      message: 'Loading workspace timed out!',
+      timeout: 15000
+    }));
 
     flush();
   }));
