@@ -15,9 +15,11 @@ import { TestExecutionService, TestExecutionStatus } from './service/execution/t
 import { TestExecutionState } from './service/execution/test.execution.state';
 import { HttpClient } from '@angular/common/http';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
+
+export const WORKSPACE_LOAD_RETRY_COUNT = 3;
 
 const TEST_EXECUTION_FINISHED = 'test.execution.finished';
-const WORKSPACE_LOAD_RETRY_COUNT = 3;
 
 @Component({
   selector: 'app-root',
@@ -210,6 +212,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.refreshAfterIndexUpdate(retryCount - 1);
       } else {
         this.spinnerService.hide();
+        this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, 'Loading workspace timed out!');
         if (isDevMode()) {
           console.log('spinner turned off');
           console.error('failed to load workspace');

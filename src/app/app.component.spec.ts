@@ -4,7 +4,7 @@ import { APP_BASE_HREF } from '@angular/common';
 
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
-import { AppComponent } from './app.component';
+import { AppComponent, WORKSPACE_LOAD_RETRY_COUNT } from './app.component';
 import { Response, BaseResponseOptions } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -21,6 +21,7 @@ import { XtextDefaultValidationMarkerService } from './service/validation/xtext.
 import { OidcSecurityService, AuthModule } from 'angular-auth-oidc-client';
 import { AngularSplitModule } from 'angular-split';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -158,7 +159,7 @@ describe('AppComponent', () => {
        flush();
   }));
 
-  // spinner is shown when user is authorized
+  // spinner is shown when user is authorized, the following tests check whether the spinner is removed appropriately
 
   it('should hide the spinner, after workspace is (intially) loaded', fakeAsync(() => {
     resetCalls(mockNg4SpinnerService);
@@ -169,8 +170,8 @@ describe('AppComponent', () => {
     // when
     messagingService.publish('workspace.reload.request', null);
     tick();
-    const [closure] = capture(mockPersistenceService.listFiles).last();
-    closure(null);
+    const [onFilesRecieved] = capture(mockPersistenceService.listFiles).last();
+    onFilesRecieved(null);
 
     // expect
     verify(mockNg4SpinnerService.hide()).once();
@@ -203,22 +204,24 @@ describe('AppComponent', () => {
     when(mockIndexService.reload()).thenReturn(Promise.resolve());
     when(mockIndexService.refresh()).thenReturn(Promise.resolve([]));
     when(mockValidationMarkerService.getAllMarkerSummaries(anything())).thenReturn(Promise.resolve([]));
+    const snackbarCallback = jasmine.createSpy('snackbarCallback');
+    messagingService.subscribe(SNACKBAR_DISPLAY_NOTIFICATION, snackbarCallback);
 
     // when
     messagingService.publish('workspace.reload.request', null);
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i <= WORKSPACE_LOAD_RETRY_COUNT; i++) {
       tick();
       const [, error] = capture(mockPersistenceService.listFiles).last();
       error(null);
-      if (i < 3) {
+      if (i < WORKSPACE_LOAD_RETRY_COUNT) {
         verify(mockNg4SpinnerService.hide()).never();
       }
     }
 
     // expect
     verify(mockNg4SpinnerService.hide()).once();
+    expect(snackbarCallback).toHaveBeenCalledWith('Loading workspace timed out!');
 
-    expect().nothing();
     flush();
   }));
 
