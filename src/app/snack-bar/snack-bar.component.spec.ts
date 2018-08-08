@@ -44,6 +44,7 @@ describe('SnackBarComponent', () => {
     flush();
     expect(snackbar.nativeElement.textContent).toEqual(message);
     expect(snackbar.classes['show']).toBeTruthy();
+    expect(snackbar.classes['hide']).toBeFalsy();
   }));
 
   it('should remove notification after default timeout', fakeAsync(() => {
@@ -55,15 +56,22 @@ describe('SnackBarComponent', () => {
     let snackbar = fixture.debugElement.query(By.css('#snackbar'));
     expect(snackbar.nativeElement.textContent).toEqual(message);
     expect(snackbar.classes['show']).toBeTruthy();
+    expect(snackbar.classes['hide']).toBeFalsy();
 
     // when
     tick(DEFAULT_TIMEOUT);
     fixture.detectChanges();
 
-    // then
+    // then (start hiding)
     snackbar = fixture.debugElement.query(By.css('#snackbar'));
-    expect(snackbar.nativeElement.textContent).toEqual('');
     expect(snackbar.classes['show']).toBeFalsy();
+    expect(snackbar.classes['hide']).toBeTruthy();
+
+    // and then (check that hiding finished)
+    tick(1000);
+    fixture.detectChanges();
+    expect(snackbar.nativeElement.textContent).toEqual('');
+    expect(snackbar.classes['hide']).toBeFalsy();
   }));
 
   it('should display notification for the duration of the given custom timeout', fakeAsync(() => {
@@ -98,9 +106,15 @@ describe('SnackBarComponent', () => {
     tick(customTimeout);
     fixture.detectChanges();
 
-    // then
+    // then (start hiding)
     snackbar = fixture.debugElement.query(By.css('#snackbar'));
-    expect(snackbar.nativeElement.textContent).toEqual('');
     expect(snackbar.classes['show']).toBeFalsy();
+    expect(snackbar.classes['hide']).toBeTruthy();
+
+    // and then (check that hiding finished)
+    tick(1000);
+    fixture.detectChanges();
+    expect(snackbar.nativeElement.textContent).toEqual('');
+    expect(snackbar.classes['hide']).toBeFalsy();
   }));
 });

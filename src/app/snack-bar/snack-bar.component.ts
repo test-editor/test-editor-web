@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class SnackBarComponent implements OnInit, OnDestroy {
   message = '';
   show = false;
+  hide = false; // since this one starts an animation it is not simply !show
   subscription: Subscription;
 
   constructor(private messagingService: MessagingService) { }
@@ -27,11 +28,16 @@ export class SnackBarComponent implements OnInit, OnDestroy {
     console.log('showing notification: ' + JSON.stringify(snackbarMessage, null, 2));
     this.message = snackbarMessage.message;
     this.show = true;
+    this.hide = false;
     const timeout = snackbarMessage.timeout ? snackbarMessage.timeout : 1500;
     setTimeout(() => {
       console.log('notification timeout reached.');
-      this.message = '';
       this.show = false;
+      this.hide = true;
+      setTimeout(() => { // wait until animation finished
+        this.message = '';
+        this.hide = false;
+      }, 1000);
     }, timeout);
   }
 }
