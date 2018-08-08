@@ -1,0 +1,26 @@
+div {
+  height: 100%;
+}
+
+::ng-deep .nav-item.dirty > a > span:first-of-type:after {
+  margin-left: 3px;
+  content: '*'
+}
+
+tab {
+  height: 100%;
+}
+
+::ng-deep .tab-content {
+  height: calc(100% - 35px);
+}
+
+#editor-tabs {
+  /** For some reason, the tabs cause some "excess height",
+    * prompting browsers to show a scroll bar for this container.
+    * At the time of testing this, Firefox is off by 14 pixels,
+    * whereas Chrome stops showing the scrollbar when at least
+    * 7 pixels are subtracted.
+    */
+  height: calc(100% - 14px);
+}

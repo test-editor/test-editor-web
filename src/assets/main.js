@@ -1,10 +1,23 @@
-let baseUrl = window.location.pathname;
-let fileIndex = baseUrl.indexOf("index.html");
-if (fileIndex > 0) {
-    baseUrl = baseUrl.slice(0, fileIndex);
+// copied from prophecy/src/Deferred.js
+// cannot be imported due to the used ES6 syntax (export class)
+class Deferred {
+  constructor () {
+    this.promise = new Promise((resolve, reject) => {
+      this.resolve_ = resolve;
+      this.reject_ = reject;
+    });
+  }
+  resolve (value) {
+    this.resolve_.call(this.promise, value);
+  }
+  reject (reason) {
+    this.reject_.call(this.promise, reason);
+  }
 }
+
+let baseUrl = window.location.origin;
 require.config({
-    baseUrl: baseUrl + "assets",
+    baseUrl: baseUrl + "/assets",
     paths: {
         "jquery": "jquery/dist/jquery.min",
         "ace/ace": "ace/src/ace",
@@ -13,17 +26,28 @@ require.config({
     }
 });
 
-function createXtextEditor(parent, resourceId) {
-    console.log(`createXtextEditor(${parent}, ${resourceId})`)
-    require(["ace/ace", "xtext/xtext-ace"], function(ace, xtext) {
-        ace.config.set('basePath', baseUrl + 'assets/ace');
-        xtext.createEditor({
-            baseUrl: baseUrl,
-            serviceUrl: 'http://localhost:8080/xtext-service',
-            parent: parent,
-            resourceId: resourceId,
-            syntaxDefinition: "xtext-resources/generated/mode-mydsl",
-            enableSaveAction: true
-        });
+// Configure ace
+require(["ace/ace"], ace => {
+    ace.config.set('basePath', baseUrl + '/assets/ace');
+});
+
+// Configure xtext services
+require(["xtext/services/XtextService"], xtextService => {
+    xtextService.prototype._sendRequest = xtextService.prototype.sendRequest;
+    xtextService.prototype.sendRequest = function (editorContext, settings, needsSession) {
+        var token = sessionStorage.getItem('token');
+        settings.headers = {
+            "Authorization": "Bearer " + token
+        };
+        this._sendRequest(editorContext, settings, needsSession);
+    };
+});
+
+function createXtextEditor(config) {
+    let deferred = new Deferred();
+    require(["xtext/xtext-ace"], xtext => {
+        let editor = xtext.createEditor(config);
+        deferred.resolve(editor);
     });
+    return deferred;
 }

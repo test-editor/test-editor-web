@@ -1,0 +1,59 @@
+/** Taken from tutorial found at
+ * https://www.w3schools.com/howto/howto_js_snackbar.asp
+ * https://stackoverflow.com/questions/30064932/hide-element-after-fade-out-using-only-css
+ */
+
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 5px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+
+  -moz-animation-duration: 0.5s;
+  -webkit-animation-duration: 0.5s;
+  -ms-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+
+  -moz-animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+  -ms-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+
+  -moz-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  -ms-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+#snackbar.show {
+  -moz-animation-name: fadeIn;
+  -webkit-animation-name: fadeIn;
+  -ms-animation-name: fadeIn;
+  animation-name: fadeIn;
+}
+
+#snackbar.hide {
+  -moz-animation-name: fadeOut;
+  -webkit-animation-name: fadeOut;
+  -ms-animation-name: fadeOut;
+  animation-name: fadeOut;
+}
+
+@-moz-keyframes fadeIn { 0% { bottom: 0px; opacity: 0; visibility: hidden; } 100% { bottom: 30px; opacity: 1; visibility: visible; }}
+@-webkit-keyframes fadeIn { 0% { bottom: 0px; opacity: 0; visibility: hidden; } 100% { bottom: 30px; opacity: 1; visibility: visible; }}
+@-ms-keyframes fadeIn { 0% { bottom: 0px; opacity: 0; visibility: hidden; } 100% { bottom: 30px; opacity: 1; visibility: visible; }}
+@-keyframes fadeIn { 0% { bottom: 0px; opacity: 0; visibility: hidden; } 100% { bottom: 30px; opacity: 1; visibility: visible; }}
+
+@-moz-keyframes fadeOut { 0% { bottom: 30px; opacity: 1; visibility: visible; }  100% { bottom: 0px; opacity: 0; visibility: hidden; }}
+@-webkit-keyframes fadeOut { 0% { bottom: 30px; opacity: 1; visibility: visible; }  100% { bottom: 0px; opacity: 0; visibility: hidden; }}
+@-ms-keyframes fadeOut { 0% { bottom: 30px; opacity: 1; visibility: visible; } 100% { bottom: 0px; opacity: 0; visibility: hidden; }}
+@-keyframes fadeOut { 0% { bottom: 30px; opacity: 1; visibility: visible; } 100% { bottom: 0px; opacity: 0; visibility: hidden;  }}

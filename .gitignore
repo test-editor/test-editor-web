@@ -15,6 +15,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+.idea
 
 # IDE - VSCode
 .vscode/*
@@ -58,3 +59,6 @@ flycheck_*.el
 
 # surefire reports
 target/
+
+# local scripts
+*.local.sh

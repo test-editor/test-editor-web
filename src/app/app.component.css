@@ -1,0 +1,77 @@
+#page {
+  height: 100vh;
+}
+
+#nav-headline {
+  white-space: nowrap;
+}
+
+#nav-area {
+  background-color: #252525;
+  width: 100%;
+}
+
+#nav-icon-area {
+  display: inline;
+}
+
+#navigation-icon {
+  height: 21px;
+  padding-left: 5px;
+  padding-right: 5px;
+  float: none;
+  display: inline;
+}
+
+#navigation-label {
+  color: rgb(187, 187, 187);
+  line-height: 35px;
+  padding-left: 8px;
+  padding-right: 17px;
+  text-transform: uppercase;
+  display: inline;
+  height: 35px;
+}
+
+#navigation-content {
+  background-color: #252525;
+  height: calc(100% - 70px);
+}
+
+#testexec-tree {
+  background-color: #252525;
+  flex-grow: 1;
+}
+
+#testexec-details {
+  flex-grow: 2;
+  overflow-y: hidden!important
+}
+
+.navigation-text.login {
+  padding-left: 40px;
+}
+
+.navigation-text {
+  background-color: #252525;
+  color: rgb(187, 187, 187);
+  line-height: 35px;
+  padding-left: 17px;
+  height: 35px;
+}
+
+.navigation-text:hover {
+  cursor: pointer;
+}
+
+#test-step-selector-area {
+  background-color: #252525;
+}
+
+:host ::ng-deep #test-step-selector-area .tree-view-element::selection {
+  background: transparent;
+}
+
+:host ::ng-deep #test-step-selector-area .tree-view-element > span::selection {
+  background: transparent;
+}
