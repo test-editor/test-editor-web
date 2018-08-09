@@ -18,4 +18,4 @@ USER nginx
 
 EXPOSE 4200
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT [ "./run.sh" ]
