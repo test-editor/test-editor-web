@@ -19,8 +19,8 @@
     "lint": "ng lint",
     "pree2e": "webdriver-manager update --ignore_ssl --gecko false --standalone false",
     "e2e": "ng e2e -wu false",
-    "docker:build": "docker build -t testeditor/web .",
-    "docker:run": "docker run -p 4200:4200 testeditor/web &"
+    "docker:build": "docker build -t testeditor/web:SNAPSHOT .",
+    "docker:run": "docker run -p 4200:4200 testeditor/web:SNAPSHOT &"
   },
   "private": true,
   "dependencies": {
