@@ -6,4 +6,4 @@ else
   echo "WARNING: environment variable 'APP_CONFIG' not set. Defaults will be used."
 fi
 
-nginx -g daemon off;
+nginx -g "daemon off;"
