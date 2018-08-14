@@ -1,9 +1,9 @@
 #!/bin/sh
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker push testeditor/web:SNAPSHOT
+docker push testeditor/web:snapshot
 if [[ $TRAVIS_TAG = v* ]]; then
-  docker tag testeditor/web:SNAPSHOT testeditor/web:$TRAVIS_TAG
+  docker tag testeditor/web:snapshot testeditor/web:$TRAVIS_TAG
   docker push testeditor/web:$TRAVIS_TAG
-  docker tag testeditor/web:SNAPSHOT testeditor/web:latest
+  docker tag testeditor/web:snapshot testeditor/web:latest
   docker push testeditor/web:latest
 fi
