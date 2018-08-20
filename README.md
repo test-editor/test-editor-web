@@ -15,6 +15,12 @@ yarn install
 ng serve
 ```
 
+### Publish new version
+
+``` shell
+yarn version patch
+```
+
 ### Development notes
 
 #### Project dependencies
