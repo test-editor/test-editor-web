@@ -18,7 +18,7 @@ ng serve
 ### Publish new version
 
 ``` shell
-yarn version patch
+yarn version --patch
 ```
 
 ### Development notes
