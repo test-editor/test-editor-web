@@ -18,7 +18,7 @@ ng serve
 ### Publish new version
 
 ``` shell
-yarn version patch
+yarn version --patch
 ```
 
 ### Development notes
@@ -181,7 +181,7 @@ Make sure that the backend docker images can be pulled or are locally built.
 
 ``` shell
 npm run docker:build
-GIT_PRIVATE_KEY="$(cat ~/.ssh/id_github_rsa)" KNOWN_HOSTS="$(cat ~/.ssh/known_hosts)" docker-compose up
+GIT_PRIVATE_KEY="$(cat ~/.ssh/id_github_rsa)" KNOWN_HOSTS_CONTENT="$(cat ~/.ssh/known_hosts)" docker-compose up
 ```
 
 ### install git commit hook to prevent commits with local file references
