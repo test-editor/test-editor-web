@@ -198,6 +198,12 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.4.0.tgz#a6ea5de45b1b59c8f0ecdb5af99b2899fb17d3e7"
 
+"@testeditor/test-navigator@~0.0.0":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.0.3.tgz#9de0dc9ec1c32687247bc5873739df64a62f4822"
+  dependencies:
+    tslib "^1.7.1"
+
 "@testeditor/testeditor-commons@~0.1.0":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.1.4.tgz#4cab0a83be43b0c9070df248015a68e0541e8a7c"
@@ -221,10 +227,6 @@
   resolved "https://registry.yarnpkg.com/@testeditor/teststep-selector/-/teststep-selector-0.1.3.tgz#ef0f8c61dbbc80754c64d9f1dc3be246a58da0c5"
   dependencies:
     tslib "^1.7.1"
-
-"@testeditor/workspace-navigator@~0.28.0":
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/@testeditor/workspace-navigator/-/workspace-navigator-0.28.0.tgz#474f8825f6c1654c5f2e11a4ee74c47cf5c41778"
 
 "@types/jasmine@2.8.6":
   version "2.8.6"
