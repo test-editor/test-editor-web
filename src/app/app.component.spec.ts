@@ -8,21 +8,17 @@ import { AppComponent, WORKSPACE_LOAD_RETRY_COUNT } from './app.component';
 import { Response, BaseResponseOptions } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { PersistenceService, ElementType, WorkspaceElement } from '@testeditor/test-navigator';
+import { PersistenceService, WorkspaceElement } from '@testeditor/test-navigator';
 import { Routes, RouterModule } from '@angular/router';
-import { mock, when, instance, capture, verify, anything, resetCalls } from 'ts-mockito';
-// import { ValidationMarkerService } from './service/validation/validation.marker.service';
+import { mock, when, instance, verify, resetCalls } from 'ts-mockito';
 import { XtextIndexService } from './service/index/xtext.index.service';
 import { IndexService } from './service/index/index.service';
 
-// import { TestExecutionService, DefaultTestExecutionService } from './service/execution/test.execution.service';
 import { DocumentService } from './service/document/document.service';
-// import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
 import { OidcSecurityService, AuthModule } from 'angular-auth-oidc-client';
 import { AngularSplitModule } from 'angular-split';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
-import { WORKSPACE_RELOAD_REQUEST } from './editor-tabs/event-types';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }

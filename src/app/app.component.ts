@@ -4,24 +4,14 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Subscription } from 'rxjs/Subscription';
 import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
 import { HttpClientPayload, HTTP_CLIENT_NEEDED, HTTP_CLIENT_SUPPLIED } from './app-event-types';
-import {
-  // TEST_EXECUTION_START_FAILED, TEST_EXECUTION_STARTED, TEST_EXECUTE_REQUEST,
-  // WORKSPACE_MARKER_OBSERVE, WORKSPACE_MARKER_UPDATE,
-  WORKSPACE_RELOAD_RESPONSE,
-  PersistenceService // , WorkspaceElement
-  // , MarkerObserver
-} from '@testeditor/test-navigator';
-// import { ValidationMarkerService } from './service/validation/validation.marker.service';
+import { WORKSPACE_RELOAD_RESPONSE, PersistenceService } from '@testeditor/test-navigator';
 import { IndexService } from './service/index/index.service';
-// import { TestExecutionService, TestExecutionStatus } from './service/execution/test.execution.service';
-// import { TestExecutionState } from './service/execution/test.execution.state';
 import { HttpClient } from '@angular/common/http';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
 
 export const WORKSPACE_LOAD_RETRY_COUNT = 3;
 
-// const TEST_EXECUTION_FINISHED = 'test.execution.finished';
 const WORKSPACE_RELOAD_REQUEST = 'workspace.reload.request';
 
 @Component({
@@ -138,56 +128,6 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  // private updateValidationMarkers(root: WorkspaceElement): void {
-  //   this.validationMarkerService.getAllMarkerSummaries(root).then((summaries) => {
-  //     console.log(JSON.stringify(summaries));
-  //     return this.messagingService.publish(WORKSPACE_MARKER_UPDATE, summaries.map((summary) => (
-  //       { path: summary.path, markers: { validation: { errors: summary.errors, warnings: summary.warnings, infos: summary.infos } } }
-  //     )));
-  //   });
-  // }
-
-  /**
-   * listen to test execution request events and start the respective test,
-   * sending an event that test execution was started and installing an observer
-   * for the update to the test execution status
-   */
-  // private setupTestExecutionListener(): void {
-  //   this.messagingService.subscribe(TEST_EXECUTE_REQUEST, (payload) => {
-  //     this.testExecutionService.execute(payload).then((response) => {
-  //       this.messagingService.publish(TEST_EXECUTION_STARTED, {
-  //         path: payload,
-  //         response: response,
-  //         message: 'Execution of "\${}" has been started.'
-  //       });
-  //       this.messagingService.publish(WORKSPACE_MARKER_OBSERVE, this.testExecutionStatusObserver(payload));
-  //     }).catch((reason) => {
-  //       this.messagingService.publish(TEST_EXECUTION_START_FAILED, {
-  //         path: payload,
-  //         reason: reason,
-  //         message: 'The test "\${}" could not be started.'
-  //       });
-  //     });
-  //   });
-  // }
-
-  // private testExecutionStatusObserver(path: string): MarkerObserver<TestExecutionStatus> {
-  //   return {
-  //     path: path,
-  //     field: 'testStatus',
-  //     observe: () => this.testExecutionService.getStatus(path),
-  //     stopOn: (value) => {
-  //       const stopped = value.status !== TestExecutionState.Running;
-  //       if (stopped) {
-  //         console.log('send test execution finished event.');
-  //         this.messagingService.publish(TEST_EXECUTION_FINISHED, value);
-  //         this.messagingService.publish(WORKSPACE_RELOAD_REQUEST, null);
-  //       }
-  //       return stopped;
-  //     }
-  //   };
-  // }
 
   /**
    * listen to events that changed the repository (currently only editor save completed events)
