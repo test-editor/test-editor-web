@@ -1,18 +1,13 @@
-import { Component, isDevMode, OnInit, OnDestroy } from '@angular/core';
-import { MessagingService, Message } from '@testeditor/messaging-service';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Subscription } from 'rxjs/Subscription';
-import { NAVIGATION_CLOSE, EDITOR_SAVE_COMPLETED } from './editor-tabs/event-types';
-import { HttpClientPayload, HTTP_CLIENT_NEEDED, HTTP_CLIENT_SUPPLIED } from './app-event-types';
-import { WORKSPACE_RELOAD_RESPONSE, PersistenceService } from '@testeditor/test-navigator';
-import { IndexService } from './service/index/index.service';
 import { HttpClient } from '@angular/common/http';
+import { Component, isDevMode, OnDestroy, OnInit } from '@angular/core';
+import { Message, MessagingService } from '@testeditor/messaging-service';
+import { WORKSPACE_RETRIEVED, WORKSPACE_RETRIEVED_FAILED } from '@testeditor/test-navigator';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { Subscription } from 'rxjs/Subscription';
+import { HttpClientPayload, HTTP_CLIENT_NEEDED, HTTP_CLIENT_SUPPLIED } from './app-event-types';
+import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
-
-export const WORKSPACE_LOAD_RETRY_COUNT = 3;
-
-const WORKSPACE_RELOAD_REQUEST = 'workspace.reload.request';
 
 @Component({
   selector: 'app-root',
@@ -28,17 +23,12 @@ export class AppComponent implements OnInit, OnDestroy {
   hasToken: boolean;
   userDataSubscription: Subscription;
   user: String;
-  fileSavedSubscription: Subscription;
   httpClientSubscription: Subscription;
 
 
   constructor(private messagingService: MessagingService,
     public oidcSecurityService: OidcSecurityService,
     private spinnerService: Ng4LoadingSpinnerService,
-    private persistenceService: PersistenceService,
-    // private validationMarkerService: ValidationMarkerService,
-    private indexService: IndexService,
-    // private testExecutionService: TestExecutionService,
     private httpClient: HttpClient) {
     if (isDevMode()) {
       // log all received events in development mode
@@ -54,9 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.setupWorkspaceReloadResponse();
-    // this.setupTestExecutionListener();
-    this.setupRepoChangeListeners();
+    this.setupWorkspaceRetrieved();
     this.setupHttpClientListener();
   }
 
@@ -92,7 +80,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.userDataSubscription.unsubscribe();
     this.isAuthorizedSubscription.unsubscribe();
     this.oidcSecurityService.onModuleSetup.unsubscribe();
-    this.fileSavedSubscription.unsubscribe();
   }
 
   login() {
@@ -119,60 +106,13 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setupWorkspaceReloadResponse(): void {
-    this.messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, (payload) => {
-      if (payload && payload.rebuild) {
-        this.reloadWorkspace();
-      } else {
-        this.refreshIndex();
-      }
-    });
-  }
-
-  /**
-   * listen to events that changed the repository (currently only editor save completed events)
-   * inform index to refresh itself
-   */
-  private setupRepoChangeListeners(): void {
-    this.fileSavedSubscription = this.messagingService.subscribe(EDITOR_SAVE_COMPLETED, (payload) => {
-      this.refreshIndex();
-    });
-  }
-
-  private async refreshAfterIndexUpdate (retryCount: number) {
-    try {
-      const root = await this.persistenceService.listFiles();
+  private setupWorkspaceRetrieved(): void {
+    this.messagingService.subscribe(WORKSPACE_RETRIEVED, () => this.spinnerService.hide());
+    this.messagingService.subscribe(WORKSPACE_RETRIEVED_FAILED, () => {
       this.spinnerService.hide();
-      if (isDevMode()) {
-        console.log('spinner turned off');
-      }
-      this.messagingService.publish(WORKSPACE_RELOAD_RESPONSE, root);
-      // this.updateValidationMarkers(root);
-      // TODO: make sure that test navigator does that in response to WORKSPACE_RELOAD_RESPONSE
-    } catch (error) {
-      // TODO: prevent errors! keep connection to backend, as long as the list files service is running (in the backend) show the spinner!
-      if (retryCount > 0) {
-        if (isDevMode()) {
-          console.log('retry (re)load of workspace after failure');
-        }
-        this.refreshAfterIndexUpdate(retryCount - 1);
-      } else {
-        this.spinnerService.hide();
-        this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, { message: 'Loading workspace timed out!', timeout: 15000 });
-        if (isDevMode()) {
-          console.log('spinner turned off');
-          console.error('failed to load workspace');
-        }
-      }
-    }
-  }
-
-  private reloadWorkspace(): void {
-    this.indexService.reload().then(() => { this.refreshAfterIndexUpdate(WORKSPACE_LOAD_RETRY_COUNT); });
-  }
-
-  private refreshIndex(): void {
-    this.indexService.refresh().then(() => { this.refreshAfterIndexUpdate(WORKSPACE_LOAD_RETRY_COUNT); });
+      // decouple w/ message bus to be able to migrate snack bar out to test-editor-commons
+      this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, { message: 'Loading workspace timed out!', timeout: 15000 });
+    });
   }
 
   private setupHttpClientListener(): void {
