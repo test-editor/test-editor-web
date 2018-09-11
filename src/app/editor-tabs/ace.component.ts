@@ -13,7 +13,7 @@ import { isConflict, Conflict } from '../service/document/conflict';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { Subscription } from 'rxjs/Subscription';
-import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/workspace-navigator';
+import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
 declare var appConfig: Function;
 

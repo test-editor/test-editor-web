@@ -5,7 +5,7 @@ import { AngularSplitModule } from 'angular-split';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MessagingModule } from '@testeditor/messaging-service';
-import { WorkspaceNavigatorModule } from '@testeditor/workspace-navigator';
+import { TestNavigatorModule } from '@testeditor/test-navigator';
 import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
 import { TestExecDetailsModule } from '@testeditor/testexec-details';
 
@@ -16,10 +16,6 @@ import { AuthModule, OidcSecurityService, OidcConfigService,
          OpenIDImplicitFlowConfiguration, AuthWellKnownEndpoints } from 'angular-auth-oidc-client';
 import { Routes, RouterModule } from '@angular/router';
 
-import { testEditorIndicatorFieldSetup } from './config/workspace.navigator.config';
-import { ValidationMarkerService } from './service/validation/validation.marker.service';
-import { XtextDefaultValidationMarkerService } from './service/validation/xtext.default.validation.marker.service';
-import { XtextValidationMarkerServiceConfig } from './service/validation/xtext.validation.marker.service.config';
 import { TestExecutionService } from './service/execution/test.execution.service';
 import { IndexService } from './service/index/index.service';
 import { XtextIndexService } from './service/index/xtext.index.service';
@@ -59,8 +55,9 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
-    WorkspaceNavigatorModule.forRoot({
-      persistenceServiceUrl: appConfig().serviceUrls.persistenceService }, testEditorIndicatorFieldSetup),
+    TestNavigatorModule.forRoot({
+      persistenceServiceUrl: appConfig().serviceUrls.persistenceService } // , testEditorIndicatorFieldSetup
+    ),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: appConfig().serviceUrls.persistenceService,
     }),
@@ -83,8 +80,6 @@ const appRoutes: Routes = [
     { provide: TestSuiteExecutionService, useClass: DefaultTestSuiteExecutionService },
     { provide: TestSuiteExecutionServiceConfig,
       useValue: { testSuiteExecutionServiceUrl: appConfig().serviceUrls.testSuiteExecutionService } },
-    { provide: ValidationMarkerService, useClass: XtextDefaultValidationMarkerService },
-    { provide: XtextValidationMarkerServiceConfig, useValue: { serviceUrl: appConfig().serviceUrls.validationMarkerService }},
     { provide: IndexService, useClass: XtextIndexService },
     { provide: XtextIndexServiceConfig, useValue: { serviceUrl: appConfig().serviceUrls.indexService }},
     { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: true } },
