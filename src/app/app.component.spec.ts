@@ -22,11 +22,7 @@ const appRoutes: Routes = [
 
 describe('AppComponent', () => {
   const mockPersistenceService = mock(PersistenceService);
-  // cannot use ValidationMarkerService, since its method is abstract and cannot be spied on by ts-mockito (yet)
-  // const mockValidationMarkerService = mock(XtextDefaultValidationMarkerService);
   const mockDocumentService = mock(DocumentService);
-  // const mockTestExecutionService = mock(DefaultTestExecutionService);
-  // cannot use IndexService, since its method is abstract and cannot be spied on by ts-mockito (yet)
   const mockIndexService = mock(XtextIndexService);
   const mockNg4SpinnerService = mock(Ng4LoadingSpinnerService);
   let messagingService: MessagingService;
@@ -51,9 +47,7 @@ describe('AppComponent', () => {
         OidcSecurityService,
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: PersistenceService, useValue: instance(mockPersistenceService) },
-        // { provide: ValidationMarkerService, useValue: instance(mockValidationMarkerService) },
         { provide: DocumentService, useValue: instance(mockDocumentService) },
-        // { provide: TestExecutionService, useValue: instance(mockTestExecutionService) },
         { provide: IndexService, useValue: instance(mockIndexService) },
         { provide: Ng4LoadingSpinnerService, useValue: instance(mockNg4SpinnerService) },
         HttpClient
