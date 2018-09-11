@@ -10,20 +10,20 @@ export const WORKSPACE_RELOAD_REQUEST = 'workspace.reload.request';
 
 export interface NavigationDeletedPayload {
   name: string;
-  path: string;
+  id: string;
   type: string;
 }
 
 export interface NavigationOpenPayload {
   name: string;
-  path: string;
+  id: string;
 }
 
 export interface EditorSaveFailedPayload {
-  path: string;
+  id: string;
   reason: any;
 }
 
 export interface EditorSaveCompletedPayload {
-  path: string;
+  id: string;
 }

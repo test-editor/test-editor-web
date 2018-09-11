@@ -41,12 +41,12 @@ describe('EditorTabsComponent', () => {
 
   const fooDocument: NavigationOpenPayload = {
     name: 'foo',
-    path: 'top/secret/foo'
+    id: 'top/secret/foo'
   };
 
   const barDocument: NavigationOpenPayload = {
     name: 'bar',
-    path: 'tropical/bar'
+    id: 'tropical/bar'
   };
 
   const openFoo = () => {
@@ -156,7 +156,7 @@ describe('EditorTabsComponent', () => {
 
     // then
     expect(editorActiveCallback).toHaveBeenCalledTimes(1);
-    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.path });
+    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.id });
   });
 
   it('emits editor.active event on tab switch', () => {
@@ -172,7 +172,7 @@ describe('EditorTabsComponent', () => {
 
     // then
     expect(editorActiveCallback).toHaveBeenCalledTimes(1);
-    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.path });
+    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.id });
   });
 
   it('emits editor.active event when tab is removed', () => {
@@ -187,7 +187,7 @@ describe('EditorTabsComponent', () => {
     closeIcon.nativeElement.click();
 
     // then
-    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.path });
+    expect(editorActiveCallback).toHaveBeenCalledWith({ path: fooDocument.id });
     // there seems to be a problem running in Jasmine... maybe $event.preventDefault()
     // does not work? Thee is one more event triggered with barDocument.path but
     // this does not happen in the real app :-S
@@ -205,7 +205,7 @@ describe('EditorTabsComponent', () => {
 
     // then
     expect(editorCloseCallback).toHaveBeenCalledTimes(1);
-    expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.path });
+    expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.id });
   });
 
   it('closes tab when "navigation.deleted" event is received for file', () => {
@@ -213,7 +213,7 @@ describe('EditorTabsComponent', () => {
     openFooAndBar();
     const fooDeletePayload: NavigationDeletedPayload = {
       name: 'foo',
-      path: 'top/secret/foo',
+      id: 'top/secret/foo',
       type: 'file'
     };
     const editorCloseCallback = jasmine.createSpy('editorCloseCallback');
@@ -228,7 +228,7 @@ describe('EditorTabsComponent', () => {
     expect(getActiveItem().nativeElement.innerText).toBe('bar');
 
     expect(editorCloseCallback).toHaveBeenCalledTimes(1);
-    expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.path });
+    expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.id });
   });
 
   it('closes tab when "navigation.deleted" is received for parent folder', () => {
@@ -236,7 +236,7 @@ describe('EditorTabsComponent', () => {
     openFooAndBar();
     const topDeletePayload: NavigationDeletedPayload = {
       name: 'top',
-      path: 'top',
+      id: 'top',
       type: 'folder'
     };
 
