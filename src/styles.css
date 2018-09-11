@@ -24,3 +24,7 @@
 .validation-infos {
   color: #3498DB
 }
+
+.tsl-file-color { color: lightgreen }
+.tcl-file-color { color: lightblue }
+.aml-file-color { color: lightcoral }

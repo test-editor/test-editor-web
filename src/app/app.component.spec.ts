@@ -12,9 +12,6 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { instance, mock, resetCalls, verify } from 'ts-mockito';
 import { AppComponent } from './app.component';
 import { DocumentService } from './service/document/document.service';
-import { IndexService } from './service/index/index.service';
-import { XtextIndexService } from './service/index/xtext.index.service';
-
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -23,7 +20,6 @@ const appRoutes: Routes = [
 describe('AppComponent', () => {
   const mockPersistenceService = mock(PersistenceService);
   const mockDocumentService = mock(DocumentService);
-  const mockIndexService = mock(XtextIndexService);
   const mockNg4SpinnerService = mock(Ng4LoadingSpinnerService);
   let messagingService: MessagingService;
   let app: AppComponent;
@@ -48,7 +44,6 @@ describe('AppComponent', () => {
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: PersistenceService, useValue: instance(mockPersistenceService) },
         { provide: DocumentService, useValue: instance(mockDocumentService) },
-        { provide: IndexService, useValue: instance(mockIndexService) },
         { provide: Ng4LoadingSpinnerService, useValue: instance(mockNg4SpinnerService) },
         HttpClient
       ]
