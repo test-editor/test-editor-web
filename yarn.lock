@@ -198,15 +198,15 @@
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.4.1.tgz#de0f8cdd18bc6b19ad01a82ba6d0f0f75ff85266"
 
-"@testeditor/test-navigator@~0.0.5":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.0.8.tgz#cee4739e810bbe3d7a51c4e40d47d57d4eaac411"
+"@testeditor/test-navigator@~0.0.9":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.0.14.tgz#e342f5ca372eb4fc150722493fab80545497c01e"
   dependencies:
     tslib "^1.7.1"
 
-"@testeditor/testeditor-commons@~0.1.0":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.1.9.tgz#cc67b3bb28edb182316f4a5e6734f4d196eec3ad"
+"@testeditor/testeditor-commons@~0.2.0":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.2.1.tgz#825253334e59fa2b0efb7f2c20f16715036db863"
   dependencies:
     tslib "^1.7.1"
 
@@ -217,8 +217,8 @@
     tslib "^1.7.1"
 
 "@testeditor/testexec-navigator@~0.4.0":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.5.tgz#ada67620908d1e47bdb1fbc393a8d1e83f4320bd"
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.9.tgz#f06c35de1a768c0bfb1c8d9d3cbabb177cb2efd5"
   dependencies:
     tslib "^1.7.1"
 

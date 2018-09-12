@@ -16,19 +16,12 @@ import { AuthModule, OidcSecurityService, OidcConfigService,
          OpenIDImplicitFlowConfiguration, AuthWellKnownEndpoints } from 'angular-auth-oidc-client';
 import { Routes, RouterModule } from '@angular/router';
 
-import { TestExecutionService } from './service/execution/test.execution.service';
-import { IndexService } from './service/index/index.service';
-import { XtextIndexService } from './service/index/xtext.index.service';
-import { XtextIndexServiceConfig } from './service/index/xtext.index.service.config';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppTokenStorage } from './app.token.storage';
 import { AuthInterceptor } from './auth.interceptor';
 import { ModalDialogComponent } from './dialogs/modal.dialog.component';
-import { TestExecutionSuiteAdapterService } from './service/execution/test-execution-suite-adapter.service';
 import { TestStepSelectorModule } from '@testeditor/teststep-selector';
-import { TestSuiteExecutionServiceConfig } from './service/execution/test-suite-execution.service.config';
-import { TestSuiteExecutionService, DefaultTestSuiteExecutionService } from './service/execution/test-suite-execution.service';
 import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { AceEditorZoneConfiguration } from './editor-tabs/ace.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
@@ -57,6 +50,7 @@ const appRoutes: Routes = [
     MessagingModule.forRoot(),
     TestNavigatorModule.forRoot({
       persistenceServiceUrl: appConfig().serviceUrls.persistenceService } // , testEditorIndicatorFieldSetup
+      // , indexServiceUrl: appConfig().serviceUrls.indexService
     ),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: appConfig().serviceUrls.persistenceService,
@@ -76,12 +70,6 @@ const appRoutes: Routes = [
       deps: [OidcConfigService],
       multi: true
     },
-    { provide: TestExecutionService, useClass: TestExecutionSuiteAdapterService },
-    { provide: TestSuiteExecutionService, useClass: DefaultTestSuiteExecutionService },
-    { provide: TestSuiteExecutionServiceConfig,
-      useValue: { testSuiteExecutionServiceUrl: appConfig().serviceUrls.testSuiteExecutionService } },
-    { provide: IndexService, useClass: XtextIndexService },
-    { provide: XtextIndexServiceConfig, useValue: { serviceUrl: appConfig().serviceUrls.indexService }},
     { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: true } },
     {
       provide: HTTP_INTERCEPTORS,

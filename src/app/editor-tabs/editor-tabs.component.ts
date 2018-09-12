@@ -50,9 +50,9 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
 
   private handleNavigationDeleted(document: NavigationDeletedPayload): void {
     if (document.type === 'folder') {
-      this.handleNavigationFolderDeleted(document.path);
+      this.handleNavigationFolderDeleted(document.id);
     } else {
-      this.handleNavigationFileDeleted(document.path);
+      this.handleNavigationFileDeleted(document.id);
     }
   }
 
@@ -69,7 +69,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   private handleNavigationOpen(document: NavigationOpenPayload): void {
-    const existingTab = this.findTab(document.path);
+    const existingTab = this.findTab(document.id);
     if (existingTab) {
       this.selectTab(existingTab);
     } else {
@@ -82,7 +82,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     const newElement = {
       id: `editor-tab-${EditorTabsComponent.uniqueTabId++}`,
       title: document.name,
-      path: document.path,
+      path: document.id,
       active: false
     };
     this.tabs.push(newElement);
