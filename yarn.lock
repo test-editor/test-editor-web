@@ -199,14 +199,14 @@
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.4.1.tgz#de0f8cdd18bc6b19ad01a82ba6d0f0f75ff85266"
 
 "@testeditor/test-navigator@~0.0.9":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.0.14.tgz#e342f5ca372eb4fc150722493fab80545497c01e"
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.0.16.tgz#3fe5cb35ca7b0be097f819de030a02e202cf984b"
   dependencies:
     tslib "^1.7.1"
 
 "@testeditor/testeditor-commons@~0.2.0":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.2.1.tgz#825253334e59fa2b0efb7f2c20f16715036db863"
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.2.2.tgz#69336d78713e099b1a3a1752bd3508529fd07744"
   dependencies:
     tslib "^1.7.1"
 
