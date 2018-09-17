@@ -5,7 +5,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { RouterModule, Routes } from '@angular/router';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
-import { PersistenceService } from '@testeditor/test-navigator';
 import { AuthModule, OidcSecurityService } from 'angular-auth-oidc-client';
 import { AngularSplitModule } from 'angular-split';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
@@ -18,7 +17,6 @@ const appRoutes: Routes = [
 ];
 
 describe('AppComponent', () => {
-  const mockPersistenceService = mock(PersistenceService);
   const mockDocumentService = mock(DocumentService);
   const mockNg4SpinnerService = mock(Ng4LoadingSpinnerService);
   let messagingService: MessagingService;
@@ -42,7 +40,6 @@ describe('AppComponent', () => {
       providers: [
         OidcSecurityService,
         { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: PersistenceService, useValue: instance(mockPersistenceService) },
         { provide: DocumentService, useValue: instance(mockDocumentService) },
         { provide: Ng4LoadingSpinnerService, useValue: instance(mockNg4SpinnerService) },
         HttpClient

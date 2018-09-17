@@ -48,9 +48,10 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
-    TestNavigatorModule.forRoot({
-      persistenceServiceUrl: appConfig().serviceUrls.persistenceService } // , testEditorIndicatorFieldSetup
-      // , indexServiceUrl: appConfig().serviceUrls.indexService
+    TestNavigatorModule.forRoot(
+      { persistenceServiceUrl: appConfig().serviceUrls.persistenceService },
+      { indexServiceUrl: appConfig().serviceUrls.indexService },
+      { validationServiceUrl: appConfig().serviceUrls.validationMarkerService }
     ),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: appConfig().serviceUrls.persistenceService,
