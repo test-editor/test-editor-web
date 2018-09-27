@@ -28,3 +28,6 @@
 .tsl-file-color { color: lightgreen }
 .tcl-file-color { color: lightblue }
 .aml-file-color { color: lightcoral }
+
+.embedded-delete-button { color: #a80f22 }
+.embedded-delete-button:hover { color: #d82300; }
