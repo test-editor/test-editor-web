@@ -37,7 +37,7 @@
     "@angular/router": "^5.2.10",
     "@testeditor/messaging-service": "~1.4.0",
     "@testeditor/test-navigator": "~0.1.0",
-    "@testeditor/testeditor-commons": "~0.2.0",
+    "@testeditor/testeditor-commons": "~0.3.0",
     "@testeditor/testexec-details": "~0.3.0",
     "@testeditor/testexec-navigator": "~0.4.0",
     "@testeditor/teststep-selector": "~0.1.0",
