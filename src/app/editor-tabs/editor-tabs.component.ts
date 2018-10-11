@@ -114,7 +114,12 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     const component = this.editorComponents.find(element => element.tabId === tab.id);
     if (component) {
       component.focus();
+      component.resize();
     }
+  }
+
+  public resize() {
+    this.editorComponents.forEach(editor => editor.resize());
   }
 
   public deselectTab(tab: TabElement): void {

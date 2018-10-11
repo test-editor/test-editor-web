@@ -153,6 +153,12 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     return '';
   }
 
+  public resize(): void {
+    this.editor.then(editor => {
+      editor.resize();
+    });
+  }
+
   public focus(): void {
     this.editor.then(editor => {
       editor.focus();

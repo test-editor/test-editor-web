@@ -1,7 +1,7 @@
 <div id="page">
-  <split direction="vertical" gutterSize="15">
+  <split direction="vertical" gutterSize="15" (dragEnd)="dragAffectingEditorEnd()">
     <split-area size="65">
-      <split direction="horizontal" gutterSize="15">
+      <split direction="horizontal" gutterSize="15" (dragEnd)="dragAffectingEditorEnd()">
         <split-area size="20" id="nav-area">
           <div id="nav-headline">
             <div id="nav-icon-area"><img alt="test-editor icon" src="favicon.ico" id="navigation-icon"/></div><div id="navigation-label">Test&#8209;Editor</div>
@@ -15,7 +15,7 @@
           <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
         </split-area>
         <split-area size="80">
-          <split direction="horizontal" gutterSize="15">
+          <split direction="horizontal" gutterSize="15" (dragEnd)="dragAffectingEditorEnd()">
             <split-area *ngIf="isAuthorized && hasToken" size="66">
               <app-editor-tabs></app-editor-tabs>
             </split-area>
