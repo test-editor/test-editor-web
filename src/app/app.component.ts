@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, isDevMode, OnDestroy, OnInit } from '@angular/core';
+import { Component, isDevMode, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Message, MessagingService } from '@testeditor/messaging-service';
 import { WORKSPACE_RETRIEVED, WORKSPACE_RETRIEVED_FAILED } from '@testeditor/test-navigator';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { HttpClientPayload, HTTP_CLIENT_NEEDED, HTTP_CLIENT_SUPPLIED } from './app-event-types';
 import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
+import { EditorTabsComponent } from './editor-tabs/editor-tabs.component';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,8 @@ import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types
 })
 
 export class AppComponent implements OnInit, OnDestroy {
+
+  @ViewChild(EditorTabsComponent) editorTabsComponent: EditorTabsComponent;
 
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
@@ -120,6 +123,10 @@ export class AppComponent implements OnInit, OnDestroy {
       const payload: HttpClientPayload =  { httpClient: this.httpClient };
       this.messagingService.publish(HTTP_CLIENT_SUPPLIED, payload);
     });
+  }
+
+  dragAffectingEditorEnd() {
+    this.editorTabsComponent.resize();
   }
 
 }
