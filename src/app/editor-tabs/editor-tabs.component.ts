@@ -6,9 +6,9 @@ import { AceComponent } from './ace.component';
 import { Element } from './element';
 import { TabElement } from './tab-element';
 
-import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE,
+import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
          EDITOR_ACTIVE, EDITOR_CLOSE,
-         NavigationDeletedPayload, NavigationOpenPayload } from './event-types';
+         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload } from './event-types';
 
 @Component({
   selector: 'app-editor-tabs',
@@ -41,6 +41,9 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     }));
     this.subscriptions.push(this.messagingService.subscribe(NAVIGATION_CLOSE, () => {
       this.clearTabs();
+    }));
+    this.subscriptions.push(this.messagingService.subscribe(NAVIGATION_RENAMED, (payload) => {
+      this.handleNavigationRenamed(payload);
     }));
   }
 
@@ -76,6 +79,19 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
       this.createNewTab(document);
     }
     this.changeDetectorRef.detectChanges();
+  }
+
+  private handleNavigationRenamed(payload: NavigationRenamedPayload): void {
+    const existingTab = this.findTab(payload.oldPath);
+    if (existingTab) {
+      existingTab.path = payload.newPath;
+      existingTab.title = payload.newPath.split('/').pop();
+      this.editorComponents.forEach(editor => {
+        if (editor.path === payload.oldPath) {
+          editor.renameTo(payload.newPath);
+        }
+      });
+    }
   }
 
   private createNewTab(document: NavigationOpenPayload): void {
