@@ -51,3 +51,10 @@ function createXtextEditor(config) {
     });
     return deferred;
 }
+
+function reconfigureXtextEditor(editor, config) {
+    require(["xtext/xtext-ace"], xtext => {
+        xtext.removeServices(editor);
+        xtext.createServices(editor, config);
+    });
+}

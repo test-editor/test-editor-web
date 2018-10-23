@@ -18,6 +18,7 @@ import '../../assets/configuration.js';
 declare var appConfig: Function;
 
 declare var createXtextEditor: (config: any) => Deferred;
+declare var reconfigureXtextEditor: (editor: any, config: any) => void;
 
 export class AceEditorZoneConfiguration {
   useOutsideZone: boolean;
@@ -71,26 +72,11 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private createEditor(): Promise<any> {
-    const editorId = `${this.tabId}-editor`;
-    return this.findSyntaxDefinitionFile().then(syntaxDefinitionFilePath => {
-      const isKnownLanguage = syntaxDefinitionFilePath !== AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
-      const config = {
-        baseUrl: window.location.origin,
-        serviceUrl: appConfig().serviceUrls.xtextService,
-        parent: editorId,
-        dirtyElement: document.getElementsByClassName(this.tabId),
-        loadFromServer: false,
-        sendFullText: true,
-        resourceId: this.path,
-        syntaxDefinition: syntaxDefinitionFilePath,
-        enableOccurrencesService: isKnownLanguage,
-        enableValidationService: isKnownLanguage,
-        enableSaveAction: false // don't want the default xtext-save action
-      };
-      const deferred = createXtextEditor(config);
-      return deferred.promise;
-    });
+  private async createEditor(): Promise<any> {
+    const config = await this.createXtextConfig(this.path, this.tabId);
+    console.log('create editor with configuration');
+    const deferred = createXtextEditor(config);
+    return deferred.promise;
   }
 
   private initializeEditor(editor: any): void {
@@ -133,16 +119,16 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     this.messagingService.publish(events.EDITOR_DIRTY_CHANGED, dirtyState);
   }
 
-  private findSyntaxDefinitionFile(): Promise<string> {
-    return this.syntaxHighlightingService.getSyntaxHighlighting(this.getFileExtension())
-      .then(path => {
-        console.log(`using syntax highlighting rules from "${path}"`);
-        return path;
-      })
-      .catch(() => {
-        console.log(`no syntax highlighting rules available for this file type ("${this.path}")`);
-        return AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
-      });
+  private async findSyntaxDefinitionFile(): Promise<string> {
+    try {
+      const path = await this.syntaxHighlightingService.getSyntaxHighlighting(this.getFileExtension());
+      console.log(`using syntax highlighting rules from "${path}"`);
+      return path;
+    } catch (error) {
+      console.log(`no syntax highlighting rules available for this file type ("${this.path}")`);
+      console.log(error);
+      return AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
+    }
   }
 
   private getFileExtension(): string {
@@ -163,6 +149,33 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     this.editor.then(editor => {
       editor.focus();
     });
+  }
+
+  private async createXtextConfig(resourcePath: string, tabId: string): Promise<any> {
+    const editorId = `${tabId}-editor`;
+    const syntaxDefinitionFilePath = await this.findSyntaxDefinitionFile();
+    const isKnownLanguage = syntaxDefinitionFilePath !== AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
+    return {
+      baseUrl: window.location.origin,
+      serviceUrl: appConfig().serviceUrls.xtextService,
+      parent: editorId,
+      dirtyElement: document.getElementsByClassName(tabId),
+      loadFromServer: false,
+      sendFullText: true,
+      resourceId: resourcePath,
+      syntaxDefinition: syntaxDefinitionFilePath,
+      enableOccurrencesService: isKnownLanguage,
+      enableValidationService: isKnownLanguage,
+      enableSaveAction: false // don't want the default xtext-save action
+    };
+  }
+
+  public async renameTo(newPath: string): Promise<void> {
+    this.path = newPath;
+    const editor = await this.editor;
+    const config = await this.createXtextConfig(newPath, this.tabId);
+    console.log('reconfigure editor with new configuration');
+    reconfigureXtextEditor(editor, config);
   }
 
   public save(): void {

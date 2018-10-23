@@ -7,6 +7,7 @@ export const NAVIGATION_OPEN = 'navigation.open';
 export const NAVIGATION_DELETED = 'navigation.deleted';
 export const NAVIGATION_CLOSE = 'navigation.close';
 export const WORKSPACE_RELOAD_REQUEST = 'workspace.reload.request';
+export const NAVIGATION_RENAMED = 'navigation.renamed';
 
 export interface NavigationDeletedPayload {
   name: string;
@@ -26,4 +27,9 @@ export interface EditorSaveFailedPayload {
 
 export interface EditorSaveCompletedPayload {
   id: string;
+}
+
+export interface NavigationRenamedPayload {
+  oldPath: string;
+  newPath: string;
 }

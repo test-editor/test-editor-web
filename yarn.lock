@@ -199,8 +199,8 @@
   resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.4.1.tgz#de0f8cdd18bc6b19ad01a82ba6d0f0f75ff85266"
 
 "@testeditor/test-navigator@~0.1.0":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.10.tgz#07009dbcf37ce74654dff8b4c5debc14600b8fae"
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.14.tgz#d4cfb3a6f78110c5936169f7252dc9372385550c"
   dependencies:
     tslib "^1.7.1"
 
