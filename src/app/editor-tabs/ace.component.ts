@@ -120,15 +120,15 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   }
 
   private async findSyntaxDefinitionFile(): Promise<string> {
-    return this.syntaxHighlightingService.getSyntaxHighlighting(this.getFileExtension())
-      .then(path => {
-        console.log(`using syntax highlighting rules from "${path}"`);
-        return path;
-      })
-      .catch(() => {
-        console.log(`no syntax highlighting rules available for this file type ("${this.path}")`);
-        return AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
-      });
+    try {
+      const path = await this.syntaxHighlightingService.getSyntaxHighlighting(this.getFileExtension());
+      console.log(`using syntax highlighting rules from "${path}"`);
+      return path;
+    } catch (error) {
+      console.log(`no syntax highlighting rules available for this file type ("${this.path}")`);
+      console.log(error);
+      return AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
+    }
   }
 
   private getFileExtension(): string {
@@ -156,18 +156,18 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     const syntaxDefinitionFilePath = await this.findSyntaxDefinitionFile();
     const isKnownLanguage = syntaxDefinitionFilePath !== AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
     return {
-          baseUrl: window.location.origin,
-          serviceUrl: appConfig().serviceUrls.xtextService,
-          parent: editorId,
-          dirtyElement: document.getElementsByClassName(tabId),
-          loadFromServer: false,
-          sendFullText: true,
-          resourceId: resourcePath,
-          syntaxDefinition: syntaxDefinitionFilePath,
-          enableOccurrencesService: isKnownLanguage,
-          enableValidationService: isKnownLanguage,
-          enableSaveAction: false // don't want the default xtext-save action
-        };
+      baseUrl: window.location.origin,
+      serviceUrl: appConfig().serviceUrls.xtextService,
+      parent: editorId,
+      dirtyElement: document.getElementsByClassName(tabId),
+      loadFromServer: false,
+      sendFullText: true,
+      resourceId: resourcePath,
+      syntaxDefinition: syntaxDefinitionFilePath,
+      enableOccurrencesService: isKnownLanguage,
+      enableValidationService: isKnownLanguage,
+      enableSaveAction: false // don't want the default xtext-save action
+    };
   }
 
   public async renameTo(newPath: string): Promise<void> {
