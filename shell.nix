@@ -1,0 +1,1 @@
+/home/u134552/repo/test-editor-web/shell-latest.nix
