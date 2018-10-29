@@ -28,9 +28,9 @@ install:
 script:
 - nix-shell shell-${FIREFOX_VERSION}.nix --command "firefox --version"
 - nix-shell shell-${FIREFOX_VERSION}.nix --command "google-chrome --version"
-- nix-shell shell-${FIREFOX_VERSION}.nix --command "yarn run build" # includes lint
 - nix-shell shell-${FIREFOX_VERSION}.nix --command "xvfb-run --server-args=\"-ac -screen 0 1920x1080x16\" yarn run testCIFirefox"
 - nix-shell shell-${FIREFOX_VERSION}.nix --command "xvfb-run --server-args=\"-ac -screen 0 1920x1080x16\" yarn run e2e" # currently non functional
+- nix-shell shell-${FIREFOX_VERSION}.nix --command "yarn run build" # includes lint
 - if [[ ( "$TRAVIS_PULL_REQUEST" = "false" ) && ( "$FIREFOX_VERSION" = "latest" ) && (( "$TRAVIS_BRANCH" = "master" ) || ( "$TRAVIS_TAG" != "" )) ]]; then nix-shell shell-${FIREFOX_VERSION}.nix --command  "yarn run docker:build" && export TE_DEPLOY=true; fi
 
 deploy:
