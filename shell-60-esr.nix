@@ -1,21 +1,10 @@
 with import <nixpkgs> {};
 
-let firefox_60_esr = stdenv.mkDerivation rec {
-    name = "firefox_60_esr";
-    version = "60.2.2esr";
-    src = fetchurl {
-      url = http://ftp.mozilla.org/pub/firefox/releases/60.2.2esr/linux-x86_64/en-US/firefox-60.2.2esr.tar.bz2;
-      sha256 = "71ac702c25e654c04ee61ddd5a394ae52e27886beeed7d575542e3fe7e8e4939";
-    };
+let
 
-  installPhase = ''
-    mkdir -p $out/bin
-    cp -r ./* "$out/bin/"
-    # correct interpreter and rpath for binaries to work
-    find $out -type f -perm -0100 \
-        -exec patchelf --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \;
-   '';
-};
+testeditor = pkgs.callPackage (import (builtins.fetchGit {
+      url = "https://github.com/test-editor/nix-packages";
+    })) {};
 
 in
 
@@ -27,7 +16,7 @@ stdenv.mkDerivation {
         nodePackages.yarn
         nodePackages.jsonlint
         bashInteractive
-        firefox_60_esr
+        testeditor.firefox_esr
         google-chrome
         xvfb_run
         travis
