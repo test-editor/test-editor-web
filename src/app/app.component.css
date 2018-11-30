@@ -75,3 +75,46 @@
 :host ::ng-deep #test-step-selector-area .tree-view-element > span::selection {
   background: transparent;
 }
+
+button {
+  background:none!important;
+  border:none;
+  padding:0!important;
+}
+
+.dropbtn {
+    color: #C0C0C0;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: calc(100% - 180px);
+    text-align: right;
+}
+
+.dropdown-content {
+    display: none;
+    right: 0;
+    position: absolute;
+    background-color: #303030;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.dropdown-content a {
+    color: #C0C0C0;
+    padding: 4px 10px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #404040}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
