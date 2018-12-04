@@ -4,15 +4,20 @@
       <split direction="horizontal" gutterSize="15" (dragEnd)="dragAffectingEditorEnd()">
         <split-area size="20" id="nav-area">
           <div id="nav-headline">
-            <div id="nav-icon-area"><img alt="test-editor icon" src="favicon.ico" id="navigation-icon"/></div><div id="navigation-label">Test&#8209;Editor</div>
+            <div id="nav-icon-area"><img alt="test-editor icon" src="favicon.ico" id="navigation-icon"/></div>
+            <div id="navigation-label">Test&#8209;Editor</div>
+            <div class="dropdown">
+              <button *ngIf="isAuthorized" class="icon fa fa-bars dropbtn"></button>
+              <div *ngIf="isAuthorized" class="dropdown-content">
+                <a href="#" (click)="logout()">Logout</a>
+              </div>
+            </div>
           </div>
           <div class="navigation-text login" *ngIf="!isAuthorized" (click)="login()" title="uses google login for authentication">Login</div>
           <div id="navigation-content" *ngIf="isAuthorized && hasToken">
             <ng4-loading-spinner [threshold]="200" [timeout]="300000" [loadingText]="'Loading workspace...'"></ng4-loading-spinner>
             <app-test-navigator></app-test-navigator>
           </div>
-          <div class="navigation-text" *ngIf="isAuthorized" (click)="logout()" title="this will log the current user out and close the workspace">Logout {{user}}</div>
-          <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
         </split-area>
         <split-area size="80">
           <split direction="horizontal" gutterSize="15" (dragEnd)="dragAffectingEditorEnd()">
