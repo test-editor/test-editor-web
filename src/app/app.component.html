@@ -18,7 +18,6 @@
             <ng4-loading-spinner [threshold]="200" [timeout]="300000" [loadingText]="'Loading workspace...'"></ng4-loading-spinner>
             <app-test-navigator></app-test-navigator>
           </div>
-          <div class="navigation-text" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</div>
         </split-area>
         <split-area size="80">
           <split direction="horizontal" gutterSize="15" (dragEnd)="dragAffectingEditorEnd()">
