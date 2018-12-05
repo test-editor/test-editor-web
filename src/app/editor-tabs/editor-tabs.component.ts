@@ -41,7 +41,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.subscriptions.push(this.messagingService.subscribe(
       FILES_CHANGED, (documents: Array<string>) =>
-        documents.forEach((document) => this.reload(document))));
+        documents.forEach((document) => this.handleFileChange(document))));
     this.subscriptions.push(this.messagingService.subscribe(
       FILES_BACKEDUP, (backupEntries: Array<BackupEntry>) =>
         backupEntries.forEach((backupEntry) => this.handleBackupEntry(backupEntry))));
@@ -177,16 +177,12 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private reload(document: String): void {
-    console.log('reload ' + document);
-    const editorFound = this.editorComponents.find((editor) => {
-      console.log('check editor ' + editor.path);
-      return editor.path === document;
-    });
-    if (editorFound) {
+  private handleFileChange(document: string) {
+    const editorFound = this.editorComponents.find((editor) =>  editor.path === document);
+    if (editorFound && !editorFound.isDirty()) {
       editorFound.reload();
     } else {
-      console.warn('reload of document ' + document + ' failed, since editor could not be found');
+      console.warn('reload of document ' + document + ' failed, since editor could not be found or is dirty');
     }
   }
 

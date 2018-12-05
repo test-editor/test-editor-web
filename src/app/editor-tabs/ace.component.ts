@@ -216,6 +216,10 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  public async isDirty() {
+    return (await this.editor).xtextServices.editorContext.isDirty();
+  }
+
   public setDirty(dirty: boolean): void {
     this.editor.then(editor => editor.xtextServices.editorContext.setDirty(dirty));
   }
