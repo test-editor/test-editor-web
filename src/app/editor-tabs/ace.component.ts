@@ -139,11 +139,11 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     return '';
   }
 
-  public reload(): void {
-    this.editor.then(editor => {
-      this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
-    });
-  }
+  public async reload(): Promise<void> {
+    const editor = await this.editor;
+    const content = await this.documentService.loadDocument(this.path).toPromise();
+    this.setContent(editor, content);
+}
 
   public resize(): void {
     this.editor.then(editor => {
