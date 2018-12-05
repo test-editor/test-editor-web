@@ -5,7 +5,7 @@ import { AngularSplitModule } from 'angular-split';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MessagingModule } from '@testeditor/messaging-service';
-import { TestNavigatorModule } from '@testeditor/test-navigator';
+import { TestNavigatorModule, StyleProvider } from '@testeditor/test-navigator';
 import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
 import { TestExecDetailsModule } from '@testeditor/testexec-details';
 
@@ -27,6 +27,9 @@ import { AceEditorZoneConfiguration } from './editor-tabs/ace.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 
 import '../assets/configuration.js';
+import { UserActivityConfig, UserActivityType } from './user-activity-config/user-activity-config';
+import { UserActivityModule, UserActivityServiceConfig } from '@testeditor/user-activity';
+
 declare var appConfig: Function;
 
 const appRoutes: Routes = [
@@ -60,7 +63,8 @@ const appRoutes: Routes = [
                                     { testExecutionServiceUrl: appConfig().serviceUrls.testSuiteExecutionService }),
     TestExecDetailsModule.forRoot({ url: appConfig().serviceUrls.testSuiteExecutionService },
                                   { resourceServiceUrl: appConfig().serviceUrls.persistenceService }),
-    TestStepSelectorModule.forRoot({ testStepServiceUrl: appConfig().serviceUrls.indexService })
+    TestStepSelectorModule.forRoot({ testStepServiceUrl: appConfig().serviceUrls.indexService }),
+    UserActivityModule
   ],
   providers: [
     OidcSecurityService,
@@ -76,7 +80,18 @@ const appRoutes: Routes = [
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    UserActivityConfig,
+    { provide: UserActivityServiceConfig, useValue: { userActivityServiceUrl: appConfig().serviceUrls.userActivityService } },
+    { provide: StyleProvider, useValue: new class extends StyleProvider {
+      getCssClasses(key: string): string {
+        switch (key) {
+          case UserActivityType.EXECUTED_TEST: return 'fa fa-user user-activity';
+          default: return 'fa fa-user user-activity';
+        }
+      }
+
+    } }
   ],
   bootstrap: [AppComponent],
   entryComponents: [ModalDialogComponent]

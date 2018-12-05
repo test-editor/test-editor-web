@@ -31,3 +31,16 @@
 
 .embedded-delete-button { color: #a80f22 }
 .embedded-delete-button:hover { color: #d82300; }
+
+.user-activity {
+  animation: user-activity-pulse 2s ease-out;
+  animation-iteration-count: infinite;
+  opacity: 1;
+  color: whitesmoke;
+}
+
+@keyframes user-activity-pulse {
+  0% {color: whitesmoke; opacity: 0.75;}
+  50% {color: white; opacity: 1; }
+  100% {color: whitesmoke; opacity: 0.75;}
+}

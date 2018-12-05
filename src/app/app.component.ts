@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Component, isDevMode, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Message, MessagingService } from '@testeditor/messaging-service';
 import { WORKSPACE_RETRIEVED, WORKSPACE_RETRIEVED_FAILED } from '@testeditor/test-navigator';
+import { UserActivityService } from '@testeditor/user-activity';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Subscription } from 'rxjs/Subscription';
 import { HttpClientPayload, HTTP_CLIENT_NEEDED, HTTP_CLIENT_SUPPLIED } from './app-event-types';
+import { EditorTabsComponent } from './editor-tabs/editor-tabs.component';
 import { NAVIGATION_CLOSE } from './editor-tabs/event-types';
 import { SNACKBAR_DISPLAY_NOTIFICATION } from './snack-bar/snack-bar-event-types';
-import { EditorTabsComponent } from './editor-tabs/editor-tabs.component';
+import { UserActivityConfig } from './user-activity-config/user-activity-config';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +34,9 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private messagingService: MessagingService,
     public oidcSecurityService: OidcSecurityService,
     private spinnerService: Ng4LoadingSpinnerService,
-    private httpClient: HttpClient) {
+    private httpClient: HttpClient,
+    private userActivityService: UserActivityService,
+    private userActivityConfig: UserActivityConfig) {
     if (isDevMode()) {
       // log all received events in development mode
       messagingService.subscribeAll((message: Message) => {
@@ -49,6 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.setupWorkspaceRetrieved();
     this.setupHttpClientListener();
+    this.setupUserActivities();
   }
 
   ngOnInit() {
@@ -83,6 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.userDataSubscription.unsubscribe();
     this.isAuthorizedSubscription.unsubscribe();
     this.oidcSecurityService.onModuleSetup.unsubscribe();
+    this.userActivityService.stop();
   }
 
   login() {
@@ -98,6 +104,7 @@ export class AppComponent implements OnInit, OnDestroy {
   logout() {
     console.log('start logout');
     this.messagingService.publish(NAVIGATION_CLOSE, null);
+    this.userActivityService.stop();
     this.oidcSecurityService.logoff();
     this.user = null;
   }
@@ -120,9 +127,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private setupHttpClientListener(): void {
     this.httpClientSubscription = this.messagingService.subscribe(HTTP_CLIENT_NEEDED, () => {
-      const payload: HttpClientPayload =  { httpClient: this.httpClient };
+      const payload: HttpClientPayload = { httpClient: this.httpClient };
       this.messagingService.publish(HTTP_CLIENT_SUPPLIED, payload);
     });
+  }
+
+  private setupUserActivities(): void {
+    this.userActivityService.start(...this.userActivityConfig.events);
   }
 
   dragAffectingEditorEnd() {
