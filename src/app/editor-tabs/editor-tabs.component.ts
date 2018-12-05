@@ -103,11 +103,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   private renameTab(tab: any, oldPath: string, newPath: string) {
     tab.path = newPath;
     tab.title = newPath.split('/').pop();
-    this.editorComponents.forEach(editor => {
-      if (editor.path === oldPath) {
-        editor.renameTo(newPath);
-      }
-    });
+    const editorFound = this.editorComponents.find(editor => editor.path === oldPath);
+    if (editorFound) {
+      editorFound.renameTo(newPath);
+    }
   }
 
   private createNewTab(document: NavigationOpenPayload): void {
