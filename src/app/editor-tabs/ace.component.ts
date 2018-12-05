@@ -139,6 +139,12 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     return '';
   }
 
+  public reload(): void {
+    this.editor.then(editor => {
+      this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
+    });
+  }
+
   public resize(): void {
     this.editor.then(editor => {
       editor.resize();

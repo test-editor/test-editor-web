@@ -33,3 +33,15 @@ export interface NavigationRenamedPayload {
   oldPath: string;
   newPath: string;
 }
+
+// Payload is: Array<BackupEntry>
+// BakupEntry {
+//   resource: string        // path / file id
+//   backupResource : string // path / file id
+// }
+export const FILES_BACKEDUP = 'files.backedup';
+
+// payload is: Array<string> (path id of resource)
+export const FILES_CHANGED = 'files.changed';
+
+// export interface EditorDirtyChangedPayload extends DirtyState { }

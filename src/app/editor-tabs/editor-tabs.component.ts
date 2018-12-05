@@ -7,8 +7,14 @@ import { Element } from './element';
 import { TabElement } from './tab-element';
 
 import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
-         EDITOR_ACTIVE, EDITOR_CLOSE,
+         EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP,
          NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload } from './event-types';
+
+
+interface BackupEntry {
+  resource: string;
+  backupResource: string;
+}
 
 @Component({
   selector: 'app-editor-tabs',
@@ -33,6 +39,12 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.subscriptions.push(this.messagingService.subscribe(
+      FILES_CHANGED, (documents: Array<string>) =>
+        documents.forEach((document) => this.reload(document))));
+    this.subscriptions.push(this.messagingService.subscribe(
+      FILES_BACKEDUP, (backupEntries: Array<BackupEntry>) =>
+        backupEntries.forEach((backupEntry) => this.handleBackupEntry(backupEntry))));
     this.subscriptions.push(this.messagingService.subscribe(NAVIGATION_DELETED, (document: NavigationDeletedPayload) => {
       this.handleNavigationDeleted(document);
     }));
@@ -84,14 +96,18 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   private handleNavigationRenamed(payload: NavigationRenamedPayload): void {
     const existingTab = this.findTab(payload.oldPath);
     if (existingTab) {
-      existingTab.path = payload.newPath;
-      existingTab.title = payload.newPath.split('/').pop();
-      this.editorComponents.forEach(editor => {
-        if (editor.path === payload.oldPath) {
-          editor.renameTo(payload.newPath);
-        }
-      });
+      this.renameTab(existingTab, payload.oldPath, payload.newPath);
     }
+  }
+
+  private renameTab(tab: any, oldPath: string, newPath: string) {
+    tab.path = newPath;
+    tab.title = newPath.split('/').pop();
+    this.editorComponents.forEach(editor => {
+      if (editor.path === oldPath) {
+        editor.renameTo(newPath);
+      }
+    });
   }
 
   private createNewTab(document: NavigationOpenPayload): void {
@@ -158,6 +174,28 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
       if (tabToSelect) {
         this.selectTab(tabToSelect);
       }
+    }
+  }
+
+  private reload(document: String): void {
+    console.log('reload ' + document);
+    const editorFound = this.editorComponents.find((editor) => {
+      console.log('check editor ' + editor.path);
+      return editor.path === document;
+    });
+    if (editorFound) {
+      editorFound.reload();
+    } else {
+      console.warn('reload of document ' + document + ' failed, since editor could not be found');
+    }
+  }
+
+  private handleBackupEntry(backupEntry: BackupEntry): void {
+    const existingTab = this.findTab(backupEntry.resource);
+    if (existingTab) {
+      this.renameTab(existingTab, backupEntry.resource, backupEntry.backupResource);
+    } else {
+      console.warn('backup entry reported, but no tab with oldpath ' + backupEntry.resource + ' found!');
     }
   }
 
