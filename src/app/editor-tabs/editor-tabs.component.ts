@@ -8,13 +8,23 @@ import { BackupEntry, EDITOR_ACTIVE, EDITOR_CLOSE, EDITOR_INACTIVE, FilesBackedu
   NAVIGATION_CLOSE, NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_RENAMED } from './event-types';
 import { TabElement } from './tab-element';
 
+import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
+         EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP,
+         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
+  FilesBackedupPayload, FilesChangedPayload, BackupEntry } from './event-types';
+
+export interface TabInformer {
+  getDirtyTabs(): string[];
+  getNonDirtyTabs(): string[];
+}
+
 @Component({
   selector: 'app-editor-tabs',
   // changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './editor-tabs.component.html',
   styleUrls: ['./editor-tabs.component.css']
 })
-export class EditorTabsComponent implements OnInit, OnDestroy {
+export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
 
   /**
    * Provide unique id's for tabs to assign them a unique css class.
@@ -187,6 +197,28 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     } else {
       console.warn('backup entry reported, but no tab with oldpath ' + backupEntry.resource + ' found!');
     }
+  }
+
+  getNonDirtyTabs(): string[] {
+    return this.tabs.filter((tab) => {
+      const editorFound = this.editorComponents.find(editor => editor.path === tab.id);
+      if (editorFound) {
+        return !editorFound.isDirty();
+      } else {
+        return false;
+      }
+    }).map((tab) => tab.id);
+  }
+
+  getDirtyTabs(): string[] {
+    return this.tabs.filter((tab) => {
+      const editorFound = this.editorComponents.find(editor => editor.path === tab.id);
+      if (editorFound) {
+        return editorFound.isDirty();
+      } else {
+        return false;
+      }
+    }).map((tab) => tab.id);
   }
 
 }
