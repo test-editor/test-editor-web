@@ -139,6 +139,12 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     return '';
   }
 
+  public async reload(): Promise<void> {
+    const editor = await this.editor;
+    const content = await this.documentService.loadDocument(this.path).toPromise();
+    this.setContent(editor, content);
+}
+
   public resize(): void {
     this.editor.then(editor => {
       editor.resize();
@@ -208,6 +214,10 @@ export class AceComponent implements AfterViewInit, OnDestroy {
         this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
       });
     });
+  }
+
+  public async isDirty() {
+    return (await this.editor).xtextServices.editorContext.isDirty();
   }
 
   public setDirty(dirty: boolean): void {
