@@ -11,6 +11,8 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { instance, mock, resetCalls, verify } from 'ts-mockito';
 import { AppComponent } from './app.component';
 import { DocumentService } from './service/document/document.service';
+import { UserActivityModule, UserActivityServiceConfig } from '@testeditor/user-activity';
+import { UserActivityConfig } from './user-activity-config/user-activity-config';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -32,7 +34,8 @@ describe('AppComponent', () => {
         MessagingModule.forRoot(),
         HttpClientModule,
         HttpClientTestingModule,
-        AuthModule.forRoot()
+        AuthModule.forRoot(),
+        UserActivityModule
       ],
       declarations: [
         AppComponent
@@ -42,6 +45,8 @@ describe('AppComponent', () => {
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: DocumentService, useValue: instance(mockDocumentService) },
         { provide: Ng4LoadingSpinnerService, useValue: instance(mockNg4SpinnerService) },
+        { provide: UserActivityServiceConfig, useValue: { userActivityServiceUrl: '' } },
+        UserActivityConfig,
         HttpClient
       ]
     }).compileComponents();
