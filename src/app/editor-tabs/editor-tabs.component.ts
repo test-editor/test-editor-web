@@ -8,13 +8,8 @@ import { TabElement } from './tab-element';
 
 import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
          EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP,
-         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload } from './event-types';
-
-
-interface BackupEntry {
-  resource: string;
-  backupResource: string;
-}
+         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
+  FilesBackedupPayload, FilesChangedPayload, BackupEntry } from './event-types';
 
 @Component({
   selector: 'app-editor-tabs',
@@ -40,10 +35,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.subscriptions.push(this.messagingService.subscribe(
-      FILES_CHANGED, (documents: Array<string>) =>
+      FILES_CHANGED, (documents: FilesChangedPayload) =>
         documents.forEach((document) => this.handleFileChange(document))));
     this.subscriptions.push(this.messagingService.subscribe(
-      FILES_BACKEDUP, (backupEntries: Array<BackupEntry>) =>
+      FILES_BACKEDUP, (backupEntries: FilesBackedupPayload) =>
         backupEntries.forEach((backupEntry) => this.handleBackupEntry(backupEntry))));
     this.subscriptions.push(this.messagingService.subscribe(NAVIGATION_DELETED, (document: NavigationDeletedPayload) => {
       this.handleNavigationDeleted(document);

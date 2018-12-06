@@ -34,14 +34,14 @@ export interface NavigationRenamedPayload {
   newPath: string;
 }
 
-// Payload is: Array<BackupEntry>
-// BakupEntry {
-//   resource: string        // path / file id
-//   backupResource : string // path / file id
-// }
+export interface BackupEntry {
+  resource: string;       // path / file id
+  backupResource: string; // path / file id
+}
+export interface FilesBackedupPayload extends Array<BackupEntry> {}
 export const FILES_BACKEDUP = 'files.backedup';
 
-// payload is: Array<string> (path id of resource)
+export interface FilesChangedPayload extends Array<string> {}
 export const FILES_CHANGED = 'files.changed';
 
-// export interface EditorDirtyChangedPayload extends DirtyState { }
+// export interface EditorDirtyChangedPayload extends DirtyState { };
