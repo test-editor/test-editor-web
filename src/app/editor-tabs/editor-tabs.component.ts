@@ -176,9 +176,9 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleFileChange(document: string) {
-    const editorFound = this.editorComponents.find((editor) =>  editor.path === document);
-    if (editorFound && !editorFound.isDirty()) {
+  private async handleFileChange(document: string): Promise<void> {
+    const editorFound = this.editorComponents.find((editor) => editor.path === document);
+    if (editorFound && !(await editorFound.isDirty())) {
       editorFound.reload();
     } else {
       console.warn('reload of document ' + document + ' failed, since editor could not be found or is dirty');
