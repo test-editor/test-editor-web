@@ -5,13 +5,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { RouterModule, Routes } from '@angular/router';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
+import { UserActivityService, UserActivityServiceConfig } from '@testeditor/user-activity';
 import { AuthModule, OidcSecurityService } from 'angular-auth-oidc-client';
 import { AngularSplitModule } from 'angular-split';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { instance, mock, resetCalls, verify } from 'ts-mockito';
 import { AppComponent } from './app.component';
 import { DocumentService } from './service/document/document.service';
-import { UserActivityModule, UserActivityServiceConfig } from '@testeditor/user-activity';
 import { UserActivityConfig } from './user-activity-config/user-activity-config';
 
 const appRoutes: Routes = [
@@ -21,6 +21,7 @@ const appRoutes: Routes = [
 describe('AppComponent', () => {
   const mockDocumentService = mock(DocumentService);
   const mockNg4SpinnerService = mock(Ng4LoadingSpinnerService);
+  const mockUserActivityService = mock(UserActivityService);
   let messagingService: MessagingService;
   let app: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -34,8 +35,7 @@ describe('AppComponent', () => {
         MessagingModule.forRoot(),
         HttpClientModule,
         HttpClientTestingModule,
-        AuthModule.forRoot(),
-        UserActivityModule
+        AuthModule.forRoot()
       ],
       declarations: [
         AppComponent
@@ -45,6 +45,7 @@ describe('AppComponent', () => {
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: DocumentService, useValue: instance(mockDocumentService) },
         { provide: Ng4LoadingSpinnerService, useValue: instance(mockNg4SpinnerService) },
+        { provide: UserActivityService, useValue: instance(mockUserActivityService)},
         { provide: UserActivityServiceConfig, useValue: { userActivityServiceUrl: '' } },
         UserActivityConfig,
         HttpClient

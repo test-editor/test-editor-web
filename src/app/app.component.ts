@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isAuthorizedSubscription: Subscription;
   isAuthorized: boolean;
   hasToken: boolean;
+  userActivityStarted = false;
   userDataSubscription: Subscription;
   user: String;
   httpClientSubscription: Subscription;
@@ -53,7 +54,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.setupWorkspaceRetrieved();
     this.setupHttpClientListener();
-    this.setupUserActivities();
   }
 
   ngOnInit() {
@@ -88,7 +88,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.userDataSubscription.unsubscribe();
     this.isAuthorizedSubscription.unsubscribe();
     this.oidcSecurityService.onModuleSetup.unsubscribe();
-    this.userActivityService.stop();
+    if (this.userActivityStarted) {
+      this.userActivityService.stop();
+      this.userActivityStarted = false;
+    }
   }
 
   login() {
@@ -104,7 +107,10 @@ export class AppComponent implements OnInit, OnDestroy {
   logout() {
     console.log('start logout');
     this.messagingService.publish(NAVIGATION_CLOSE, null);
-    this.userActivityService.stop();
+    if (this.userActivityStarted) {
+      this.userActivityService.stop();
+      this.userActivityStarted = false;
+    }
     this.oidcSecurityService.logoff();
     this.user = null;
   }
@@ -117,7 +123,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private setupWorkspaceRetrieved(): void {
-    this.messagingService.subscribe(WORKSPACE_RETRIEVED, () => this.spinnerService.hide());
+    this.messagingService.subscribe(WORKSPACE_RETRIEVED, () => {
+      this.spinnerService.hide();
+
+      if (!this.userActivityStarted) {
+        this.userActivityService.start(...this.userActivityConfig.events);
+        this.userActivityStarted = true;
+      }
+    });
     this.messagingService.subscribe(WORKSPACE_RETRIEVED_FAILED, () => {
       this.spinnerService.hide();
       // decouple w/ message bus to be able to migrate snack bar out to test-editor-commons
@@ -130,10 +143,6 @@ export class AppComponent implements OnInit, OnDestroy {
       const payload: HttpClientPayload = { httpClient: this.httpClient };
       this.messagingService.publish(HTTP_CLIENT_SUPPLIED, payload);
     });
-  }
-
-  private setupUserActivities(): void {
-    this.userActivityService.start(...this.userActivityConfig.events);
   }
 
   dragAffectingEditorEnd() {
