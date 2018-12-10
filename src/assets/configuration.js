@@ -7,7 +7,8 @@ var appConfig = function() {
     testSuiteExecutionService: "http://localhost:9080/test-suite",
     validationMarkerService: "http://localhost:8080/validation-markers",
     indexService: "http://localhost:8080/index",
-    testCaseService: "http://localhost:8080/test-case"
+    testCaseService: "http://localhost:8080/test-case",
+    userActivityService: "http://localhost:9080"
   }
 }
 };
