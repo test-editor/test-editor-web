@@ -1,0 +1,30 @@
+@startuml
+
+title Test-Editor File Activity States
+
+[*] --> Active
+state Active {
+  [*] --> Inactive
+  Inactive --> OpenedFile : open
+  OpenedFile --> TypingIntoFile : typing
+  OpenedFile --> Inactive : close
+  TypingIntoFile --> DirtyFile : stopTyping
+  DirtyFile --> TypingIntoFile : typing
+  DirtyFile --> OpenedFile : save
+  DirtyFile --> Inactive : close
+  ||
+  [*] --> Persistence
+  state Persistence {
+    [*] --> ActionElapsed
+    Persistence --> CreatedFile : create [in Inactive]
+    Persistence --> SavedFile : save [in DirtyFile]
+    Persistence --> DeletedFile : delete [!in TypingIntoFile]
+    Persistence --> RenamedFile : rename [!in TypingIntoFile]
+    CreatedFile --> ActionElapsed : after(5m)
+    SavedFile --> ActionElapsed : after(5m)
+    DeletedFile --> ActionElapsed : after(5m)
+    RenamedFile --> ActionElapsed : after(5m)
+  }
+}
+
+@enduml
