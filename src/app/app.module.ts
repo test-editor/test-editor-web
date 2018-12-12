@@ -5,7 +5,7 @@ import { AngularSplitModule } from 'angular-split';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MessagingModule } from '@testeditor/messaging-service';
-import { TestNavigatorModule, StyleProvider } from '@testeditor/test-navigator';
+import { TestNavigatorModule, TEST_NAVIGATOR_USER_ACTIVITY_STYLE_PROVIDER, TEST_NAVIGATOR_USER_ACTIVITY_LABEL_PROVIDER, TEST_NAVIGATOR_USER_ACTIVITY_LIST } from '@testeditor/test-navigator';
 import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
 import { TestExecDetailsModule } from '@testeditor/testexec-details';
 
@@ -29,12 +29,16 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 import '../assets/configuration.js';
 import { UserActivityConfig, UserActivityType } from './user-activity-config/user-activity-config';
 import { UserActivityModule, UserActivityServiceConfig } from '@testeditor/user-activity';
+import { TestEditorUserActivityStyleProvider } from './user-activity-config/user-activity-style-provider';
+import { TestEditorUserActivityLabelProvider } from './user-activity-config/user-activity-label-provider';
 
 declare var appConfig: Function;
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
 ];
+
+const userActivities: string[] = Object.keys(UserActivityType).map((type) => UserActivityType[type]);
 
 @NgModule({
   declarations: [
@@ -83,15 +87,9 @@ const appRoutes: Routes = [
     },
     UserActivityConfig,
     { provide: UserActivityServiceConfig, useValue: { userActivityServiceUrl: appConfig().serviceUrls.userActivityService } },
-    { provide: StyleProvider, useValue: new class extends StyleProvider {
-      getCssClasses(key: string): string {
-        switch (key) {
-          case UserActivityType.EXECUTED_TEST: return 'fa fa-user user-activity';
-          default: return 'fa fa-user user-activity';
-        }
-      }
-
-    } }
+    { provide: TEST_NAVIGATOR_USER_ACTIVITY_STYLE_PROVIDER, useClass: TestEditorUserActivityStyleProvider },
+    { provide: TEST_NAVIGATOR_USER_ACTIVITY_LABEL_PROVIDER, useClass: TestEditorUserActivityLabelProvider },
+    { provide: TEST_NAVIGATOR_USER_ACTIVITY_LIST, useValue:  userActivities }
   ],
   bootstrap: [AppComponent],
   entryComponents: [ModalDialogComponent]
