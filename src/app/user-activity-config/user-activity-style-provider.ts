@@ -8,6 +8,8 @@ export class TestEditorUserActivityStyleProvider extends StyleProvider {
         return 'fa fa-cog user-activity';
       case UserActivityType.OPENED_FILE:
         return 'fa fa-file user-activity';
+      case UserActivityType.CREATED_FILE:
+        return 'fa plus-circle user-activity';
       default: return this.getDefaultCssClasses();
     }
   }

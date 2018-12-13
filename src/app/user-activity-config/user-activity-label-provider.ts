@@ -23,6 +23,8 @@ export class TestEditorUserActivityLabelProvider extends LabelProvider<UserActiv
         return `${singular ? 'is' : 'are'} executing ${forChildElement ? 'a test in this folder' : 'this test'}`;
       case UserActivityType.OPENED_FILE:
         return `${singular ? 'has' : 'have'} opened ${forChildElement ? 'files in this folder' : 'this file'}`;
+      case UserActivityType.CREATED_FILE:
+        return `${singular ? 'has' : 'have'} created ${forChildElement ? 'files in this folder' : 'this file'}`;
       default: return `${singular ? 'is' : 'are'} working on this`;
     }
   }
