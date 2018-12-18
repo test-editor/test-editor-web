@@ -5,7 +5,8 @@ import { AngularSplitModule } from 'angular-split';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { MessagingModule } from '@testeditor/messaging-service';
-import { TestNavigatorModule, TEST_NAVIGATOR_USER_ACTIVITY_STYLE_PROVIDER, TEST_NAVIGATOR_USER_ACTIVITY_LABEL_PROVIDER, TEST_NAVIGATOR_USER_ACTIVITY_LIST } from '@testeditor/test-navigator';
+import { TestNavigatorModule, TEST_NAVIGATOR_USER_ACTIVITY_STYLE_PROVIDER, TEST_NAVIGATOR_USER_ACTIVITY_LABEL_PROVIDER,
+  TEST_NAVIGATOR_USER_ACTIVITY_LIST } from '@testeditor/test-navigator';
 import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
 import { TestExecDetailsModule } from '@testeditor/testexec-details';
 
