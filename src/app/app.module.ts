@@ -136,6 +136,6 @@ export class AppModule {
 export function loadConfig(oidcConfigService: OidcConfigService) {
   console.log('APP_INITIALIZER STARTING');
   return () => {
-    oidcConfigService.load_using_stsServer('http://accounts.google.com');
+    oidcConfigService.load_using_stsServer('https://accounts.google.com');
   };
 }
