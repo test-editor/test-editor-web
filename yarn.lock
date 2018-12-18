@@ -227,9 +227,9 @@
     tslib "^1.7.1"
 
 "@testeditor/testeditor-commons@~0.3.0":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.3.10.tgz#51b2723950f990220723d586a7ceb188082442e6"
-  integrity sha512-E4EUZeNDt0wRtXoFv741+tB96W1p5YlZMxs4/t8H9u1OALEr2ggGqVKJaYmq1Adkin7Eznm1ElOYmixjX3j/cw==
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.3.11.tgz#38ebb5ccac670ad8b5faced5f4fc321021f93276"
+  integrity sha512-Q9UBtL1RS/xERRGHbGChLH/5hgBqF3vVBX/EXg3S6Byh2NBDax6NdC97Svsh/D2Gi5xoURfTJZuxz/ebuGItjw==
   dependencies:
     tslib "^1.7.1"
 

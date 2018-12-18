@@ -23,8 +23,16 @@ export class TestEditorUserActivityLabelProvider extends LabelProvider<UserActiv
         return `${singular ? 'is' : 'are'} executing ${forChildElement ? 'a test in this folder' : 'this test'}`;
       case UserActivityType.OPENED_FILE:
         return `${singular ? 'has' : 'have'} opened ${forChildElement ? 'files in this folder' : 'this file'}`;
+        case UserActivityType.SELECTED_FILE:
+          return `${singular ? 'is' : 'are'} looking at ${forChildElement ? 'files in this folder' : 'this file'}`;
       case UserActivityType.CREATED_FILE:
-        return `${singular ? 'has' : 'have'} created ${forChildElement ? 'files in this folder' : 'this file'}`;
+        return `${singular ? 'has' : 'have'} created ${forChildElement ? 'elements in this folder' : 'this element'}`;
+      case UserActivityType.DELETED_FILE:
+        return `${singular ? 'has' : 'have'} deleted ${forChildElement ? 'elements in this folder' : 'this element'}`;
+      case UserActivityType.OPENED_DIRTY_FILE: case UserActivityType.SELECTED_DIRTY_FILE:
+        return `${singular ? 'has' : 'have'} unsaved changes in ${forChildElement ? 'files in this folder' : 'this file'}`;
+        case UserActivityType.TYPING_INTO_FILE:
+        return `${singular ? 'is' : 'are'} typing into ${forChildElement ? 'files in this folder' : 'this file'}`;
       default: return `${singular ? 'is' : 'are'} working on this`;
     }
   }
