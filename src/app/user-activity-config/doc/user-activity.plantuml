@@ -1,7 +1,8 @@
 @startuml
 
-title Test-Editor File Activity States
+title Test-Editor Activity States
 hide empty description
+skinparam Monochrome true
 
 [*] --> Active
 state Active {
@@ -14,28 +15,33 @@ state Active {
     state SelectedDirtyFile
   }
 
-  TypingIntoFile --> SelectedDirtyFile : stopTyping
-  SelectedFile -> TypingIntoFile : typing
   Inactive --> OpenedFile : NAVIGATION_OPEN
-  OpenIdle --> Inactive : close
-  OpenedFile -> SelectedFile : EDITOR_ACTIVE
-  SelectedFile -> OpenedFile : EDITOR_INACTIVE
-  OpenedDirtyFile -right-> SelectedDirtyFile : EDITOR_ACTIVE
-  SelectedDirtyFile -left-> OpenedDirtyFile : EDITOR_INACTIVE
-  SelectedDirtyFile --> SelectedFile : save
+  OpenIdle --> Inactive : EDITOR_CLOSE
+  OpenedFile --> SelectedFile : EDITOR_ACTIVE
+  SelectedFile --> OpenedFile : EDITOR_INACTIVE
+  OpenedDirtyFile --> SelectedDirtyFile : EDITOR_ACTIVE
+  SelectedDirtyFile --> OpenedDirtyFile : EDITOR_INACTIVE
+  SelectedDirtyFile --> SelectedFile : EDITOR_SAVE_COMPLETED
+  SelectedDirtyFile --> SelectedFile : EDITOR_DIRTY_CHANGED [!dirty]
+  SelectedFile --> SelectedDirtyFile : EDITOR_DIRTY_CHANGED [dirty]
+
+  ' state TypingIntoFile as "<color: grey>TypingIntoFile"
+  ' note bottom of TypingIntoFile : Not implemented
+  ' TypingIntoFile -[#grey]-> SelectedDirtyFile : <color: grey>stopTyping
+  ' SelectedFile -[#grey]> TypingIntoFile : <color: grey>typing
 
   --
   [*] --> Persistence
   state Persistence {
     [*] -> ActionElapsed
-    Persistence --> CreatedFile : create [in Inactive]
-    Persistence --> SavedFile : save [in OpenedDirtyFile]
-    Persistence --> DeletedFile : delete [!in TypingIntoFile]
-    Persistence --> RenamedFile : rename [!in TypingIntoFile]
-    CreatedFile --> ActionElapsed : after(5m)
-    SavedFile --> ActionElapsed : after(5m)
-    DeletedFile --> ActionElapsed : after(5m)
-    RenamedFile --> ActionElapsed : after(5m)
+    Persistence --> CreatedFile : NAVIGATION_CREATED
+    Persistence --> SavedFile : EDITOR_SAVE_COMPLETED
+    Persistence --> DeletedFile : NAVIGATION_DELETED
+    Persistence --> RenamedFile : NAVIGATION_RENAMED
+    CreatedFile --> ActionElapsed : after(60s)
+    SavedFile --> ActionElapsed : after(60s)
+    DeletedFile --> ActionElapsed : after(60s)
+    RenamedFile --> ActionElapsed : after(60s)
   }
   --
   [*] -> TestExecutionIdle
