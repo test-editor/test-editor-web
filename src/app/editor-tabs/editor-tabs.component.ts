@@ -1,15 +1,12 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChildren, QueryList } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MessagingService } from '@testeditor/messaging-service';
+import { Subscription } from 'rxjs/Subscription';
 import { AceComponent } from './ace.component';
 import { Element } from './element';
+import { BackupEntry, EDITOR_ACTIVE, EDITOR_CLOSE, EDITOR_INACTIVE, FilesBackedupPayload, FilesChangedPayload,
+  FILES_BACKEDUP, FILES_CHANGED, NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
+  NAVIGATION_CLOSE, NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_RENAMED } from './event-types';
 import { TabElement } from './tab-element';
-
-import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
-         EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP,
-         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
-  FilesBackedupPayload, FilesChangedPayload, BackupEntry } from './event-types';
 
 @Component({
   selector: 'app-editor-tabs',
@@ -149,7 +146,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
   }
 
   public deselectTab(tab: TabElement): void {
-    tab.active = false;
+    if (tab.active) {
+      tab.active = false;
+      this.messagingService.publish(EDITOR_INACTIVE, { path: tab.path });
+    }
   }
 
   // TODO first we should check the dirty state of the editor?!

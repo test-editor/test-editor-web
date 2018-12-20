@@ -1,0 +1,52 @@
+@startuml
+
+title Test-Editor Activity States
+hide empty description
+skinparam Monochrome true
+
+[*] --> Active
+state Active {
+  [*] -> Inactive
+
+  state OpenIdle {
+    state OpenedFile
+    state OpenedDirtyFile
+    state SelectedFile
+    state SelectedDirtyFile
+  }
+
+  Inactive --> OpenedFile : NAVIGATION_OPEN
+  OpenIdle --> Inactive : EDITOR_CLOSE
+  OpenedFile --> SelectedFile : EDITOR_ACTIVE
+  SelectedFile --> OpenedFile : EDITOR_INACTIVE
+  OpenedDirtyFile --> SelectedDirtyFile : EDITOR_ACTIVE
+  SelectedDirtyFile --> OpenedDirtyFile : EDITOR_INACTIVE
+  SelectedDirtyFile --> SelectedFile : EDITOR_SAVE_COMPLETED
+  SelectedDirtyFile --> SelectedFile : EDITOR_DIRTY_CHANGED [!dirty]
+  SelectedFile --> SelectedDirtyFile : EDITOR_DIRTY_CHANGED [dirty]
+
+  ' state TypingIntoFile as "<color: grey>TypingIntoFile"
+  ' note bottom of TypingIntoFile : Not implemented
+  ' TypingIntoFile -[#grey]-> SelectedDirtyFile : <color: grey>stopTyping
+  ' SelectedFile -[#grey]> TypingIntoFile : <color: grey>typing
+
+  --
+  [*] --> Persistence
+  state Persistence {
+    [*] -> ActionElapsed
+    Persistence --> CreatedFile : NAVIGATION_CREATED
+    Persistence --> SavedFile : EDITOR_SAVE_COMPLETED
+    Persistence --> DeletedFile : NAVIGATION_DELETED
+    Persistence --> RenamedFile : NAVIGATION_RENAMED
+    CreatedFile --> ActionElapsed : after(60s)
+    SavedFile --> ActionElapsed : after(60s)
+    DeletedFile --> ActionElapsed : after(60s)
+    RenamedFile --> ActionElapsed : after(60s)
+  }
+  --
+  [*] -> TestExecutionIdle
+  TestExecutionIdle -> TestExecutionRunning: start
+  TestExecutionRunning -> TestExecutionIdle : terminate
+}
+
+@enduml
