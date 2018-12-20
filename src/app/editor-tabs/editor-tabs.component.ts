@@ -34,10 +34,12 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
 
   @ViewChildren(AceComponent) editorComponents: QueryList<AceComponent>;
   public tabs: TabElement[] = [];
+  public tabInformer: TabInformer;
   private subscriptions: Subscription[] = [];
 
   // changeDetectorRef - see https://github.com/angular/angular/issues/17572#issuecomment-309364246
   constructor(private messagingService: MessagingService, private changeDetectorRef: ChangeDetectorRef) {
+    this.tabInformer = this;
   }
 
   public ngOnInit(): void {

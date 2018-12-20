@@ -1,48 +1,81 @@
 import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed, } from '@angular/core/testing';
-import { Conflict } from './conflict';
+import { inject, TestBed, fakeAsync, tick, } from '@angular/core/testing';
 import { DocumentServiceConfig } from './document.service.config';
 import { DocumentService } from './document.service';
+import { Conflict, HttpProviderService } from '@testeditor/testeditor-commons';
+import { mock } from 'ts-mockito/lib/ts-mockito';
+import { TabInformer } from '../../editor-tabs/editor-tabs.component';
+import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
+
+class EmptyTabInformer implements TabInformer {
+  getDirtyTabs(): string[] {
+    return [];
+  }
+  getNonDirtyTabs(): string[] {
+    return [];
+  }
+}
 
 describe('DocumentService', () => {
   let serviceConfig: DocumentServiceConfig;
+  let messagingService: MessagingService;
+  let httpClient: HttpClient;
+  let pullMatcher: any;
 
   beforeEach(() => {
     serviceConfig = new DocumentServiceConfig();
     serviceConfig.persistenceServiceUrl = 'http://localhost:9080';
 
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule],
+      imports: [
+        HttpClientModule,
+        HttpClientTestingModule,
+        MessagingModule.forRoot()
+      ],
       providers: [
         { provide: DocumentServiceConfig, useValue: serviceConfig },
         DocumentService,
-        HttpClient
+        HttpClient,
+        HttpProviderService
       ]
     });
+    messagingService = TestBed.get(MessagingService);
+    httpClient = TestBed.get(HttpClient);
+    const subscription = messagingService.subscribe('httpClient.needed', () => {
+      subscription.unsubscribe();
+      messagingService.publish('httpClient.supplied', { httpClient: httpClient });
+    });
+
+    pullMatcher = {
+      method: 'POST',
+      url: serviceConfig.persistenceServiceUrl + '/workspace/pull'
+    };
   });
 
-  it('saveDocument returns Conflict object if HTTP status code is CONFLICT',
-    inject([HttpTestingController, DocumentService],
-    (httpMock: HttpTestingController, documentService: DocumentService) => {
+  it('saveDocument executes pull then put',
+     fakeAsync(inject([HttpTestingController, DocumentService],
+            async (httpMock: HttpTestingController, documentService: DocumentService) => {
       // given
       const tclFilePath = 'path/to/file.tcl';
-      const message = `The file '${tclFilePath}' already exists.`;
-      const backupFilePath = 'path/to/file.tcl.local-backup';
-      const mockResponse = {status: 409, statusText: 'Conflict', headers: new HttpHeaders().set('content-location', backupFilePath) };
-
-      const expectedResult = new Conflict(message, backupFilePath);
 
       // when
-      const actualObservableResult = documentService.saveDocument(tclFilePath, 'new Content');
+      documentService.saveDocument(new EmptyTabInformer(), tclFilePath, 'new Content')
+                .then(response => expect(response).toBe('result'));
+              tick();
 
       // then
-      actualObservableResult.subscribe(actualResult => {
-        expect(actualResult).toEqual(expectedResult);
-      });
 
-      const actualRequest = httpMock.expectOne({ method: 'PUT' });
-      expect(actualRequest.request.url).toEqual('http://localhost:9080/documents/path/to/file.tcl');
-      actualRequest.flush(message, mockResponse);
-    }));
+      httpMock.match(pullMatcher)[0].flush({
+        failure: false, diffExists: false, headCommit: 'abcdef',
+        changedResources: [],
+        backedUpResources: [] // { backedUpResources: 'backedup', resource: tclFilePath }]
+      });
+      tick();
+
+      httpMock.expectOne({ method: 'PUT' }).flush('result');
+      tick();
+
+      httpMock.verify();
+      })));
 });

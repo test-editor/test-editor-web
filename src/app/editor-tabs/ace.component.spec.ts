@@ -1,6 +1,6 @@
 import { AceComponent, AceEditorZoneConfiguration } from './ace.component';
 import { tick, fakeAsync, async, ComponentFixture, TestBed, flush } from '@angular/core/testing';
-import { mock, when, instance, anyString, spy, verify } from 'ts-mockito';
+import { mock, when, instance, anyString, spy, verify, anything } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 import { DocumentService } from '../service/document/document.service';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
@@ -9,12 +9,12 @@ import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlig
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
-import { Conflict } from '../service/document/conflict';
 import { By } from '@angular/platform-browser';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { NAVIGATION_OPEN, WORKSPACE_RELOAD_REQUEST } from './event-types';
+import { Conflict } from '@testeditor/testeditor-commons';
 
 @Component({
   selector: `app-host-component`,
@@ -91,8 +91,9 @@ describe('AceComponent', () => {
 
   it('publishes save completed event after successful save', fakeAsync(() => {
     // given
-    when(documentServiceMock.saveDocument(anyString(), anyString())).thenReturn(Observable.of({}));
-    when(documentServiceMock.loadDocument(hostComponent.path)).thenReturn(Observable.of('editor content reloaded from server after save'));
+    when(documentServiceMock.saveDocument(anything(), anyString(), anyString())).thenReturn(Promise.resolve(''));
+    when(documentServiceMock.loadDocument(anything(), hostComponent.path)).thenReturn(
+      Promise.resolve('editor content reloaded from server after save'));
 
     const editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
     messagingService.subscribe('editor.save.completed', editorSaveCompletedCallback);
@@ -116,8 +117,8 @@ describe('AceComponent', () => {
       const editorContentAfterMerge = 'editor content after merge';
       const editorSpy = spy(editor);
 
-      when(documentServiceMock.saveDocument(hostComponent.path, editorContent)).thenReturn(Observable.of({}));
-      when(documentServiceMock.loadDocument(hostComponent.path)).thenReturn(Observable.of(editorContentAfterMerge));
+      when(documentServiceMock.saveDocument(anything(), hostComponent.path, editorContent)).thenReturn(Promise.resolve(''));
+      when(documentServiceMock.loadDocument(anything(), hostComponent.path)).thenReturn(Promise.resolve(editorContentAfterMerge));
 
       // when
       hostComponent.aceComponentUnderTest.save();
@@ -132,8 +133,8 @@ describe('AceComponent', () => {
 
   it('publishes save failed event after unsuccessful save', fakeAsync(() => {
     // given
-    when(documentServiceMock.saveDocument(anyString(), anyString())).thenReturn(
-      Observable.throw('some reason')
+    when(documentServiceMock.saveDocument(anything(), anyString(), anyString())).thenReturn(
+      Promise.reject('some reason')
     );
     const editorSaveFailedCallback = jasmine.createSpy('editorSaveFailedCallback');
     messagingService.subscribe('editor.save.failed', editorSaveFailedCallback);
@@ -161,8 +162,9 @@ describe('AceComponent', () => {
       const message = `The file '${resourcePath}' could not be saved due to concurrent modifications. ` +
         `Local changes were instead backed up to '${backupPath}'.`;
 
-      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message, backupPath)));
-      when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
+      when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(
+        Promise.resolve(new Conflict(message, backupPath)));
+      when(documentServiceMock.loadDocument(anything(), resourcePath)).thenReturn(Promise.resolve(resourceContentRemote));
 
       // when
       hostComponent.aceComponentUnderTest.save();
@@ -190,8 +192,9 @@ describe('AceComponent', () => {
       const message = `The file '${resourcePath}' could not be saved due to concurrent modifications. ` +
         `Local changes were instead backed up to '${backupPath}'.`;
 
-      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message, backupPath)));
-      when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
+      when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(
+        Promise.resolve(new Conflict(message, backupPath)));
+      when(documentServiceMock.loadDocument(anything(), resourcePath)).thenReturn(Promise.resolve(resourceContentRemote));
 
       hostComponent.aceComponentUnderTest.save();
       flush();
@@ -223,8 +226,8 @@ describe('AceComponent', () => {
       const resourceContentRemote = 'remote content';
       const message = `The file '${resourcePath}' could not be saved due to concurrent modifications.`;
 
-      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict(message)));
-      when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of(resourceContentRemote));
+      when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict(message)));
+      when(documentServiceMock.loadDocument(anything(), resourcePath)).thenReturn(Promise.resolve(resourceContentRemote));
 
       // when
       hostComponent.aceComponentUnderTest.save();
@@ -246,8 +249,8 @@ describe('AceComponent', () => {
     hostComponent.aceComponentUnderTest.editor.then(editor => {
       const resourcePath = hostComponent.path;
 
-      when(documentServiceMock.saveDocument(resourcePath, anyString())).thenReturn(Observable.of(new Conflict('message')));
-      when(documentServiceMock.loadDocument(resourcePath)).thenReturn(Observable.of('remote content'));
+      when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
+      when(documentServiceMock.loadDocument(anything(), resourcePath)).thenReturn(Promise.resolve('remote content'));
 
       const workspaceReloadCallback = jasmine.createSpy('workspaceReloadCallback');
       messagingService.subscribe(WORKSPACE_RELOAD_REQUEST, workspaceReloadCallback);

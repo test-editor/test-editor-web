@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, isDevMode, OnDestroy, NgZone } from '@angular/core';
+import { Component, Input, AfterViewInit, isDevMode, OnDestroy, NgZone, Host } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
 import { MessagingService } from '@testeditor/messaging-service';
@@ -9,12 +9,13 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
-import { isConflict, Conflict } from '../service/document/conflict';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { Subscription } from 'rxjs/Subscription';
 import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
+import { EditorTabsComponent, TabInformer } from './editor-tabs.component';
+import { Conflict, isConflict } from '@testeditor/testeditor-commons';
 declare var appConfig: Function;
 
 declare var createXtextEditor: (config: any) => Deferred;
@@ -35,6 +36,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   @Input() path: string;
   @Input() tabId: string;
+  @Input() tabInformer: TabInformer;
   editor: Promise<any>;
 
   subscription: Subscription;
@@ -58,7 +60,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
         const dirty = editor.xtextServices.editorContext.isDirty();
         if (!dirty) {
           console.log('editor ' + this.path + ' reload because of workspace reload completed');
-          this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
+          this.documentService.loadDocument(this.tabInformer, this.path).then(content => this.setContent(editor, content));
         } else {
           console.log('editor ' + this.path + ' reload skipped, because it is deemed dirty');
         }
@@ -81,7 +83,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   private initializeEditor(editor: any): void {
     // Set initial content
-    this.documentService.loadDocument(this.path).subscribe(text => {
+    this.documentService.loadDocument(this.tabInformer, this.path).then(text => {
       this.setContent(editor, text);
       editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
     }, reason => {
@@ -141,7 +143,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   public async reload(): Promise<void> {
     const editor = await this.editor;
-    const content = await this.documentService.loadDocument(this.path).toPromise();
+    const content = await this.documentService.loadDocument(this.tabInformer, this.path);
     this.setContent(editor, content);
 }
 
@@ -187,10 +189,10 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   public save(): void {
     this.editor.then(editor => {
       editor.setReadOnly(true);
-      this.documentService.saveDocument(this.path, editor.getValue()).subscribe((status) => {
+      this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue()).then((status) => {
         if (isConflict(status)) {
           this.messagingService.publish(events.WORKSPACE_RELOAD_REQUEST, null);
-          this.documentService.loadDocument(this.path).subscribe(content => {
+          this.documentService.loadDocument(this.tabInformer, this.path).then(content => {
             this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
             this.setContent(editor, content);
           }, error => {
@@ -202,7 +204,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
           });
           this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
         } else {
-          this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
+          this.documentService.loadDocument(this.tabInformer, this.path).then(content => this.setContent(editor, content));
           this.setDirty(false);
           this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
         }

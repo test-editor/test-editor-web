@@ -9,6 +9,7 @@ import { DocumentService } from '../service/document/document.service';
 import { DocumentServiceConfig } from '../service/document/document.service.config';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
+import { HttpProviderService } from '@testeditor/testeditor-commons';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ export class EditorTabsModule {
       providers: [
         { provide: DocumentServiceConfig, useValue: config },
         { provide: SyntaxHighlightingService, useClass: AceClientsideSyntaxHighlightingService },
-        DocumentService
+        DocumentService,
+        HttpProviderService
       ]
     };
   }
