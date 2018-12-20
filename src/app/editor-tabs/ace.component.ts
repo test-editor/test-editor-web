@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, isDevMode, OnDestroy, NgZone, Host } from '@angular/core';
+import { Component, Input, AfterViewInit, isDevMode, OnDestroy, NgZone } from '@angular/core';
 import { Deferred } from 'prophecy/src/Deferred';
 
 import { MessagingService } from '@testeditor/messaging-service';
@@ -14,7 +14,7 @@ import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { Subscription } from 'rxjs/Subscription';
 import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
-import { EditorTabsComponent, TabInformer } from './editor-tabs.component';
+import { TabInformer } from './editor-tabs.component';
 import { Conflict, isConflict } from '@testeditor/testeditor-commons';
 declare var appConfig: Function;
 

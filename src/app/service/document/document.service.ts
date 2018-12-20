@@ -4,12 +4,8 @@ import 'rxjs/add/operator/toPromise';
 
 import { HttpProviderService, PullActionProtocol, Conflict, isConflict } from '@testeditor/testeditor-commons';
 import { DocumentServiceConfig } from '../../service/document/document.service.config';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { BackupEntry, FilesChangedPayload, FilesBackedupPayload, FILES_CHANGED, FILES_BACKEDUP } from 'app/editor-tabs/event-types';
+import { HttpClient } from '@angular/common/http';
+import { FilesChangedPayload, FilesBackedupPayload, FILES_CHANGED, FILES_BACKEDUP } from 'app/editor-tabs/event-types';
 import { TabInformer } from 'app/editor-tabs/editor-tabs.component';
 import { SNACKBAR_DISPLAY_NOTIFICATION } from 'app/snack-bar/snack-bar-event-types';
 import { MessagingService } from '@testeditor/messaging-service';
@@ -28,10 +24,9 @@ export class DocumentService {
 
   async loadDocument(tabInformer: TabInformer, path: string): Promise<string> {
     const url = `${this.serviceUrl}/documents/${path}?clean=true`;
-    const httpClient = await this.httpProvider.getHttpClient();
     const result = await this.wrapActionInPulls(
       tabInformer,
-      async (client) => (await httpClient.get(url, { responseType: 'text', observe: 'response' }).toPromise()).body, []);
+      async (client) => (await client.get(url, { responseType: 'text', observe: 'response' }).toPromise()).body, []);
     if (isConflict(result)) {
       throw new Error('conflict during load ' + result.message);
     } else {
@@ -42,7 +37,6 @@ export class DocumentService {
   async saveDocument(tabInformer: TabInformer, path: string, content: string): Promise<string | Conflict> {
     this.log('save document');
     const url = `${this.serviceUrl}/documents/${path}?clean=true`;
-    const httpClient = await this.httpProvider.getHttpClient();
     const result = await this.wrapActionInPulls(
       tabInformer,
       async (client) => (await client.put(url, content, { observe: 'response', responseType: 'text' }).toPromise()).body, [path]);

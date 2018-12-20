@@ -1,10 +1,9 @@
-import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed, fakeAsync, tick, } from '@angular/core/testing';
+import { inject, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { DocumentServiceConfig } from './document.service.config';
 import { DocumentService } from './document.service';
-import { Conflict, HttpProviderService } from '@testeditor/testeditor-commons';
-import { mock } from 'ts-mockito/lib/ts-mockito';
+import { HttpProviderService } from '@testeditor/testeditor-commons';
 import { TabInformer } from '../../editor-tabs/editor-tabs.component';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
