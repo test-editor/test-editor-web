@@ -220,16 +220,16 @@
   integrity sha512-M9rF57W3EcLyvZvmA/GKho9D/SKKeloIvoOx+DvMRfuNB6hnrWdPR4tdrCXVAbZAQe2Y237uxdhnK7HbsUXgkw==
 
 "@testeditor/test-navigator@~0.1.0":
-  version "0.1.29"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.29.tgz#bd0b0635b8d6627bbbd32200a77e041dade2741b"
-  integrity sha512-y2KvyiHUsl7dtOjA5XnEIskDPxsqefxuV8LLBRbTAItotRMOZ7o1Or6ndBc93sKOkpwWzwf9ygNXuk7JZUsBHg==
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.31.tgz#e7c40bc968e9fa79ffe3b6eb6e21f31d1b314abb"
+  integrity sha512-oSn/AVCQSYy+iTMoQCZyf9w65bGgfJHey/w+Fw8P+pkOHXQba3HPpI8KwJe5oYy0tpSEJ+DROCWWIbSqiCy3sg==
   dependencies:
     tslib "^1.7.1"
 
 "@testeditor/testeditor-commons@~0.3.0":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.3.11.tgz#38ebb5ccac670ad8b5faced5f4fc321021f93276"
-  integrity sha512-Q9UBtL1RS/xERRGHbGChLH/5hgBqF3vVBX/EXg3S6Byh2NBDax6NdC97Svsh/D2Gi5xoURfTJZuxz/ebuGItjw==
+  version "0.3.12"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.3.12.tgz#9914ca485f4078d411f46433aea3dc86d3b61544"
+  integrity sha512-i/B7/2NZ14npNv2qxiNQs97E3Z3YdaZA0a0A/pnkupBVstNhgAl56jkXze3yjRFys+aN9pgnLtS1fV8Hfda9lw==
   dependencies:
     tslib "^1.7.1"
 
@@ -255,9 +255,9 @@
     tslib "^1.7.1"
 
 "@testeditor/user-activity@~0.0.0":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@testeditor/user-activity/-/user-activity-0.0.3.tgz#f48fb6ab8df5c82582b0811d970b0d2478160583"
-  integrity sha512-0NopSDOKWTuNqGPfrWo69yuqey6omBFxx4NMpCHMyJbvIE1SX0C0oRYLyopnEoHEMsnOze7lnuI3nHNaxH+uWQ==
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@testeditor/user-activity/-/user-activity-0.0.6.tgz#4d5b1cc4e70b00fd7a83a738795f7f411727d0b9"
+  integrity sha512-KBdbQmTt810Z9IKJKml7UcJ9SutsR/RYUgpKUwz4jbuv21vxc1RGfz4092KLrUsXpdEtzXhZ26T6+bFEQvPN6A==
   dependencies:
     tslib "^1.7.1"
 
