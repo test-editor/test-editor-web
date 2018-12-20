@@ -1,11 +1,14 @@
 @startuml
 
-title Test-Editor Activity States
+title
+**Test-Editor Activity States**
+//Overall user activity state, per workspace element and user.//
+endtitle
 hide empty description
 skinparam Monochrome true
 
-[*] --> Active
-state Active {
+[*] --> Activity
+state Activity {
   [*] -> Inactive
 
   state OpenIdle {
@@ -31,22 +34,29 @@ state Active {
   ' SelectedFile -[#grey]> TypingIntoFile : <color: grey>typing
 
   --
-  [*] --> Persistence
-  state Persistence {
-    [*] -> ActionElapsed
-    Persistence --> CreatedFile : NAVIGATION_CREATED
-    Persistence --> SavedFile : EDITOR_SAVE_COMPLETED
-    Persistence --> DeletedFile : NAVIGATION_DELETED
-    Persistence --> RenamedFile : NAVIGATION_RENAMED
-    CreatedFile --> ActionElapsed : after(60s)
-    SavedFile --> ActionElapsed : after(60s)
-    DeletedFile --> ActionElapsed : after(60s)
-    RenamedFile --> ActionElapsed : after(60s)
-  }
+  [*] -> CreatedFileElapsed
+  CreatedFileElapsed -> CreatedFile : NAVIGATION_CREATED
+  CreatedFile --> CreatedFile : NAVIGATION_CREATED
+  CreatedFile -> CreatedFileElapsed : after(60s)
+  --
+  [*] -> SavedFileElapsed
+  SavedFileElapsed -> SavedFile : EDITOR_SAVE_COMPLETED
+  SavedFile --> SavedFile : EDITOR_SAVE_COMPLETED
+  SavedFile -> SavedFileElapsed : after(60s)
+  --
+  [*] -> RenamedFileElapsed
+  RenamedFileElapsed -> RenamedFile : NAVIGATION_RENAMED
+  RenamedFile --> RenamedFile : NAVIGATION_RENAMED
+  RenamedFile -> RenamedFileElapsed : after(60s)
+  --
+  [*] -> DeletedFileElapsed
+  DeletedFileElapsed -> DeletedFile : NAVIGATION_DELETED
+  DeletedFile --> DeletedFile : NAVIGATION_DELETED
+  DeletedFile -> DeletedFileElapsed : after(60s)
   --
   [*] -> TestExecutionIdle
-  TestExecutionIdle -> TestExecutionRunning: start
-  TestExecutionRunning -> TestExecutionIdle : terminate
+  TestExecutionIdle -> TestExecutionRunning: TEST_EXECUTION_STARTED
+  TestExecutionRunning -> TestExecutionIdle : TEST_EXECUTION_FINISHED, TEST_EXECUTION_FAILED
 }
 
 @enduml
