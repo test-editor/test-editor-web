@@ -8,11 +8,11 @@ import { TabInformer } from '../../editor-tabs/editor-tabs.component';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
 class EmptyTabInformer implements TabInformer {
-  getDirtyTabs(): string[] {
-    return [];
+  getDirtyTabs(): Promise<string[]> {
+    return Promise.resolve([]);
   }
-  getNonDirtyTabs(): string[] {
-    return [];
+  getNonDirtyTabs(): Promise<string[]> {
+    return Promise.resolve([]);
   }
 }
 

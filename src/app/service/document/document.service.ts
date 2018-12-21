@@ -23,6 +23,7 @@ export class DocumentService {
   }
 
   async loadDocument(tabInformer: TabInformer, path: string): Promise<string> {
+    this.log('load document');
     const url = `${this.serviceUrl}/documents/${path}?clean=true`;
     const result = await this.wrapActionInPulls(
       tabInformer,
@@ -40,19 +41,15 @@ export class DocumentService {
     const result = await this.wrapActionInPulls(
       tabInformer,
       async (client) => (await client.put(url, content, { observe: 'response', responseType: 'text' }).toPromise()).body, [path]);
-    if (isConflict(result)) {
-      throw new Error('conflict during load ' + result.message);
-    } else {
-      return result;
-    }
+    return result;
   }
 
   private async wrapActionInPulls<T>(tabInformer: TabInformer, action: (client: HttpClient) => Promise<T | Conflict>,
                                      criticalFilesOfInterest: string[]): Promise<T | Conflict> {
     this.log('wrap action in pulls');
     const PULL_MAX_RETRY_COUNT = 20;
-    const pullActionProtocol = new PullActionProtocol(this.httpProvider, this.serviceUrl, action, tabInformer.getNonDirtyTabs(),
-                                                      tabInformer.getDirtyTabs(), criticalFilesOfInterest);
+    const pullActionProtocol = new PullActionProtocol(this.httpProvider, this.serviceUrl, action, await tabInformer.getNonDirtyTabs(),
+                                                      await tabInformer.getDirtyTabs(), criticalFilesOfInterest);
     let retryCount = 0;
     while (pullActionProtocol.executionPossible() && retryCount < PULL_MAX_RETRY_COUNT) {
       this.log('pull action protocol execute');
@@ -63,7 +60,7 @@ export class DocumentService {
       console.error(`aborted after ${retryCount} retries`);
       throw new Error(`pull retry timeout after ${retryCount} retries`);
     } else {
-      this.informPullChanges(Array.from(pullActionProtocol.changedResourcesSet), pullActionProtocol.backedUpResourcesSet.toArray());
+      await this.informPullChanges(tabInformer, Array.from(pullActionProtocol.changedResourcesSet), pullActionProtocol.backedUpResourcesSet.toArray());
       if (pullActionProtocol.result instanceof Error) {
         throw pullActionProtocol.result;
       }
@@ -71,19 +68,24 @@ export class DocumentService {
     }
   }
 
-  private informPullChanges(changedResources: FilesChangedPayload, backedUpResources: FilesBackedupPayload): void {
+  private async informPullChanges(tabInformer: TabInformer, changedResources: FilesChangedPayload, backedUpResources: FilesBackedupPayload): Promise<void> {
     this.log('inform about pull changes (if any) with changedResources:', changedResources);
     this.log('..and backedUpResources:', backedUpResources);
-    const shortMessage = (changedResources.length + backedUpResources.length)
-      + 'File(s) changed in your workspace, please check your open tabs!';
+    const shortMessage = 'File(s) changed in your workspace, please check your open tabs!';
     if (changedResources.length > 0) {
+      this.log('backup resources present after action: ', changedResources);
       // editor will reload, inform user about this
-      this.messagingService.publish(FILES_CHANGED, changedResources);
+      for (const document of changedResources) {
+        await tabInformer.handleFileChange(document);
+      }
     }
     if (backedUpResources.length > 0) {
+      this.log('backup resources present after action: ', backedUpResources);
       // editor will replace resource with backup (name, not content),
       // test-navigator must update tree with additional backup file! inform user about that
-      this.messagingService.publish(FILES_BACKEDUP, backedUpResources);
+      for (const backup of backedUpResources) {
+        tabInformer.handleBackupEntry(backup);
+      }
     }
     if (changedResources.length + backedUpResources.length > 0) {
       this.messagingService.publish(

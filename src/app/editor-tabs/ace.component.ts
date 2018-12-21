@@ -186,40 +186,34 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     reconfigureXtextEditor(editor, config);
   }
 
-  public save(): void {
-    this.editor.then(editor => {
-      editor.setReadOnly(true);
-      this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue()).then((status) => {
-        if (isConflict(status)) {
-          this.messagingService.publish(events.WORKSPACE_RELOAD_REQUEST, null);
-          this.documentService.loadDocument(this.tabInformer, this.path).then(content => {
-            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
-            this.setContent(editor, content);
-          }, error => {
-            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
-            this.messagingService.publish(events.NAVIGATION_DELETED, {
-              name: this.path.substr(this.path.lastIndexOf('/') + 1),
-              path: this.path,
-              type: 'file'});
-          });
-          this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
-        } else {
-          this.documentService.loadDocument(this.tabInformer, this.path).then(content => this.setContent(editor, content));
-          this.setDirty(false);
-          this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
-        }
-        editor.setReadOnly(false);
-
-      }, error => {
-        console.log(error);
-        editor.setReadOnly(false);
-        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
-      });
-    });
+  public async save(): Promise<void> {
+    const originalPath = this.path;
+    const editor = await this.editor;
+    editor.setReadOnly(true);
+    try {
+      let status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
+      if (isConflict(status) && (this.path !== originalPath)) {
+        console.log(`rename of ${originalPath} to ${this.path} took place, retry save`);
+        status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
+      }
+      if (isConflict(status)) {
+        console.error(`saving ${this.path} failed`);
+        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
+      } else {
+        editor.xtextServices.editorContext.setDirty(false); // TODO: ui does not update tab to be non dirty
+        this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
+      }
+    } catch (error) {
+      console.error(error);
+      this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
+    }
+    editor.setReadOnly(false);
   }
 
-  public async isDirty() {
-    return (await this.editor).xtextServices.editorContext.isDirty();
+  public async isDirty(): Promise<boolean> {
+    const editor = await this.editor;
+    const result = editor.xtextServices.editorContext.isDirty();
+    return result;
   }
 
   public setDirty(dirty: boolean): void {

@@ -11,11 +11,13 @@ import { TabElement } from './tab-element';
 import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
          EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP,
          NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
-  FilesBackedupPayload, FilesChangedPayload, BackupEntry } from './event-types';
+  FilesBackedupPayload, FilesChangedPayload, BackupEntry, EDITOR_OPEN } from './event-types';
 
 export interface TabInformer {
-  getDirtyTabs(): string[];
-  getNonDirtyTabs(): string[];
+  getDirtyTabs(): Promise<string[]>;
+  getNonDirtyTabs(): Promise<string[]>;
+  handleFileChange(document: string): Promise<void>;
+  handleBackupEntry(backupEntry: BackupEntry): void;
 }
 
 @Component({
@@ -111,6 +113,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
     if (editorFound) {
       editorFound.renameTo(newPath);
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   private createNewTab(document: NavigationOpenPayload): void {
@@ -183,7 +186,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
     }
   }
 
-  private async handleFileChange(document: string): Promise<void> {
+  async handleFileChange(document: string): Promise<void> {
     const editorFound = this.editorComponents.find((editor) => editor.path === document);
     if (editorFound && !(await editorFound.isDirty())) {
       editorFound.reload();
@@ -192,35 +195,40 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
     }
   }
 
-  private handleBackupEntry(backupEntry: BackupEntry): void {
+  handleBackupEntry(backupEntry: BackupEntry): void {
     const existingTab = this.findTab(backupEntry.resource);
     if (existingTab) {
       this.renameTab(existingTab, backupEntry.resource, backupEntry.backupResource);
+      // inform other listeners that a new file is present, the old file tab was closed, the new file tab was opened
+      const oldElement: Element = { path: backupEntry.resource };
+      this.messagingService.publish(EDITOR_CLOSE, oldElement);
+      const newElement: Element = { path: backupEntry.backupResource };
+      this.messagingService.publish(EDITOR_OPEN, newElement);
     } else {
       console.warn('backup entry reported, but no tab with oldpath ' + backupEntry.resource + ' found!');
     }
   }
 
-  getNonDirtyTabs(): string[] {
-    return this.tabs.filter((tab) => {
-      const editorFound = this.editorComponents.find(editor => editor.path === tab.id);
-      if (editorFound) {
-        return !editorFound.isDirty();
-      } else {
-        return false;
+  async getNonDirtyTabs(): Promise<string[]> {
+    const result = [];
+    for (const tab of this.tabs) {
+      const editorFound = this.editorComponents.find(editor => editor.path === tab.path);
+      if (editorFound && !(await editorFound.isDirty())) {
+        result.push(tab.path);
       }
-    }).map((tab) => tab.id);
+    }
+    return result;
   }
 
-  getDirtyTabs(): string[] {
-    return this.tabs.filter((tab) => {
-      const editorFound = this.editorComponents.find(editor => editor.path === tab.id);
-      if (editorFound) {
-        return editorFound.isDirty();
-      } else {
-        return false;
+  async getDirtyTabs(): Promise<string[]> {
+    const result = [];
+    for (const tab of this.tabs) {
+      const editorFound = this.editorComponents.find(editor => editor.path === tab.path);
+      if (editorFound && (await editorFound.isDirty())) {
+        result.push(tab.path);
       }
-    }).map((tab) => tab.id);
+    }
+    return result;
   }
 
 }
