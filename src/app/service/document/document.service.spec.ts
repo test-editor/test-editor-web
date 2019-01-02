@@ -3,11 +3,18 @@ import { HttpTestingController, HttpClientTestingModule } from '@angular/common/
 import { inject, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { DocumentServiceConfig } from './document.service.config';
 import { DocumentService } from './document.service';
-import { HttpProviderService } from '@testeditor/testeditor-commons';
+import { HttpProviderService, BackupEntry } from '@testeditor/testeditor-commons';
 import { TabInformer } from '../../editor-tabs/editor-tabs.component';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 
 class EmptyTabInformer implements TabInformer {
+  handleFileChange(document: string): Promise<void> {
+    // do nothing
+    return Promise.resolve();
+  }
+  handleBackupEntry(backupEntry: BackupEntry): void {
+    // do nothing
+  }
   getDirtyTabs(): Promise<string[]> {
     return Promise.resolve([]);
   }

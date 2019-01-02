@@ -200,7 +200,13 @@ export class AceComponent implements AfterViewInit, OnDestroy {
         console.error(`saving ${this.path} failed`);
         this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
       } else {
-        editor.xtextServices.editorContext.setDirty(false); // TODO: ui does not update tab to be non dirty
+        const cursorPosition = editor.getCursorPosition();
+        const content = editor.getValue();
+        editor.setReadOnly(false);
+        editor.setValue(content);
+        editor.session.selection.clearSelection();
+        editor.moveCursorToPosition(cursorPosition);
+        editor.xtextServices.editorContext.setDirty(false);
         this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
       }
     } catch (error) {

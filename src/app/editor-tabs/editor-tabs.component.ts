@@ -191,7 +191,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
     if (editorFound && !(await editorFound.isDirty())) {
       editorFound.reload();
     } else {
-      console.warn('reload of document ' + document + ' failed, since editor could not be found or is dirty');
+      console.warn('requested reload of document ' + document + ' discarded, since editor could not be found or is dirty');
     }
   }
 
