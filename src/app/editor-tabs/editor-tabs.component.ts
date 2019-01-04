@@ -3,15 +3,11 @@ import { MessagingService } from '@testeditor/messaging-service';
 import { Subscription } from 'rxjs/Subscription';
 import { AceComponent } from './ace.component';
 import { Element } from './element';
-import { BackupEntry, EDITOR_ACTIVE, EDITOR_CLOSE, EDITOR_INACTIVE, FilesBackedupPayload, FilesChangedPayload,
-  FILES_BACKEDUP, FILES_CHANGED, NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
-  NAVIGATION_CLOSE, NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_RENAMED } from './event-types';
 import { TabElement } from './tab-element';
-
 import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
-         EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP,
+         EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP, EDITOR_INACTIVE,
          NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
-  FilesBackedupPayload, FilesChangedPayload, BackupEntry, EDITOR_OPEN } from './event-types';
+         FilesBackedupPayload, FilesChangedPayload, BackupEntry, EDITOR_OPEN } from './event-types';
 
 export interface TabInformer {
   getDirtyTabs(): Promise<string[]>;

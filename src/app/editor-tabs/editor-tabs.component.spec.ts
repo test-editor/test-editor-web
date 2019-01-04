@@ -1,7 +1,7 @@
-import { DebugElement, Component, AfterViewInit } from '@angular/core';
+import { DebugElement, Component, AfterViewInit, QueryList } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { mock, when, instance, anyString } from 'ts-mockito';
+import { mock, when, instance, anyString, anything, anyFunction } from 'ts-mockito';
 
 import { TabsModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
@@ -11,7 +11,7 @@ import { EditorTabsComponent } from './editor-tabs.component';
 import { DocumentService } from '../service/document/document.service';
 
 import { NAVIGATION_DELETED, NAVIGATION_OPEN,
-         EDITOR_ACTIVE, EDITOR_CLOSE,
+         EDITOR_ACTIVE, EDITOR_CLOSE, EDITOR_OPEN,
          NavigationDeletedPayload, NavigationOpenPayload } from './event-types';
 import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
@@ -191,6 +191,35 @@ describe('EditorTabsComponent', () => {
     // there seems to be a problem running in Jasmine... maybe $event.preventDefault()
     // does not work? Thee is one more event triggered with barDocument.path but
     // this does not happen in the real app :-S
+  });
+
+  it('emits editor.open backup when backup entry replaces original tab', () => {
+    openFoo();
+    const editorOpenCallback = jasmine.createSpy('editorOpenCallback');
+    messagingService.subscribe(EDITOR_OPEN, editorOpenCallback);
+    const tab = component.tabs[0];
+
+    // when
+    component.handleBackupEntry({ backupResource: 'backup/file/name', resource: fooDocument.id });
+
+    // then
+    expect(editorOpenCallback).toHaveBeenCalledTimes(1);
+    expect(editorOpenCallback).toHaveBeenCalledWith({ path: 'backup/file/name' });
+  });
+
+  it('emits editor.close file when backup entry replaces original tab', () => {
+    // given
+    openFoo();
+    const editorCloseCallback = jasmine.createSpy('editorCloseCallback');
+    messagingService.subscribe(EDITOR_CLOSE, editorCloseCallback);
+    const tab = component.tabs[0];
+
+    // when
+    component.handleBackupEntry({ backupResource: 'any/other/file/name', resource: fooDocument.id });
+
+    // then
+    expect(editorCloseCallback).toHaveBeenCalledTimes(1);
+    expect(editorCloseCallback).toHaveBeenCalledWith({ path: fooDocument.id });
   });
 
   it('emits editor.close event when tab is closed', () => {
