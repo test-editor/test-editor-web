@@ -9,13 +9,11 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { Subscription } from 'rxjs/Subscription';
 import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
 import { TabInformer } from './editor-tabs.component';
-import { Conflict, isConflict } from '@testeditor/testeditor-commons';
+import { isConflict } from '@testeditor/testeditor-commons';
 declare var appConfig: Function;
 
 declare var createXtextEditor: (config: any) => Deferred;
@@ -42,7 +40,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription;
 
   constructor(public zone: NgZone, private documentService: DocumentService, private messagingService: MessagingService,
-              private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService,
+              private syntaxHighlightingService: SyntaxHighlightingService,
               private zoneConfiguration: AceEditorZoneConfiguration) {
   }
 
@@ -228,31 +226,6 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   public setReadOnly(readOnly: boolean): void {
     this.editor.then(editor => editor.setReadOnly(readOnly));
-  }
-
-  private getConflictDialogState(status: Conflict) {
-    const buttons = [{
-      label: 'OK',
-      onClick: (modalRef: BsModalRef) => { modalRef.hide(); }
-    }];
-    if (status.backupFilePath != null) {
-      const decodedBackupFilePath = decodeURIComponent(status.backupFilePath);
-      buttons.push({
-        label: 'Open backup file',
-        onClick: (modalRef: BsModalRef) => {
-          this.messagingService.publish(events.NAVIGATION_OPEN, {
-            name: decodedBackupFilePath.substr(this.path.lastIndexOf('/') + 1),
-            path: decodedBackupFilePath
-          });
-          modalRef.hide();
-        }
-      });
-    }
-
-    return {
-      message: status.message,
-      buttons: buttons
-    };
   }
 
 }

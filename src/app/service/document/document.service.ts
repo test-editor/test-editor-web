@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import { HttpProviderService, PullActionProtocol, Conflict, isConflict } from '@testeditor/testeditor-commons';
 import { DocumentServiceConfig } from '../../service/document/document.service.config';
 import { HttpClient } from '@angular/common/http';
-import { FilesChangedPayload, FilesBackedupPayload, FILES_CHANGED, FILES_BACKEDUP } from 'app/editor-tabs/event-types';
+import { FilesChangedPayload, FilesBackedupPayload } from 'app/editor-tabs/event-types';
 import { TabInformer } from 'app/editor-tabs/editor-tabs.component';
 import { SNACKBAR_DISPLAY_NOTIFICATION } from 'app/snack-bar/snack-bar-event-types';
 import { MessagingService } from '@testeditor/messaging-service';
@@ -60,7 +60,8 @@ export class DocumentService {
       console.error(`aborted after ${retryCount} retries`);
       throw new Error(`pull retry timeout after ${retryCount} retries`);
     } else {
-      await this.informPullChanges(tabInformer, Array.from(pullActionProtocol.changedResourcesSet), pullActionProtocol.backedUpResourcesSet.toArray());
+      await this.informPullChanges(tabInformer, Array.from(pullActionProtocol.changedResourcesSet),
+                                   pullActionProtocol.backedUpResourcesSet.toArray());
       if (pullActionProtocol.result instanceof Error) {
         throw pullActionProtocol.result;
       }
@@ -68,7 +69,8 @@ export class DocumentService {
     }
   }
 
-  private async informPullChanges(tabInformer: TabInformer, changedResources: FilesChangedPayload, backedUpResources: FilesBackedupPayload): Promise<void> {
+  private async informPullChanges(tabInformer: TabInformer, changedResources: FilesChangedPayload,
+                                  backedUpResources: FilesBackedupPayload): Promise<void> {
     this.log('inform about pull changes (if any) with changedResources:', changedResources);
     this.log('..and backedUpResources:', backedUpResources);
     const shortMessage = 'File(s) changed in your workspace, please check your open tabs!';

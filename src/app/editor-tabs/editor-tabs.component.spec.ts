@@ -1,7 +1,7 @@
-import { DebugElement, Component, AfterViewInit, QueryList } from '@angular/core';
+import { DebugElement, Component, AfterViewInit } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { mock, when, instance, anyString, anything, anyFunction } from 'ts-mockito';
+import { mock, when, instance, anyString } from 'ts-mockito';
 
 import { TabsModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
@@ -197,7 +197,6 @@ describe('EditorTabsComponent', () => {
     openFoo();
     const editorOpenCallback = jasmine.createSpy('editorOpenCallback');
     messagingService.subscribe(EDITOR_OPEN, editorOpenCallback);
-    const tab = component.tabs[0];
 
     // when
     component.handleBackupEntry({ backupResource: 'backup/file/name', resource: fooDocument.id });
@@ -212,7 +211,6 @@ describe('EditorTabsComponent', () => {
     openFoo();
     const editorCloseCallback = jasmine.createSpy('editorCloseCallback');
     messagingService.subscribe(EDITOR_CLOSE, editorCloseCallback);
-    const tab = component.tabs[0];
 
     // when
     component.handleBackupEntry({ backupResource: 'any/other/file/name', resource: fooDocument.id });

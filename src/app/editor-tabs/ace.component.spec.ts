@@ -1,16 +1,15 @@
 import { AceComponent, AceEditorZoneConfiguration } from './ace.component';
 import { tick, fakeAsync, async, ComponentFixture, TestBed, flush } from '@angular/core/testing';
-import { mock, when, instance, anyString, spy, verify, anything } from 'ts-mockito';
+import { mock, when, instance, anyString, anything } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 import { DocumentService } from '../service/document/document.service';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
-import { ViewChild, Component, getDebugNode, DebugElement } from '@angular/core';
+import { ViewChild, Component } from '@angular/core';
 import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
-import { By } from '@angular/platform-browser';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
-import { NAVIGATION_OPEN, WORKSPACE_RELOAD_REQUEST, EDITOR_SAVE_FAILED } from './event-types';
+import { EDITOR_SAVE_FAILED } from './event-types';
 import { Conflict } from '@testeditor/testeditor-commons';
 
 @Component({
