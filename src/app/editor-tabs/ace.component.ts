@@ -9,12 +9,11 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
-import { isConflict, Conflict } from '../service/document/conflict';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { Subscription } from 'rxjs/Subscription';
 import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
+import { TabInformer } from './editor-tabs.component';
+import { isConflict } from '@testeditor/testeditor-commons';
 declare var appConfig: Function;
 
 declare var createXtextEditor: (config: any) => Deferred;
@@ -35,12 +34,13 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   @Input() path: string;
   @Input() tabId: string;
+  @Input() tabInformer: TabInformer;
   editor: Promise<any>;
 
   subscription: Subscription;
 
   constructor(public zone: NgZone, private documentService: DocumentService, private messagingService: MessagingService,
-              private syntaxHighlightingService: SyntaxHighlightingService, private modalService: BsModalService,
+              private syntaxHighlightingService: SyntaxHighlightingService,
               private zoneConfiguration: AceEditorZoneConfiguration) {
   }
 
@@ -58,7 +58,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
         const dirty = editor.xtextServices.editorContext.isDirty();
         if (!dirty) {
           console.log('editor ' + this.path + ' reload because of workspace reload completed');
-          this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
+          this.documentService.loadDocument(this.tabInformer, this.path).then(content => this.setContent(editor, content));
         } else {
           console.log('editor ' + this.path + ' reload skipped, because it is deemed dirty');
         }
@@ -81,7 +81,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   private initializeEditor(editor: any): void {
     // Set initial content
-    this.documentService.loadDocument(this.path).subscribe(text => {
+    this.documentService.loadDocument(this.tabInformer, this.path).then(text => {
       this.setContent(editor, text);
       editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
     }, reason => {
@@ -141,7 +141,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   public async reload(): Promise<void> {
     const editor = await this.editor;
-    const content = await this.documentService.loadDocument(this.path).toPromise();
+    const content = await this.documentService.loadDocument(this.tabInformer, this.path);
     this.setContent(editor, content);
 }
 
@@ -184,40 +184,40 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     reconfigureXtextEditor(editor, config);
   }
 
-  public save(): void {
-    this.editor.then(editor => {
-      editor.setReadOnly(true);
-      this.documentService.saveDocument(this.path, editor.getValue()).subscribe((status) => {
-        if (isConflict(status)) {
-          this.messagingService.publish(events.WORKSPACE_RELOAD_REQUEST, null);
-          this.documentService.loadDocument(this.path).subscribe(content => {
-            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
-            this.setContent(editor, content);
-          }, error => {
-            this.modalService.show(ModalDialogComponent, {initialState: this.getConflictDialogState(status)});
-            this.messagingService.publish(events.NAVIGATION_DELETED, {
-              name: this.path.substr(this.path.lastIndexOf('/') + 1),
-              path: this.path,
-              type: 'file'});
-          });
-          this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
-        } else {
-          this.documentService.loadDocument(this.path).subscribe(content => this.setContent(editor, content));
-          this.setDirty(false);
-          this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
-        }
+  public async save(): Promise<void> {
+    const originalPath = this.path;
+    const editor = await this.editor;
+    editor.setReadOnly(true);
+    try {
+      let status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
+      if (isConflict(status) && (this.path !== originalPath)) {
+        console.log(`rename of ${originalPath} to ${this.path} took place, retry save`);
+        status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
+      }
+      if (isConflict(status)) {
+        console.error(`saving ${this.path} failed`);
+        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
+      } else {
+        const cursorPosition = editor.getCursorPosition();
+        const content = editor.getValue();
         editor.setReadOnly(false);
-
-      }, error => {
-        console.log(error);
-        editor.setReadOnly(false);
-        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
-      });
-    });
+        editor.setValue(content);
+        editor.session.selection.clearSelection();
+        editor.moveCursorToPosition(cursorPosition);
+        editor.xtextServices.editorContext.setDirty(false);
+        this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
+      }
+    } catch (error) {
+      console.error(error);
+      this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
+    }
+    editor.setReadOnly(false);
   }
 
-  public async isDirty() {
-    return (await this.editor).xtextServices.editorContext.isDirty();
+  public async isDirty(): Promise<boolean> {
+    const editor = await this.editor;
+    const result = editor.xtextServices.editorContext.isDirty();
+    return result;
   }
 
   public setDirty(dirty: boolean): void {
@@ -226,31 +226,6 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   public setReadOnly(readOnly: boolean): void {
     this.editor.then(editor => editor.setReadOnly(readOnly));
-  }
-
-  private getConflictDialogState(status: Conflict) {
-    const buttons = [{
-      label: 'OK',
-      onClick: (modalRef: BsModalRef) => { modalRef.hide(); }
-    }];
-    if (status.backupFilePath != null) {
-      const decodedBackupFilePath = decodeURIComponent(status.backupFilePath);
-      buttons.push({
-        label: 'Open backup file',
-        onClick: (modalRef: BsModalRef) => {
-          this.messagingService.publish(events.NAVIGATION_OPEN, {
-            name: decodedBackupFilePath.substr(this.path.lastIndexOf('/') + 1),
-            path: decodedBackupFilePath
-          });
-          modalRef.hide();
-        }
-      });
-    }
-
-    return {
-      message: status.message,
-      buttons: buttons
-    };
   }
 
 }

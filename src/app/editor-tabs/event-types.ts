@@ -1,6 +1,7 @@
 export const EDITOR_ACTIVE = 'editor.active';
 export const EDITOR_INACTIVE = 'editor.inactive';
 export const EDITOR_CLOSE = 'editor.close';
+export const EDITOR_OPEN = 'editor.open';
 export const EDITOR_DIRTY_CHANGED = 'editor.dirtyStateChanged';
 export const EDITOR_SAVE_COMPLETED = 'editor.save.completed';
 export const EDITOR_SAVE_FAILED = 'editor.save.failed';

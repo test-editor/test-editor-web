@@ -3,10 +3,18 @@ import { MessagingService } from '@testeditor/messaging-service';
 import { Subscription } from 'rxjs/Subscription';
 import { AceComponent } from './ace.component';
 import { Element } from './element';
-import { BackupEntry, EDITOR_ACTIVE, EDITOR_CLOSE, EDITOR_INACTIVE, FilesBackedupPayload, FilesChangedPayload,
-  FILES_BACKEDUP, FILES_CHANGED, NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
-  NAVIGATION_CLOSE, NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_RENAMED } from './event-types';
 import { TabElement } from './tab-element';
+import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
+         EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP, EDITOR_INACTIVE,
+         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
+         FilesBackedupPayload, FilesChangedPayload, BackupEntry, EDITOR_OPEN } from './event-types';
+
+export interface TabInformer {
+  getDirtyTabs(): Promise<string[]>;
+  getNonDirtyTabs(): Promise<string[]>;
+  handleFileChange(document: string): Promise<void>;
+  handleBackupEntry(backupEntry: BackupEntry): void;
+}
 
 @Component({
   selector: 'app-editor-tabs',
@@ -14,7 +22,7 @@ import { TabElement } from './tab-element';
   templateUrl: './editor-tabs.component.html',
   styleUrls: ['./editor-tabs.component.css']
 })
-export class EditorTabsComponent implements OnInit, OnDestroy {
+export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
 
   /**
    * Provide unique id's for tabs to assign them a unique css class.
@@ -24,10 +32,12 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
 
   @ViewChildren(AceComponent) editorComponents: QueryList<AceComponent>;
   public tabs: TabElement[] = [];
+  public tabInformer: TabInformer;
   private subscriptions: Subscription[] = [];
 
   // changeDetectorRef - see https://github.com/angular/angular/issues/17572#issuecomment-309364246
   constructor(private messagingService: MessagingService, private changeDetectorRef: ChangeDetectorRef) {
+    this.tabInformer = this;
   }
 
   public ngOnInit(): void {
@@ -99,6 +109,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     if (editorFound) {
       editorFound.renameTo(newPath);
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   private createNewTab(document: NavigationOpenPayload): void {
@@ -171,22 +182,49 @@ export class EditorTabsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async handleFileChange(document: string): Promise<void> {
+  async handleFileChange(document: string): Promise<void> {
     const editorFound = this.editorComponents.find((editor) => editor.path === document);
     if (editorFound && !(await editorFound.isDirty())) {
       editorFound.reload();
     } else {
-      console.warn('reload of document ' + document + ' failed, since editor could not be found or is dirty');
+      console.warn('requested reload of document ' + document + ' discarded, since editor could not be found or is dirty');
     }
   }
 
-  private handleBackupEntry(backupEntry: BackupEntry): void {
+  handleBackupEntry(backupEntry: BackupEntry): void {
     const existingTab = this.findTab(backupEntry.resource);
     if (existingTab) {
       this.renameTab(existingTab, backupEntry.resource, backupEntry.backupResource);
+      // inform other listeners that a new file is present, the old file tab was closed, the new file tab was opened
+      const oldElement: Element = { path: backupEntry.resource };
+      this.messagingService.publish(EDITOR_CLOSE, oldElement);
+      const newElement: Element = { path: backupEntry.backupResource };
+      this.messagingService.publish(EDITOR_OPEN, newElement);
     } else {
       console.warn('backup entry reported, but no tab with oldpath ' + backupEntry.resource + ' found!');
     }
+  }
+
+  async getNonDirtyTabs(): Promise<string[]> {
+    const result = [];
+    for (const tab of this.tabs) {
+      const editorFound = this.editorComponents.find(editor => editor.path === tab.path);
+      if (editorFound && !(await editorFound.isDirty())) {
+        result.push(tab.path);
+      }
+    }
+    return result;
+  }
+
+  async getDirtyTabs(): Promise<string[]> {
+    const result = [];
+    for (const tab of this.tabs) {
+      const editorFound = this.editorComponents.find(editor => editor.path === tab.path);
+      if (editorFound && (await editorFound.isDirty())) {
+        result.push(tab.path);
+      }
+    }
+    return result;
   }
 
 }

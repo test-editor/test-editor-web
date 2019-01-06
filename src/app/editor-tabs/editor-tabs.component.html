@@ -9,7 +9,7 @@
       [removable]="true"
       (removed)="removeTab(tab)"
       [customClass]="tab.id">
-      <xtext-editor [tabId]="tab.id" [path]="tab.path"></xtext-editor>
+      <xtext-editor [tabId]="tab.id" [path]="tab.path" [tabInformer]="tabInformer"></xtext-editor>
     </tab>
   </tabset>
 </div>
