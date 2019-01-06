@@ -194,6 +194,7 @@ describe('EditorTabsComponent', () => {
   });
 
   it('emits editor.open backup when backup entry replaces original tab', () => {
+    // given
     openFoo();
     const editorOpenCallback = jasmine.createSpy('editorOpenCallback');
     messagingService.subscribe(EDITOR_OPEN, editorOpenCallback);
