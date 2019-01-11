@@ -10,7 +10,7 @@ import * as events from './event-types';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
 import { Subscription } from 'rxjs/Subscription';
-import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
+import { WORKSPACE_RELOAD_RESPONSE, SNACKBAR_DISPLAY_NOTIFICATION } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
 import { TabInformer } from './editor-tabs.component';
 import { isConflict } from '@testeditor/testeditor-commons';
@@ -188,6 +188,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     const originalPath = this.path;
     const editor = await this.editor;
     editor.setReadOnly(true);
+    editor.setStyle('grayout');
     try {
       let status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
       if (isConflict(status) && (this.path !== originalPath)) {
@@ -210,7 +211,10 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     } catch (error) {
       console.error(error);
       this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
+      this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, {
+        message: 'Failed to save your changes. Please retry or copy elsewhere.' });
     }
+    editor.unsetStyle('grayout');
     editor.setReadOnly(false);
   }
 
