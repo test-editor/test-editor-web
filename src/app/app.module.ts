@@ -106,12 +106,12 @@ export class AppModule {
 
       const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
       openIDImplicitFlowConfiguration.stsServer = 'https://accounts.google.com';
-      openIDImplicitFlowConfiguration.redirect_url = 'http://localhost:4200';
-      openIDImplicitFlowConfiguration.client_id = '173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com';
+      openIDImplicitFlowConfiguration.redirect_url = appConfig().redirectUrl;
+      openIDImplicitFlowConfiguration.client_id = '936689601029-q6bsjcekhp2qlhfqjhrorkq2ajtiujja.apps.googleusercontent.com';
       openIDImplicitFlowConfiguration.response_type = 'id_token';
       openIDImplicitFlowConfiguration.scope = 'openid email profile';
       openIDImplicitFlowConfiguration.silent_renew = true;
-      openIDImplicitFlowConfiguration.silent_renew_url = 'http://localhost:4200';
+      openIDImplicitFlowConfiguration.silent_renew_url = appConfig().redirectUrl;
       openIDImplicitFlowConfiguration.post_login_route = '/';
       openIDImplicitFlowConfiguration.forbidden_route = '/';
       openIDImplicitFlowConfiguration.unauthorized_route = '/';

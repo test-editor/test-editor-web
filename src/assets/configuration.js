@@ -9,6 +9,7 @@ var appConfig = function() {
     indexService: "http://localhost:8080/index",
     testCaseService: "http://localhost:8080/test-case",
     userActivityService: "http://localhost:9080"
-  }
+  },
+  redirectUrl: "http://localhost:4200"
 }
 };

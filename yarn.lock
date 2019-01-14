@@ -220,16 +220,16 @@
   integrity sha512-M9rF57W3EcLyvZvmA/GKho9D/SKKeloIvoOx+DvMRfuNB6hnrWdPR4tdrCXVAbZAQe2Y237uxdhnK7HbsUXgkw==
 
 "@testeditor/test-navigator@~0.1.0":
-  version "0.1.31"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.31.tgz#e7c40bc968e9fa79ffe3b6eb6e21f31d1b314abb"
-  integrity sha512-oSn/AVCQSYy+iTMoQCZyf9w65bGgfJHey/w+Fw8P+pkOHXQba3HPpI8KwJe5oYy0tpSEJ+DROCWWIbSqiCy3sg==
+  version "0.1.32"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.32.tgz#ce75e389cbb3b2eb01e15cf8a6dfd67a558f7db5"
+  integrity sha512-6vTAmiw2UOmKj4Lj9HTNQ0VxCeocivrFiijsBL9PnrlPCRG7BzNg0FSa53HqhR/RW+zlfd61B5VZAjBkCAni7A==
   dependencies:
     tslib "^1.7.1"
 
-"@testeditor/testeditor-commons@~0.3.0":
-  version "0.3.12"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.3.12.tgz#9914ca485f4078d411f46433aea3dc86d3b61544"
-  integrity sha512-i/B7/2NZ14npNv2qxiNQs97E3Z3YdaZA0a0A/pnkupBVstNhgAl56jkXze3yjRFys+aN9pgnLtS1fV8Hfda9lw==
+"@testeditor/testeditor-commons@~0.4.0":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.4.2.tgz#032b5a407005754ac70a54f3d8fe7b39c37875ea"
+  integrity sha512-YzBn6D3E9n68JDx3qX53iwQ8QVl9Fn97mFUveWYegh5PFBldjaBsVernutcwox4FU3vixXSu81QlAGVZ7ZXCHw==
   dependencies:
     tslib "^1.7.1"
 
@@ -255,9 +255,9 @@
     tslib "^1.7.1"
 
 "@testeditor/user-activity@~0.0.0":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@testeditor/user-activity/-/user-activity-0.0.6.tgz#4d5b1cc4e70b00fd7a83a738795f7f411727d0b9"
-  integrity sha512-KBdbQmTt810Z9IKJKml7UcJ9SutsR/RYUgpKUwz4jbuv21vxc1RGfz4092KLrUsXpdEtzXhZ26T6+bFEQvPN6A==
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@testeditor/user-activity/-/user-activity-0.0.7.tgz#b6b629c6a2cbb549a9111438fcf12b84eb35bf1f"
+  integrity sha512-0XTeU5e8bdJK0UiMInYs1oC4zX0/DtT3F985q48UUkPbPALTfQi11RDdydcHCNXKdhUBGI87J0lsu/+BjOmc8w==
   dependencies:
     tslib "^1.7.1"
 
