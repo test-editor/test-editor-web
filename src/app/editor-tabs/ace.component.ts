@@ -33,7 +33,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   static readonly UNKNOWN_LANGUAGE_SYNTAX_PATH = 'none';
 
   saveActionRunning = false;
-  oldCursorDisplayStyle: any; // cursor style within the editor, saved by setCursorVisibility
+  oldCursorDisplayStyle: any = { }; // cursor style within the editor, saved by setCursorVisibility
 
   @Input() path: string;
   @Input() tabId: string;
@@ -91,13 +91,13 @@ export class AceComponent implements AfterViewInit, OnDestroy {
         const text = await this.documentService.loadDocument(this.tabInformer, this.path);
         this.setContent(editor, text);
         editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
-      } catch(reason) {
+      } catch (reason) {
         if (isDevMode()) {
           console.log(reason);
         }
         this.setContent(editor, `Could not load resource: ${this.path}\n\nReason:\n${reason}`);
         this.setReadOnly(true);
-      };
+      }
 
       // Configure save action
       editor.commands.addCommand({
@@ -110,7 +110,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
       // TODO for debugging only
       window['editor'] = editor;
-    } catch(error) {
+    } catch (error) {
       if (isDevMode()) {
         console.log(error);
       }
@@ -158,7 +158,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
       const editor = await this.editor;
       const content = await this.documentService.loadDocument(this.tabInformer, this.path);
       this.setContent(editor, content);
-    } catch(reason) {
+    } catch (reason) {
       if (isDevMode()) {
         console.log(reason);
       }
@@ -209,7 +209,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     if (this.saveActionRunning) {
       console.warn('save action already running');
     } else {
-      this.saveActionRunning = true
+      this.saveActionRunning = true;
       const originalPath = this.path;
       const editor = await this.editor;
       this.messagingService.publish(events.EDITOR_BUSY_ON, { });
