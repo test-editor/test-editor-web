@@ -1,3 +1,5 @@
+export const EDITOR_BUSY_ON = 'editor.busy.on';
+export const EDITOR_BUSY_OFF = 'editor.busy.off';
 export const EDITOR_ACTIVE = 'editor.active';
 export const EDITOR_INACTIVE = 'editor.inactive';
 export const EDITOR_CLOSE = 'editor.close';
