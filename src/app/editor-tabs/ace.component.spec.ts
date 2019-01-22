@@ -133,39 +133,36 @@ describe('AceComponent', () => {
 
   it('publishes EDITOR_SAVE_FAILED message on save when document provider reports conflict', fakeAsync(() => {
     // given
-    hostComponent.aceComponentUnderTest.editor.then(editor => {
-      const resourcePath = hostComponent.path;
+    const resourcePath = hostComponent.path;
 
-      when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
+    when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
 
-      const editorSaveFailedCallback = jasmine.createSpy('workspaceReloadCallback');
-      messagingService.subscribe(EDITOR_SAVE_FAILED, editorSaveFailedCallback);
+    const editorSaveFailedCallback = jasmine.createSpy('workspaceReloadCallback');
+    messagingService.subscribe(EDITOR_SAVE_FAILED, editorSaveFailedCallback);
 
-      // when
-      hostComponent.aceComponentUnderTest.save();
+    // when
+    hostComponent.aceComponentUnderTest.save();
+    tick();
 
-      // then
-      flush();
-      expect(editorSaveFailedCallback).toHaveBeenCalledTimes(1);
-    });
+    // then
+    expect(editorSaveFailedCallback).toHaveBeenCalledTimes(1);
   }));
 
   it('publishes EDITOR_BUSY_OFF even if save failed', fakeAsync(() => {
-    hostComponent.aceComponentUnderTest.editor.then(editor => {
-      const resourcePath = hostComponent.path;
+    // given
+    const resourcePath = hostComponent.path;
 
-      when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
+    when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
 
-      const editorSaveFailedCallback = jasmine.createSpy('workspaceReloadCallback');
-      messagingService.subscribe(EDITOR_BUSY_OFF, editorSaveFailedCallback);
+    const editorSaveFailedCallback = jasmine.createSpy('workspaceReloadCallback');
+    messagingService.subscribe(EDITOR_BUSY_OFF, editorSaveFailedCallback);
 
-      // when
-      hostComponent.aceComponentUnderTest.save();
+    // when
+    hostComponent.aceComponentUnderTest.save();
+    tick();
 
-      // then
-      flush();
-      expect(editorSaveFailedCallback).toHaveBeenCalledTimes(1);
-    });
+    // then
+    expect(editorSaveFailedCallback).toHaveBeenCalledTimes(1);
   }));
 
   it('publishes EDITOR_BUSY_OFF event after successful save', fakeAsync(() => {
@@ -183,7 +180,6 @@ describe('AceComponent', () => {
 
     // then
     expect(editorSaveCompletedCallback).toHaveBeenCalledTimes(1);
-    flush();
   }));
 
   it('publishes EDITOR_BUSY_ON when saving', fakeAsync(() => {
@@ -201,7 +197,6 @@ describe('AceComponent', () => {
 
     // then
     expect(editorSaveCompletedCallback).toHaveBeenCalledTimes(1);
-    flush();
   }));
 
 });
