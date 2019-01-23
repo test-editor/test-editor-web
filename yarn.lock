@@ -220,16 +220,16 @@
   integrity sha512-M9rF57W3EcLyvZvmA/GKho9D/SKKeloIvoOx+DvMRfuNB6hnrWdPR4tdrCXVAbZAQe2Y237uxdhnK7HbsUXgkw==
 
 "@testeditor/test-navigator@~0.1.0":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.33.tgz#6665e2d169ab175d34cd287f8a448c55360d9a9f"
-  integrity sha512-1L/h9Ue7bjCDweepU5ChstTrwObkJLFgqa7NI+0AQ6N399NPnCOgp40rApntfdgQ/CQb2FuwMveVAPqS4pITTQ==
+  version "0.1.36"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.1.36.tgz#e6bcce4fe6f1f35e2e438f2b9852179206119e71"
+  integrity sha512-eNSOWjhAY/Fd5+kvELxSJtkeDfeZl0hincslXFWXdJU76MtjT2OmNGeDukSabvURSgbTmziNE0qRrxJ+Di2clA==
   dependencies:
     tslib "^1.7.1"
 
 "@testeditor/testeditor-commons@~0.5.0":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.5.2.tgz#87cc28a7f5c9463a3280adc9bf569af5c7bd692b"
-  integrity sha512-7NNo9G5ceK2X1txAh54S+blkjkb5xA3kkyicm7vOg2Yp3Fwh9DQ0NuSTR3Ibq7PzNSVRqtEXtkbtCRmDc9Q/3g==
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.5.4.tgz#e4b21b79957fe35ee0f882fc58a6780f6361dc7d"
+  integrity sha512-aEgcrW8YuFPJNKvIqpfba2U7J6he8JT3hx1dkO3+J9SQc2EjEZLNYbVZq1pgr77IzHhVKudB+2soFzVvSB7KYg==
   dependencies:
     tslib "^1.7.1"
 
@@ -241,16 +241,16 @@
     tslib "^1.7.1"
 
 "@testeditor/testexec-navigator@~0.4.0":
-  version "0.4.22"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.22.tgz#62929ee110e2d5081361ced1e92713718c2f2866"
-  integrity sha512-LissVU1sdtNtg7544oBLZVq/8ppDJY7S/Tw9GQhO/CLYNie/4VtSUMEJ7SXqa0It4fbee22+PbySaLpZft90FQ==
+  version "0.4.23"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.23.tgz#f58c922963cef02436bf022c6cced8f2cf7cc8d1"
+  integrity sha512-ujA3edW4piVZmNdH5DTdOPKbLB76xxQE83aXCgqXXm8V7kKNRBNY1gqC1AQCl+adqTmP+2nsKzOBATSz4fXFZg==
   dependencies:
     tslib "^1.7.1"
 
 "@testeditor/teststep-selector@~0.1.0":
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/@testeditor/teststep-selector/-/teststep-selector-0.1.13.tgz#f9c88bdc718d5087fe631d29b13396a8bb18c879"
-  integrity sha512-wuigrVhHzTOIZ3Ee97kSTi8+ya4X681CMs0/EZt/qvvXm9iD8NBCyqrYLSsT95kIIvY0FFHeWUqlzLeyXSJ8NA==
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@testeditor/teststep-selector/-/teststep-selector-0.1.14.tgz#10a8ce5f381a90a9e89ce115e9bf273143e96da8"
+  integrity sha512-BqW9PIEngWRZVhuBEiF29oCHJIZ9papMHWgb50/zTb6nTWC/RrXHk9GJKRDGVBcjtGXolVioFDQVZiwucdahpA==
   dependencies:
     tslib "^1.7.1"
 
