@@ -107,7 +107,6 @@ describe('AceComponent', () => {
     expect(editorSaveCompletedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
       path: 'path/to/file',
     }));
-    flush();
   }));
 
   it('publishes save failed event after unsuccessful save', fakeAsync(() => {
@@ -128,7 +127,6 @@ describe('AceComponent', () => {
       path: 'path/to/file',
       reason: 'some reason'
     }));
-    flush();
   }));
 
   it('publishes EDITOR_SAVE_FAILED message on save when document provider reports conflict', fakeAsync(() => {
