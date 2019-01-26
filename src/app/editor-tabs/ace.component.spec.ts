@@ -1,5 +1,5 @@
 import { AceComponent, AceEditorZoneConfiguration } from './ace.component';
-import { tick, fakeAsync, async, ComponentFixture, TestBed, flush } from '@angular/core/testing';
+import { tick, fakeAsync, async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { mock, when, instance, anyString, anything } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 import { DocumentService } from '../service/document/document.service';
