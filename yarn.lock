@@ -241,9 +241,9 @@
     tslib "^1.7.1"
 
 "@testeditor/testexec-navigator@~0.4.0":
-  version "0.4.23"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.23.tgz#f58c922963cef02436bf022c6cced8f2cf7cc8d1"
-  integrity sha512-ujA3edW4piVZmNdH5DTdOPKbLB76xxQE83aXCgqXXm8V7kKNRBNY1gqC1AQCl+adqTmP+2nsKzOBATSz4fXFZg==
+  version "0.4.24"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.24.tgz#6ebdae3bd3c036b04857908bfca49bbc4230a298"
+  integrity sha512-T4KaW4Q9lnHprWzRLWHcTgusYcVWyICdx6AfcHS20ahpOPiCPzzvirJmElOLe72i742rvYObj5N1OxXsNJXhWw==
   dependencies:
     tslib "^1.7.1"
 
