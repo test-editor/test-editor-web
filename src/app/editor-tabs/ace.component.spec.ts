@@ -1,5 +1,5 @@
 import { AceComponent, AceEditorZoneConfiguration } from './ace.component';
-import { tick, fakeAsync, async, ComponentFixture, TestBed, flush } from '@angular/core/testing';
+import { tick, fakeAsync, async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { mock, when, instance, anyString, anything } from 'ts-mockito';
 import { MessagingModule, MessagingService } from '@testeditor/messaging-service';
 import { DocumentService } from '../service/document/document.service';
@@ -9,7 +9,7 @@ import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlig
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
-import { EDITOR_SAVE_FAILED } from './event-types';
+import { EDITOR_SAVE_FAILED, EDITOR_BUSY_OFF, EDITOR_BUSY_ON } from './event-types';
 import { Conflict } from '@testeditor/testeditor-commons';
 
 @Component({
@@ -78,7 +78,9 @@ describe('AceComponent', () => {
       getValue: () => editorContent,
       setValue: (content: string) => editorContent = content,
       xtextServices: { editorContext: { setDirty: (flag) => { } } },
-      session: { selection: { clearSelection: () => {} } }
+      session: { selection: { clearSelection: () => {} } },
+      renderer: { $cursorLayer: { element: { style: { } } } },
+      setOptions: () => { }
     };
     hostComponent.aceComponentUnderTest.editor = Promise.resolve(editorMockForSave);
   });
@@ -105,7 +107,6 @@ describe('AceComponent', () => {
     expect(editorSaveCompletedCallback).toHaveBeenCalledWith(jasmine.objectContaining({
       path: 'path/to/file',
     }));
-    flush();
   }));
 
   it('publishes save failed event after unsuccessful save', fakeAsync(() => {
@@ -126,26 +127,74 @@ describe('AceComponent', () => {
       path: 'path/to/file',
       reason: 'some reason'
     }));
-    flush();
   }));
 
   it('publishes EDITOR_SAVE_FAILED message on save when document provider reports conflict', fakeAsync(() => {
     // given
-    hostComponent.aceComponentUnderTest.editor.then(editor => {
-      const resourcePath = hostComponent.path;
+    const resourcePath = hostComponent.path;
 
-      when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
+    when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
 
-      const editorSaveFailedCallback = jasmine.createSpy('workspaceReloadCallback');
-      messagingService.subscribe(EDITOR_SAVE_FAILED, editorSaveFailedCallback);
+    const editorSaveFailedCallback = jasmine.createSpy('workspaceReloadCallback');
+    messagingService.subscribe(EDITOR_SAVE_FAILED, editorSaveFailedCallback);
 
-      // when
-      hostComponent.aceComponentUnderTest.save();
+    // when
+    hostComponent.aceComponentUnderTest.save();
+    tick();
 
-      // then
-      flush();
-      expect(editorSaveFailedCallback).toHaveBeenCalledTimes(1);
-    });
+    // then
+    expect(editorSaveFailedCallback).toHaveBeenCalledTimes(1);
+  }));
+
+  it('publishes EDITOR_BUSY_OFF even if save failed', fakeAsync(() => {
+    // given
+    const resourcePath = hostComponent.path;
+
+    when(documentServiceMock.saveDocument(anything(), resourcePath, anyString())).thenReturn(Promise.resolve(new Conflict('message')));
+
+    const editorSaveFailedCallback = jasmine.createSpy('workspaceReloadCallback');
+    messagingService.subscribe(EDITOR_BUSY_OFF, editorSaveFailedCallback);
+
+    // when
+    hostComponent.aceComponentUnderTest.save();
+    tick();
+
+    // then
+    expect(editorSaveFailedCallback).toHaveBeenCalledTimes(1);
+  }));
+
+  it('publishes EDITOR_BUSY_OFF event after successful save', fakeAsync(() => {
+    // given
+    when(documentServiceMock.saveDocument(anything(), anyString(), anyString())).thenReturn(Promise.resolve(''));
+    when(documentServiceMock.loadDocument(anything(), hostComponent.path)).thenReturn(
+      Promise.resolve('editor content reloaded from server after save'));
+
+    const editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
+    messagingService.subscribe(EDITOR_BUSY_OFF, editorSaveCompletedCallback);
+
+    // when
+    hostComponent.aceComponentUnderTest.save();
+    tick();
+
+    // then
+    expect(editorSaveCompletedCallback).toHaveBeenCalledTimes(1);
+  }));
+
+  it('publishes EDITOR_BUSY_ON when saving', fakeAsync(() => {
+    // given
+    when(documentServiceMock.saveDocument(anything(), anyString(), anyString())).thenReturn(Promise.resolve(''));
+    when(documentServiceMock.loadDocument(anything(), hostComponent.path)).thenReturn(
+      Promise.resolve('editor content reloaded from server after save'));
+
+    const editorSaveCompletedCallback = jasmine.createSpy('editorSaveCompletedCallback');
+    messagingService.subscribe(EDITOR_BUSY_ON, editorSaveCompletedCallback);
+
+    // when
+    hostComponent.aceComponentUnderTest.save();
+    tick();
+
+    // then
+    expect(editorSaveCompletedCallback).toHaveBeenCalledTimes(1);
   }));
 
 });

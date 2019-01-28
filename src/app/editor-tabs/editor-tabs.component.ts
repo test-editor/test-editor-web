@@ -6,8 +6,10 @@ import { Element } from './element';
 import { TabElement } from './tab-element';
 import { NAVIGATION_DELETED, NAVIGATION_OPEN, NAVIGATION_CLOSE, NAVIGATION_RENAMED,
          EDITOR_ACTIVE, EDITOR_CLOSE, FILES_CHANGED, FILES_BACKEDUP, EDITOR_INACTIVE,
+         EDITOR_BUSY_ON, EDITOR_BUSY_OFF,
          NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
          FilesBackedupPayload, FilesChangedPayload, BackupEntry, EDITOR_OPEN } from './event-types';
+import { SNACKBAR_DISPLAY_NOTIFICATION } from '../snack-bar/snack-bar-event-types';
 
 export interface TabInformer {
   getDirtyTabs(): Promise<string[]>;
@@ -30,6 +32,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
    */
   static uniqueTabId = 0;
 
+  readonly EDITOR_BUSY_CLASS = 'grayout visible';
+  readonly EDITOR_IDLE_CLASS = 'grayout hidden';
+
+  editorBusyClass = this.EDITOR_IDLE_CLASS;
   @ViewChildren(AceComponent) editorComponents: QueryList<AceComponent>;
   public tabs: TabElement[] = [];
   public tabInformer: TabInformer;
@@ -58,6 +64,19 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
     }));
     this.subscriptions.push(this.messagingService.subscribe(NAVIGATION_RENAMED, (payload) => {
       this.handleNavigationRenamed(payload);
+    }));
+    this.subscriptions.push(this.messagingService.subscribe(EDITOR_BUSY_ON, () => {
+      this.editorBusyClass = this.EDITOR_BUSY_CLASS;
+      setTimeout(30000, () => { // make sure that after timeout the application is unlocked
+        this.messagingService.publish(EDITOR_BUSY_OFF, { });
+        this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, { message: 'Editor action timed out. Please check your workspace.' });
+        this.changeDetectorRef.detectChanges();
+      });
+      this.changeDetectorRef.detectChanges();
+    }));
+    this.subscriptions.push(this.messagingService.subscribe(EDITOR_BUSY_OFF, () => {
+      this.editorBusyClass = this.EDITOR_IDLE_CLASS;
+      this.changeDetectorRef.detectChanges();
     }));
   }
 

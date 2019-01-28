@@ -24,3 +24,53 @@ tab {
     */
   height: calc(100% - 14px);
 }
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  left: 48%;
+  top: 49%;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 1px;
+  border-radius: 50%;
+  left: 48%;
+  border: 5px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.grayout {
+    position: fixed;
+    padding: 0px;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 9998;
+    background: #000;
+    opacity: 0.6;
+    transition: opacity 0.3s linear;
+}
+.hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.3s, opacity 0.3s linear;
+}
+
+.visible {
+    visibility: visible;
+}

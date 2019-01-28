@@ -10,7 +10,7 @@ import * as events from './event-types';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
 import { Subscription } from 'rxjs/Subscription';
-import { WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
+import { WORKSPACE_RELOAD_RESPONSE, SNACKBAR_DISPLAY_NOTIFICATION } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
 import { TabInformer } from './editor-tabs.component';
 import { isConflict } from '@testeditor/testeditor-commons';
@@ -31,6 +31,9 @@ export class AceEditorZoneConfiguration {
 export class AceComponent implements AfterViewInit, OnDestroy {
 
   static readonly UNKNOWN_LANGUAGE_SYNTAX_PATH = 'none';
+
+  saveActionRunning = false;
+  oldCursorDisplayStyle: any = { }; // cursor style within the editor, saved by setCursorVisibility
 
   @Input() path: string;
   @Input() tabId: string;
@@ -79,30 +82,40 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     return deferred.promise;
   }
 
-  private initializeEditor(editor: any): void {
+  private async initializeEditor(editor: any): Promise<void> {
     // Set initial content
-    this.documentService.loadDocument(this.tabInformer, this.path).then(text => {
-      this.setContent(editor, text);
-      editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
-    }, reason => {
-      if (isDevMode()) {
-        console.log(reason);
+    this.messagingService.publish(events.EDITOR_BUSY_ON, { });
+    try { // wrap in try to make sure that EDITOR_BUSY_OFF is always published
+      this.setContent(editor, '// loading ...\n');
+      try {
+        const text = await this.documentService.loadDocument(this.tabInformer, this.path);
+        this.setContent(editor, text);
+        editor.xtextServices.editorContext.addDirtyStateListener(this.onDirtyChange.bind(this));
+      } catch (reason) {
+        if (isDevMode()) {
+          console.log(reason);
+        }
+        this.setContent(editor, `Could not load resource: ${this.path}\n\nReason:\n${reason}`);
+        this.setReadOnly(true);
       }
-      this.setContent(editor, `Could not load resource: ${this.path}\n\nReason:\n${reason}`);
-      this.setReadOnly(true);
-    });
 
-    // Configure save action
-    editor.commands.addCommand({
-      name: 'angular-xtext-save',
-      bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-      exec: this.save.bind(this)
-    });
+      // Configure save action
+      editor.commands.addCommand({
+        name: 'angular-xtext-save',
+        bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+        exec: this.save.bind(this)
+      });
 
-    this.focus();
+      this.focus();
 
-    // TODO for debugging only
-    window['editor'] = editor;
+      // TODO for debugging only
+      window['editor'] = editor;
+    } catch (error) {
+      if (isDevMode()) {
+        console.log(error);
+      }
+    }
+    this.messagingService.publish(events.EDITOR_BUSY_OFF, { });
   }
 
   private setContent(editor: any, content: string): void {
@@ -140,10 +153,18 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   }
 
   public async reload(): Promise<void> {
-    const editor = await this.editor;
-    const content = await this.documentService.loadDocument(this.tabInformer, this.path);
-    this.setContent(editor, content);
-}
+    this.messagingService.publish(events.EDITOR_BUSY_ON, { });
+    try { // wrap to make sure EDITOR_BUSY_OFF is always called
+      const editor = await this.editor;
+      const content = await this.documentService.loadDocument(this.tabInformer, this.path);
+      this.setContent(editor, content);
+    } catch (reason) {
+      if (isDevMode()) {
+        console.log(reason);
+      }
+    }
+    this.messagingService.publish(events.EDITOR_BUSY_OFF, { });
+  }
 
   public resize(): void {
     this.editor.then(editor => {
@@ -185,33 +206,62 @@ export class AceComponent implements AfterViewInit, OnDestroy {
   }
 
   public async save(): Promise<void> {
-    const originalPath = this.path;
-    const editor = await this.editor;
-    editor.setReadOnly(true);
-    try {
-      let status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
-      if (isConflict(status) && (this.path !== originalPath)) {
-        console.log(`rename of ${originalPath} to ${this.path} took place, retry save`);
-        status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
-      }
-      if (isConflict(status)) {
+    if (this.saveActionRunning) {
+      console.warn('save action already running');
+    } else {
+      this.saveActionRunning = true;
+      const originalPath = this.path;
+      const editor = await this.editor;
+      this.messagingService.publish(events.EDITOR_BUSY_ON, { });
+      try {
+        this.setCursorVisibility(editor, false);
+        let status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
+        if (isConflict(status) && (this.path !== originalPath)) {
+          console.log(`rename of ${originalPath} to ${this.path} took place, retry save`);
+          status = await this.documentService.saveDocument(this.tabInformer, this.path, editor.getValue());
+        }
+        if (isConflict(status)) {
+          console.error(`saving ${this.path} failed`);
+          this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
+        } else {
+          if (isDevMode()) {
+            console.log(`start saving ${this.path}`);
+          }
+          const cursorPosition = editor.getCursorPosition();
+          const content = editor.getValue();
+          editor.setReadOnly(false);
+          editor.setValue(content);
+          editor.session.selection.clearSelection();
+          editor.moveCursorToPosition(cursorPosition);
+          editor.xtextServices.editorContext.setDirty(false);
+          this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
+          if (isDevMode()) {
+            console.log(`successfully saved ${this.path}`);
+          }
+        }
+      } catch (error) {
         console.error(`saving ${this.path} failed`);
-        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: status.message });
-      } else {
-        const cursorPosition = editor.getCursorPosition();
-        const content = editor.getValue();
-        editor.setReadOnly(false);
-        editor.setValue(content);
-        editor.session.selection.clearSelection();
-        editor.moveCursorToPosition(cursorPosition);
-        editor.xtextServices.editorContext.setDirty(false);
-        this.messagingService.publish(events.EDITOR_SAVE_COMPLETED, { path: this.path });
+        console.error(error);
+        this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
+        this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, {
+          message: 'Failed to save your changes. Please retry or copy elsewhere.' });
       }
-    } catch (error) {
-      console.error(error);
-      this.messagingService.publish(events.EDITOR_SAVE_FAILED, { path: this.path, reason: error });
+      this.setCursorVisibility(editor, true);
+      this.messagingService.publish(events.EDITOR_BUSY_OFF, { });
+      this.saveActionRunning = false;
     }
-    editor.setReadOnly(false);
+  }
+
+  private setCursorVisibility(editor: any, visible: boolean) {
+    if (visible) {
+      editor.renderer.$cursorLayer.element.style.display = this.oldCursorDisplayStyle;
+      editor.setOptions({readOnly: false, highlightActiveLine: true, highlightGutterLine: true});
+      editor.setReadOnly(false);
+    } else {
+      editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+      this.oldCursorDisplayStyle = editor.renderer.$cursorLayer.element.style.display;
+      editor.renderer.$cursorLayer.element.style.display = 'none';
+    }
   }
 
   public async isDirty(): Promise<boolean> {
