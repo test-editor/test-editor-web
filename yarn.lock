@@ -227,9 +227,9 @@
     tslib "^1.7.1"
 
 "@testeditor/testeditor-commons@~0.5.0":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.5.5.tgz#64f7693ef7b785c0df445ea0e18ee413a80f5870"
-  integrity sha512-57cW51VEberwtIrEH5IecQHyc5smnQ8Pdkq+1g3MrIVG3irzYhV4xSVMGLwdn6hmv/Kktvmf3k7Y0KncLMdxlg==
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.5.6.tgz#7c305275f9749089195e0b23253a368e3f033550"
+  integrity sha512-/wtA9erfghvaGYgUSZSrz+q/gOAxzj2S22O/lz44akqdYDrITWQcYU46Gnid/+EeFcnVZtj6ZDgTUr59TOqZ5w==
   dependencies:
     tslib "^1.7.1"
 
@@ -241,9 +241,9 @@
     tslib "^1.7.1"
 
 "@testeditor/testexec-navigator@~0.4.0":
-  version "0.4.24"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.24.tgz#6ebdae3bd3c036b04857908bfca49bbc4230a298"
-  integrity sha512-T4KaW4Q9lnHprWzRLWHcTgusYcVWyICdx6AfcHS20ahpOPiCPzzvirJmElOLe72i742rvYObj5N1OxXsNJXhWw==
+  version "0.4.25"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.4.25.tgz#174a221242340647d078c186f0146247afc1195a"
+  integrity sha512-eLP/KMj74Y5UP/UrKLzvbsW1gOx4V+HfjGpCtt4cEcHy0GUAH3aOcwYTVH4M5ukGSlRZvIbTbOEdGcAUNHsV7g==
   dependencies:
     tslib "^1.7.1"
 
