@@ -5,7 +5,7 @@ import { WORKSPACE_RETRIEVED, WORKSPACE_RETRIEVED_FAILED } from '@testeditor/tes
 import { UserActivityService } from '@testeditor/user-activity';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { HttpClientPayload, HTTP_CLIENT_NEEDED, HTTP_CLIENT_SUPPLIED } from './app-event-types';
 import { EditorTabsComponent } from './editor-tabs/editor-tabs.component';
 import { NAVIGATION_CLOSE } from './editor-tabs/event-types';

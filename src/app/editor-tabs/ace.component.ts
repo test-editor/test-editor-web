@@ -9,7 +9,7 @@ import * as events from './event-types';
 
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { WORKSPACE_RELOAD_RESPONSE, SNACKBAR_DISPLAY_NOTIFICATION } from '@testeditor/test-navigator';
 import '../../assets/configuration.js';
 import { TabInformer } from './editor-tabs.component';

@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 
-import 'rxjs/add/operator/toPromise';
+
 
 import { HttpProviderService, PullActionProtocol, Conflict, isConflict } from '@testeditor/testeditor-commons';
 import { DocumentServiceConfig } from '../../service/document/document.service.config';

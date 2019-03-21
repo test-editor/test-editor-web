@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MessagingService } from '@testeditor/messaging-service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { AceComponent } from './ace.component';
 import { Element } from './element';
 import { TabElement } from './tab-element';
