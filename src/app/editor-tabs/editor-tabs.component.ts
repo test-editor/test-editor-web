@@ -67,11 +67,11 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
     }));
     this.subscriptions.push(this.messagingService.subscribe(EDITOR_BUSY_ON, () => {
       this.editorBusyClass = this.EDITOR_BUSY_CLASS;
-      setTimeout(30000, () => { // make sure that after timeout the application is unlocked
+      setTimeout(() => { // make sure that after timeout the application is unlocked
         this.messagingService.publish(EDITOR_BUSY_OFF, { });
         this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, { message: 'Editor action timed out. Please check your workspace.' });
         this.changeDetectorRef.detectChanges();
-      });
+      }, 30000);
       this.changeDetectorRef.detectChanges();
     }));
     this.subscriptions.push(this.messagingService.subscribe(EDITOR_BUSY_OFF, () => {

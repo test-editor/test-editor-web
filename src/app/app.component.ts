@@ -24,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   title = 'test-editor-web';
   isAuthorizedSubscription: Subscription;
+  oidcOnModuleSetupSubscription: Subscription;
   isAuthorized: boolean;
   hasToken: boolean;
   userActivityStarted = false;
@@ -47,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.oidcSecurityService.moduleSetup) {
       this.onOidcModuleSetup();
     } else {
-      this.oidcSecurityService.onModuleSetup.subscribe(() => {
+      this.oidcOnModuleSetupSubscription = this.oidcSecurityService.onModuleSetup.subscribe(() => {
         this.onOidcModuleSetup();
       });
     }
@@ -87,7 +88,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.httpClientSubscription.unsubscribe();
     this.userDataSubscription.unsubscribe();
     this.isAuthorizedSubscription.unsubscribe();
-    this.oidcSecurityService.onModuleSetup.unsubscribe();
+    if (this.oidcOnModuleSetupSubscription) {
+      this.oidcOnModuleSetupSubscription.unsubscribe();
+    }
     if (this.userActivityStarted) {
       this.userActivityService.stop();
       this.userActivityStarted = false;
@@ -118,7 +121,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private onOidcModuleSetup() {
     if (window.location.hash) {
       console.log('start authorized callback');
-      this.oidcSecurityService.authorizedCallback();
+      this.oidcSecurityService.authorizedImplicitFlowCallback();
     }
   }
 
