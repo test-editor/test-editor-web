@@ -38,7 +38,8 @@
             ],
             "scripts": [
               "node_modules/requirejs/require.js",
-              "src/assets/main.js"
+              "src/assets/main.js",
+              "src/assets/configuration.js"
             ]
           },
           "configurations": {
@@ -87,7 +88,8 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/requirejs/require.js",
-              "src/assets/main.js"
+              "src/assets/main.js",
+              "src/assets/configuration.js"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",

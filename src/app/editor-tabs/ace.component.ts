@@ -106,7 +106,7 @@ export class AceComponent implements AfterViewInit, OnDestroy {
         exec: this.save.bind(this)
       });
 
-      this.focus();
+      this.focus(editor);
 
       // TODO for debugging only
       window['editor'] = editor;
@@ -172,19 +172,21 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  public focus(): void {
-    this.editor.then(editor => {
-      editor.focus();
-    });
+  public async focus(editor?: any) {
+    if (!editor) {
+      editor = await this.editor;
+    }
+    editor.focus();
   }
 
   private async createXtextConfig(resourcePath: string, tabId: string): Promise<any> {
     const editorId = `${tabId}-editor`;
     const syntaxDefinitionFilePath = await this.findSyntaxDefinitionFile();
     const isKnownLanguage = syntaxDefinitionFilePath !== AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
+    const serviceUrls = appConfig().serviceUrls;
     return {
       baseUrl: window.location.origin,
-      serviceUrl: appConfig().serviceUrls.xtextService,
+      serviceUrl: serviceUrls.xtextService,
       parent: editorId,
       dirtyElement: document.getElementsByClassName(tabId),
       loadFromServer: false,
