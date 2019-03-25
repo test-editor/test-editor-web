@@ -48,7 +48,7 @@ const userActivities: string[] = Object.keys(UserActivityType).map((type) => Use
     SnackBarComponent
   ],
   imports: [
-    AngularSplitModule,
+    AngularSplitModule.forRoot(),
     Ng4LoadingSpinnerModule.forRoot(),
     BrowserModule,
     HttpClientModule,

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MessagingService } from '@testeditor/messaging-service';
 import { SNACKBAR_DISPLAY_NOTIFICATION, SnackbarMessage } from './snack-bar-event-types';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-snack-bar',
