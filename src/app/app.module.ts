@@ -1,37 +1,30 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-
-import { AngularSplitModule } from 'angular-split';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
-import { MessagingModule } from '@testeditor/messaging-service';
-import { TestNavigatorModule, TEST_NAVIGATOR_USER_ACTIVITY_STYLE_PROVIDER, TEST_NAVIGATOR_USER_ACTIVITY_LABEL_PROVIDER,
-  TEST_NAVIGATOR_USER_ACTIVITY_LIST } from '@testeditor/test-navigator';
-import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
-import { TestExecDetailsModule } from '@testeditor/testexec-details';
-
-import { AppComponent } from './app.component';
-import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
-
-import { AuthModule, OidcSecurityService, OidcConfigService,
-         OpenIDImplicitFlowConfiguration, AuthWellKnownEndpoints } from 'angular-auth-oidc-client';
-import { Routes, RouterModule } from '@angular/router';
-
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router';
+import { MessagingModule } from '@testeditor/messaging-service';
+import { TestNavigatorModule, TEST_NAVIGATOR_USER_ACTIVITY_LABEL_PROVIDER, TEST_NAVIGATOR_USER_ACTIVITY_LIST,
+  TEST_NAVIGATOR_USER_ACTIVITY_STYLE_PROVIDER } from '@testeditor/test-navigator';
+import { TestExecDetailsModule, TestPropertiesOrganizerServiceConfig } from '@testeditor/testexec-details';
+import { TestExecNavigatorModule } from '@testeditor/testexec-navigator';
+import { TestStepSelectorModule } from '@testeditor/teststep-selector';
+import { UserActivityModule, UserActivityServiceConfig } from '@testeditor/user-activity';
+import { AuthModule, AuthWellKnownEndpoints, OidcConfigService, OidcSecurityService,
+  OpenIDImplicitFlowConfiguration } from 'angular-auth-oidc-client';
+import { AngularSplitModule } from 'angular-split';
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import '../assets/configuration.js';
+import { AppComponent } from './app.component';
 import { AppTokenStorage } from './app.token.storage';
 import { AuthInterceptor } from './auth.interceptor';
 import { ModalDialogComponent } from './dialogs/modal.dialog.component';
-import { TestStepSelectorModule } from '@testeditor/teststep-selector';
-import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { AceEditorZoneConfiguration } from './editor-tabs/ace.component';
-import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
-
-import '../assets/configuration.js';
+import { EditorTabsModule } from './editor-tabs/editor-tabs.module';
+import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { UserActivityConfig, UserActivityType } from './user-activity-config/user-activity-config';
-import { UserActivityModule, UserActivityServiceConfig } from '@testeditor/user-activity';
-import { TestEditorUserActivityStyleProvider } from './user-activity-config/user-activity-style-provider';
 import { TestEditorUserActivityLabelProvider } from './user-activity-config/user-activity-label-provider';
+import { TestEditorUserActivityStyleProvider } from './user-activity-config/user-activity-style-provider';
 
 declare var appConfig: Function;
 
@@ -40,6 +33,13 @@ const appRoutes: Routes = [
 ];
 
 const userActivities: string[] = Object.keys(UserActivityType).map((type) => UserActivityType[type]);
+
+const testExecDetailsPropertiesOrder: TestPropertiesOrganizerServiceConfig = {
+  propertyPriorityMap: {
+    'Status': 200,
+    'Assertion Error': 100
+  }
+};
 
 @NgModule({
   declarations: [
@@ -67,7 +67,8 @@ const userActivities: string[] = Object.keys(UserActivityType).map((type) => Use
     TestExecNavigatorModule.forRoot({ testCaseServiceUrl: appConfig().serviceUrls.testCaseService },
                                     { testExecutionServiceUrl: appConfig().serviceUrls.testSuiteExecutionService }),
     TestExecDetailsModule.forRoot({ url: appConfig().serviceUrls.testSuiteExecutionService },
-                                  { resourceServiceUrl: appConfig().serviceUrls.persistenceService }),
+                                  { resourceServiceUrl: appConfig().serviceUrls.persistenceService },
+                                  testExecDetailsPropertiesOrder),
     TestStepSelectorModule.forRoot({ testStepServiceUrl: appConfig().serviceUrls.indexService }),
     UserActivityModule
   ],
