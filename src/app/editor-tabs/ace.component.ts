@@ -1,20 +1,15 @@
-import { Component, Input, AfterViewInit, isDevMode, OnDestroy, NgZone } from '@angular/core';
-import { Deferred } from 'prophecy/src/Deferred';
-
+import { AfterViewInit, Component, Input, isDevMode, NgZone, OnDestroy } from '@angular/core';
 import { MessagingService } from '@testeditor/messaging-service';
-import { DocumentService } from '../service/document/document.service';
-import { DirtyState } from './dirty-state';
-
-import * as events from './event-types';
-
-import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
-
-import { Subscription } from 'rxjs';
-import { WORKSPACE_RELOAD_RESPONSE, SNACKBAR_DISPLAY_NOTIFICATION } from '@testeditor/test-navigator';
-import '../../assets/configuration.js';
-import { TabInformer } from './editor-tabs.component';
+import { SNACKBAR_DISPLAY_NOTIFICATION, WORKSPACE_RELOAD_RESPONSE } from '@testeditor/test-navigator';
 import { isConflict } from '@testeditor/testeditor-commons';
-declare var appConfig: Function;
+import { TestEditorConfiguration } from 'app/config/test-editor-configuration';
+import { Deferred } from 'prophecy/src/Deferred';
+import { Subscription } from 'rxjs';
+import { DocumentService } from '../service/document/document.service';
+import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
+import { DirtyState } from './dirty-state';
+import { TabInformer } from './editor-tabs.component';
+import * as events from './event-types';
 
 declare var createXtextEditor: (config: any) => Deferred;
 declare var reconfigureXtextEditor: (editor: any, config: any) => void;
@@ -44,7 +39,8 @@ export class AceComponent implements AfterViewInit, OnDestroy {
 
   constructor(public zone: NgZone, private documentService: DocumentService, private messagingService: MessagingService,
               private syntaxHighlightingService: SyntaxHighlightingService,
-              private zoneConfiguration: AceEditorZoneConfiguration) {
+              private zoneConfiguration: AceEditorZoneConfiguration,
+              private config: TestEditorConfiguration) {
   }
 
   ngAfterViewInit(): void {
@@ -183,10 +179,9 @@ export class AceComponent implements AfterViewInit, OnDestroy {
     const editorId = `${tabId}-editor`;
     const syntaxDefinitionFilePath = await this.findSyntaxDefinitionFile();
     const isKnownLanguage = syntaxDefinitionFilePath !== AceComponent.UNKNOWN_LANGUAGE_SYNTAX_PATH;
-    const serviceUrls = appConfig().serviceUrls;
     return {
       baseUrl: window.location.origin,
-      serviceUrl: serviceUrls.xtextService,
+      serviceUrl: this.config.serviceUrls.xtextService,
       parent: editorId,
       dirtyElement: document.getElementsByClassName(tabId),
       loadFromServer: false,
