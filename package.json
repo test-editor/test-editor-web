@@ -39,7 +39,7 @@
     "@testeditor/messaging-service": "~1.5.0",
     "@testeditor/test-navigator": "~0.2.0",
     "@testeditor/testeditor-commons": "~0.6.0",
-    "@testeditor/testexec-details": "~0.4.0",
+    "@testeditor/testexec-details": "~0.4.2",
     "@testeditor/testexec-navigator": "~0.5.0",
     "@testeditor/teststep-selector": "~0.2.0",
     "@testeditor/user-activity": "~0.1.0",
