@@ -354,10 +354,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@testeditor/testexec-details@~0.4.0":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.4.1.tgz#bd5b904173c402d0025a864f167751333096c397"
-  integrity sha512-MDOG3ewUpvghOfGt2pIROnWqBohlxm/JbOCoVT7u5PUPsyMNOMgcNn5wzZJHG9zkHV5UDDs3MaSf2bLmKu24Tg==
+"@testeditor/testexec-details@~0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.4.2.tgz#2625a76c9970fff0700066fbd05d922c6ac7f126"
+  integrity sha512-0T0NO1iNymYeJ/lhOg+kdGIh4j2IpC6HHCYVfeN1cptgo36VIsDBuyvUvlnzaKHqmfdsLkcMVoR64/mYn8Eldw==
   dependencies:
     tslib "^1.9.0"
 
