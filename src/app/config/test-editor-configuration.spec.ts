@@ -65,6 +65,8 @@ describe('TestEditorConfiguration', () => {
       authentication: {
         redirectUrl: 'custom value!',
         silentRenewUrl: 'custom value!',
+        clientId: 'custom value!',
+        stsServer: 'custom value!'
       },
       serviceUrls: {
         indexService: 'custom value!',
