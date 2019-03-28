@@ -11,6 +11,7 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { ModalDialogComponent } from '../dialogs/modal.dialog.component';
 import { EDITOR_SAVE_FAILED, EDITOR_BUSY_OFF, EDITOR_BUSY_ON } from './event-types';
 import { Conflict } from '@testeditor/testeditor-commons';
+import { TestEditorConfiguration } from 'app/config/test-editor-configuration';
 
 @Component({
   selector: `app-host-component`,
@@ -51,7 +52,8 @@ describe('AceComponent', () => {
       providers: [
         { provide: DocumentService, useValue: instance(documentServiceMock) },
         { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) },
-        { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: false } }
+        { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: false } },
+        { provide: TestEditorConfiguration, useValue: TestEditorConfiguration.defaults }
       ]
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {

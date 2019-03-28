@@ -223,3 +223,33 @@ EOF
 	exit 1
 fi
 ```
+## Deployment Configuration
+
+When deploying Test-Editor-Web, its configuration can be customized through the file [src/assets/configuration.js](src/assets/configuration.js). This file defines a function `appConfig` that returns a JSON object of the following form:
+```
+{
+  serviceUrls: {
+    xtextService: "<XTEXT-BACKEND>/xtext-service",
+    persistenceService: "<PERSISTENCE-BACKEND>",
+    testExecutionService: "<PERSISTENCE-BACKEND>/tests",
+    testSuiteExecutionService: "<PERSISTENCE-BACKEND>/test-suite",
+    validationMarkerService: "<XTEXT-BACKEND>/validation-markers",
+    indexService: "<XTEXT-BACKEND>/index",
+    testCaseService: "<XTEXT-BACKEND>/test-case",
+    userActivityService: "<PERSISTENCE-BACKEND>"
+  },
+  authentication: {
+    stsServer: "<OPEN_ID_CONNECT_PROVIDER>",
+    clientId: "<CLIENT_ID>",
+    redirectUrl: "<REDIRECT_URL>",
+    silentRenewUrl: "<SILENT_RENEW_URL>"
+  }
+}
+```
+There are two main blocks:
+* **serviceUrls** contains the backend endpoints to be used. Currently, all endpoints are provided by one of two backends, as indicated above: either the _xtext backend_ (also referred to as index backend) or the _persistence backend_. The placeholders in angle brackets should be replaced with their actual URLs. The defaults (for running the Test-Editor locally) are `http://localhost:8080` for the xtext backend, and `http://localhost:9080` for the persistence backend.
+* **authentication** contains configuration parameters to set up user authentication through an OpenID Connect provider (Test-Editor-Web uses the [implicit flow](https://tools.ietf.org/html/rfc6749#section-4.2)). The following fields can currently be configured:
+    * **stsServer**: The URL of an OpenID provider (_secure token service_) to use for authentication. By default, Google is used, and the corresponding URL is `https://accounts.google.com`.
+    * **clientId**: An ID issued by an OpenID Provider to identify this client, i.e. a particular Test-Editor instance. For development and testing purposes, a default ID of `173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com` is used.
+    * **redirectUrl**: The URL to redirect to after the user was authenticated. This should be the URL of the running Test-Editor-Web instance. For running the Test-Editor locally, it defaults to `localhost:4200`.
+    * **silentRenewUrl**: The URL to callback after a silent renew, i.e. periodic re-authentication requests sent to the OpenID Connect provider to avoid a timeout while the user is active. For now, this should always be the same as the redirect URL.

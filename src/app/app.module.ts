@@ -25,8 +25,11 @@ import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { UserActivityConfig, UserActivityType } from './user-activity-config/user-activity-config';
 import { TestEditorUserActivityLabelProvider } from './user-activity-config/user-activity-label-provider';
 import { TestEditorUserActivityStyleProvider } from './user-activity-config/user-activity-style-provider';
+import { TestEditorConfiguration } from './config/test-editor-configuration.js';
 
 declare var appConfig: Function;
+
+const testEditorConfig = new TestEditorConfiguration(appConfig());
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent }
@@ -57,19 +60,19 @@ const testExecDetailsPropertiesOrder: TestPropertiesOrganizerServiceConfig = {
     AuthModule.forRoot({ storage: AppTokenStorage }),
     MessagingModule.forRoot(),
     TestNavigatorModule.forRoot(
-      { persistenceServiceUrl: appConfig().serviceUrls.persistenceService },
-      { indexServiceUrl: appConfig().serviceUrls.indexService },
-      { validationServiceUrl: appConfig().serviceUrls.validationMarkerService }
+      { persistenceServiceUrl: testEditorConfig.serviceUrls.persistenceService },
+      { indexServiceUrl: testEditorConfig.serviceUrls.indexService },
+      { validationServiceUrl: testEditorConfig.serviceUrls.validationMarkerService }
     ),
     EditorTabsModule.forRoot({
-      persistenceServiceUrl: appConfig().serviceUrls.persistenceService,
+      persistenceServiceUrl: testEditorConfig.serviceUrls.persistenceService,
     }),
-    TestExecNavigatorModule.forRoot({ testCaseServiceUrl: appConfig().serviceUrls.testCaseService },
-                                    { testExecutionServiceUrl: appConfig().serviceUrls.testSuiteExecutionService }),
-    TestExecDetailsModule.forRoot({ url: appConfig().serviceUrls.testSuiteExecutionService },
-                                  { resourceServiceUrl: appConfig().serviceUrls.persistenceService },
+    TestExecNavigatorModule.forRoot({ testCaseServiceUrl: testEditorConfig.serviceUrls.testCaseService },
+                                    { testExecutionServiceUrl: testEditorConfig.serviceUrls.testSuiteExecutionService }),
+    TestExecDetailsModule.forRoot({ url: testEditorConfig.serviceUrls.testSuiteExecutionService },
+                                  { resourceServiceUrl: testEditorConfig.serviceUrls.persistenceService },
                                   testExecDetailsPropertiesOrder),
-    TestStepSelectorModule.forRoot({ testStepServiceUrl: appConfig().serviceUrls.indexService }),
+    TestStepSelectorModule.forRoot({ testStepServiceUrl: testEditorConfig.serviceUrls.indexService }),
     UserActivityModule
   ],
   providers: [
@@ -88,10 +91,11 @@ const testExecDetailsPropertiesOrder: TestPropertiesOrganizerServiceConfig = {
       multi: true
     },
     UserActivityConfig,
-    { provide: UserActivityServiceConfig, useValue: { userActivityServiceUrl: appConfig().serviceUrls.userActivityService } },
+    { provide: UserActivityServiceConfig, useValue: { userActivityServiceUrl: testEditorConfig.serviceUrls.userActivityService } },
     { provide: TEST_NAVIGATOR_USER_ACTIVITY_STYLE_PROVIDER, useClass: TestEditorUserActivityStyleProvider },
     { provide: TEST_NAVIGATOR_USER_ACTIVITY_LABEL_PROVIDER, useClass: TestEditorUserActivityLabelProvider },
-    { provide: TEST_NAVIGATOR_USER_ACTIVITY_LIST, useValue:  userActivities }
+    { provide: TEST_NAVIGATOR_USER_ACTIVITY_LIST, useValue:  userActivities },
+    { provide: TestEditorConfiguration, useValue: testEditorConfig }
   ],
   bootstrap: [AppComponent],
   entryComponents: [ModalDialogComponent]
@@ -106,13 +110,13 @@ export class AppModule {
     this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
 
       const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
-      openIDImplicitFlowConfiguration.stsServer = 'https://accounts.google.com';
-      openIDImplicitFlowConfiguration.redirect_url = 'http://localhost:4200';
-      openIDImplicitFlowConfiguration.client_id = '173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com';
+      openIDImplicitFlowConfiguration.stsServer = testEditorConfig.authentication.stsServer;
+      openIDImplicitFlowConfiguration.redirect_url = testEditorConfig.authentication.redirectUrl;
+      openIDImplicitFlowConfiguration.client_id = testEditorConfig.authentication.clientId;
       openIDImplicitFlowConfiguration.response_type = 'id_token';
       openIDImplicitFlowConfiguration.scope = 'openid email profile';
       openIDImplicitFlowConfiguration.silent_renew = true;
-      openIDImplicitFlowConfiguration.silent_renew_url = 'http://localhost:4200';
+      openIDImplicitFlowConfiguration.silent_renew_url = testEditorConfig.authentication.silentRenewUrl;
       openIDImplicitFlowConfiguration.post_login_route = '/';
       openIDImplicitFlowConfiguration.forbidden_route = '/';
       openIDImplicitFlowConfiguration.unauthorized_route = '/';

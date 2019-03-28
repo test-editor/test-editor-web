@@ -15,6 +15,7 @@ import { NAVIGATION_DELETED, NAVIGATION_OPEN,
          NavigationDeletedPayload, NavigationOpenPayload } from './event-types';
 import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
+import { TestEditorConfiguration } from 'app/config/test-editor-configuration';
 
 @Component({
   selector: 'xtext-editor',
@@ -90,7 +91,8 @@ describe('EditorTabsComponent', () => {
       providers: [
         { provide: DocumentService, useValue: instance(documentServiceMock) },
         { provide: SyntaxHighlightingService, useValue: instance(syntaxHighlightingServiceMock) },
-        { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: false } }
+        { provide: AceEditorZoneConfiguration, useValue: { useOutsideZone: false } },
+        { provide: TestEditorConfiguration, useValue: TestEditorConfiguration.defaults }
       ]
     })
       .compileComponents();
