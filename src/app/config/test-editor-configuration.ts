@@ -33,8 +33,8 @@ export class TestEditorConfiguration {
   static readonly defaults: TestEditorConfiguration = {
     authentication: {
       clientId: '173023782391-6jqf6sgv5mlskj7f35qogtso5je2e1gc.apps.googleusercontent.com',
-      redirectUrl: 'localhost:4200',
-      silentRenewUrl: 'localhost:4200',
+      redirectUrl: 'http://localhost:4200',
+      silentRenewUrl: 'http://localhost:4200',
       stsServer: 'https://accounts.google.com'
     },
     serviceUrls: {
