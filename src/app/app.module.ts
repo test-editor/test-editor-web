@@ -66,7 +66,7 @@ const testExecDetailsPropertiesOrder: TestPropertiesOrganizerServiceConfig = {
     ),
     EditorTabsModule.forRoot({
       persistenceServiceUrl: testEditorConfig.serviceUrls.persistenceService,
-    }),
+    }, testEditorConfig),
     TestExecNavigatorModule.forRoot({ testCaseServiceUrl: testEditorConfig.serviceUrls.testCaseService },
                                     { testExecutionServiceUrl: testEditorConfig.serviceUrls.testSuiteExecutionService }),
     TestExecDetailsModule.forRoot({ url: testEditorConfig.serviceUrls.testSuiteExecutionService },
