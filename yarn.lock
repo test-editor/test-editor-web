@@ -355,16 +355,16 @@
     tslib "^1.9.0"
 
 "@testeditor/testexec-details@~0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.4.2.tgz#2625a76c9970fff0700066fbd05d922c6ac7f126"
-  integrity sha512-0T0NO1iNymYeJ/lhOg+kdGIh4j2IpC6HHCYVfeN1cptgo36VIsDBuyvUvlnzaKHqmfdsLkcMVoR64/mYn8Eldw==
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.4.3.tgz#1e960a3e9745802a5a31fba7ba45ebd8b54f10d5"
+  integrity sha512-Su5m/a2eRFaR8I3HzgzuEHXhwyYsnZdqPRDAe5RHIVQuNqb8jl05ijWedyfdbHm2QiE20p7r+L+3nsEToKmL0w==
   dependencies:
     tslib "^1.9.0"
 
 "@testeditor/testexec-navigator@~0.5.0":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.5.1.tgz#944513c42cebabfeee78b091750c5b30b085d637"
-  integrity sha512-G1ZLU5lUqKh6lKfSc2Iaj14ADBtl1+DI8nw1BEtYRmSU1i7IkRVWzY2KfPWENpgJQsy5F7hAJkWOBfFjEq+nmQ==
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.5.2.tgz#720091fd3570a357a48bf8ac578cd89f2c166690"
+  integrity sha512-znp5zDW7gYHSmsS6dceEIsbnkKZuLwn67OUE6fvFF9dtL+haXyYWNabxinrA69y+B4PLNiiErTeEt2btTF95IQ==
   dependencies:
     tslib "^1.9.0"
 
