@@ -115,10 +115,9 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
   }
 
   private handleNavigationRenamed(payload: NavigationRenamedPayload): void {
-    const existingTab = this.findTab(payload.oldPath);
-    if (existingTab) {
-      this.renameTab(existingTab, payload.oldPath, payload.newPath);
-    }
+    this.findDescendantTabs(payload.oldPath).forEach((tab) => {
+      this.renameTab(tab, tab.path, payload.newPath + tab.path.substring(payload.oldPath.length));
+    });
   }
 
   private renameTab(tab: any, oldPath: string, newPath: string) {
@@ -144,6 +143,10 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
 
   private findTab(path: string): TabElement {
     return this.tabs.find(tab => tab.path === path);
+  }
+
+  private findDescendantTabs(parentPath: string): TabElement[] {
+    return this.tabs.filter(tab => tab.path.startsWith(parentPath));
   }
 
   private findTabsBelowFolder(folder: string): TabElement[] {

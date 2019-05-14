@@ -12,7 +12,7 @@ import { DocumentService } from '../service/document/document.service';
 
 import { NAVIGATION_DELETED, NAVIGATION_OPEN,
          EDITOR_ACTIVE, EDITOR_CLOSE, EDITOR_OPEN,
-         NavigationDeletedPayload, NavigationOpenPayload } from './event-types';
+         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload, NAVIGATION_RENAMED } from './event-types';
 import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 import { TestEditorConfiguration } from 'app/config/test-editor-configuration';
@@ -279,4 +279,19 @@ describe('EditorTabsComponent', () => {
     expect(getActiveItem().nativeElement.innerText).toBe('bar');
   });
 
+  it('renames tab when corresponding event of a parent is received', () => {
+    // given
+    openFooAndBar();
+    const unaffectedTab = component.tabs[0];
+    const affectedTab = component.tabs[1];
+    const renamePayload: NavigationRenamedPayload = { oldPath: 'tropical', newPath: 'caribbean' };
+
+    // when
+    messagingService.publish(NAVIGATION_RENAMED, renamePayload);
+    fixture.detectChanges();
+
+    // then
+    expect(unaffectedTab.path).toEqual('top/secret/foo');
+    expect(affectedTab.path).toEqual('caribbean/bar');
+  });
 });
