@@ -341,9 +341,9 @@
     tslib "^1.9.0"
 
 "@testeditor/test-navigator@~0.2.0":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.2.1.tgz#0363429d583dd6666d2dbab26c926a5f440a8ca3"
-  integrity sha512-U0FJHjyHWlXk+VWEDswEy7YrFXReCkxZTriIKUq9nK9LLFzY1pgISoyRf+MdHsjGZm9J2pQXGP6+WTzuKPUA1A==
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.2.2.tgz#156b16915a6990e72afa3656db371f64e92524e2"
+  integrity sha512-6fnIeLSW1qE+CVUNAYbNGB1lqX7zsbzRZca7HDuNuk6jQaZ8fuOUDGrwN9ws8souV19o5euW7rkg+FKpDPkJ8g==
   dependencies:
     tslib "^1.9.0"
 
@@ -362,9 +362,9 @@
     tslib "^1.9.0"
 
 "@testeditor/testexec-navigator@~0.5.0":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.5.2.tgz#720091fd3570a357a48bf8ac578cd89f2c166690"
-  integrity sha512-znp5zDW7gYHSmsS6dceEIsbnkKZuLwn67OUE6fvFF9dtL+haXyYWNabxinrA69y+B4PLNiiErTeEt2btTF95IQ==
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.5.3.tgz#f7c75dcd681d61a1e531a344eec4aba393e2c34e"
+  integrity sha512-t0Jgtjr5GK9U+wzo4/o4I83P67/tTo9RJIX592NAzuj1a8TOoossL+FUsMYP/c8wFYig8kJKE/FZCnP6ubEfhA==
   dependencies:
     tslib "^1.9.0"
 
