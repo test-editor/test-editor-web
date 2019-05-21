@@ -1,6 +1,6 @@
 {
   "name": "test-editor-web",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "license": "EPL",
   "scripts": {
     "ng": "node_modules/@angular/cli/bin/ng",
