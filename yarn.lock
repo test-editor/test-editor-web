@@ -341,9 +341,9 @@
     tslib "^1.9.0"
 
 "@testeditor/test-navigator@~0.2.0":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.2.2.tgz#156b16915a6990e72afa3656db371f64e92524e2"
-  integrity sha512-6fnIeLSW1qE+CVUNAYbNGB1lqX7zsbzRZca7HDuNuk6jQaZ8fuOUDGrwN9ws8souV19o5euW7rkg+FKpDPkJ8g==
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.2.4.tgz#481b19341a0f8bf0d2e7ead4ae8cbd5c41150914"
+  integrity sha512-RKFP5qTMXEQE/30F/K4rlk2Ffm3wCReallv09PCcnZ4oe0v+o/uZearuJlO14WK9Z4Yi0Y8G6eDzDqZCdCHLdQ==
   dependencies:
     tslib "^1.9.0"
 
