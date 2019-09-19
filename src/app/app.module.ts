@@ -70,7 +70,7 @@ const testExecDetailsPropertiesOrder: TestPropertiesOrganizerServiceConfig = {
     TestExecNavigatorModule.forRoot({ testCaseServiceUrl: testEditorConfig.serviceUrls.testCaseService },
                                     { testExecutionServiceUrl: testEditorConfig.serviceUrls.testSuiteExecutionService }),
     TestExecDetailsModule.forRoot({ url: testEditorConfig.serviceUrls.testSuiteExecutionService },
-                                  { resourceServiceUrl: testEditorConfig.serviceUrls.persistenceService },
+                                  { resourceServiceUrl: testEditorConfig.serviceUrls.testArtifactService },
                                   testExecDetailsPropertiesOrder),
     TestStepSelectorModule.forRoot({ testStepServiceUrl: testEditorConfig.serviceUrls.indexService }),
     UserActivityModule
