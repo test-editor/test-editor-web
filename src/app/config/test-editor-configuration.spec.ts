@@ -72,6 +72,7 @@ describe('TestEditorConfiguration', () => {
         indexService: 'custom value!',
         persistenceService: 'custom value!',
         testCaseService: 'custom value!',
+        testArtifactService: 'custom value!',
         testExecutionService: 'custom value!',
         testSuiteExecutionService: 'custom value!',
         userActivityService: 'custom value!',

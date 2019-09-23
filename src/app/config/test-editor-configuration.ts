@@ -14,6 +14,7 @@ export interface TestEditorConfiguration {
 export interface TestEditorServiceUrls {
   xtextService: string;
   persistenceService: string;
+  testArtifactService: string;
   testExecutionService: string;
   testSuiteExecutionService: string;
   validationMarkerService: string;
@@ -41,8 +42,9 @@ export class TestEditorConfiguration {
       indexService: 'http://localhost:8080/index',
       persistenceService: 'http://localhost:9080',
       testCaseService: 'http://localhost:8080/test-case',
-      testExecutionService: 'http://localhost:9080/tests',
-      testSuiteExecutionService: 'http://localhost:9080/test-suite',
+      testArtifactService: 'http://localhost:10080',
+      testExecutionService: 'http://localhost:10080/tests',
+      testSuiteExecutionService: 'http://localhost:10080/test-suite',
       userActivityService: 'http://localhost:9080',
       validationMarkerService: 'http://localhost:8080/validation-markers',
       xtextService: 'http://localhost:8080/xtext-service',
