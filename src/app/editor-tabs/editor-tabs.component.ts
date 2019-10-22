@@ -35,6 +35,8 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
   readonly EDITOR_BUSY_CLASS = 'grayout visible';
   readonly EDITOR_IDLE_CLASS = 'grayout hidden';
 
+  private snackbarEditorBusyTimeout = undefined;
+
   editorBusyClass = this.EDITOR_IDLE_CLASS;
   @ViewChildren(AceComponent) editorComponents: QueryList<AceComponent>;
   public tabs: TabElement[] = [];
@@ -67,7 +69,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
     }));
     this.subscriptions.push(this.messagingService.subscribe(EDITOR_BUSY_ON, () => {
       this.editorBusyClass = this.EDITOR_BUSY_CLASS;
-      setTimeout(() => { // make sure that after timeout the application is unlocked
+      this.snackbarEditorBusyTimeout = setTimeout(() => { // make sure that after timeout the application is unlocked
         this.messagingService.publish(EDITOR_BUSY_OFF, { });
         this.messagingService.publish(SNACKBAR_DISPLAY_NOTIFICATION, { message: 'Editor action timed out. Please check your workspace.' });
         this.changeDetectorRef.detectChanges();
@@ -75,6 +77,7 @@ export class EditorTabsComponent implements OnInit, OnDestroy, TabInformer {
       this.changeDetectorRef.detectChanges();
     }));
     this.subscriptions.push(this.messagingService.subscribe(EDITOR_BUSY_OFF, () => {
+      clearTimeout(this.snackbarEditorBusyTimeout);
       this.editorBusyClass = this.EDITOR_IDLE_CLASS;
       this.changeDetectorRef.detectChanges();
     }));
