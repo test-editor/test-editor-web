@@ -1,5 +1,5 @@
 import { DebugElement, Component, AfterViewInit } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { mock, when, instance, anyString } from 'ts-mockito';
 
@@ -12,10 +12,12 @@ import { DocumentService } from '../service/document/document.service';
 
 import { NAVIGATION_DELETED, NAVIGATION_OPEN,
          EDITOR_ACTIVE, EDITOR_CLOSE, EDITOR_OPEN,
-         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload, NAVIGATION_RENAMED } from './event-types';
+         NavigationDeletedPayload, NavigationOpenPayload, NavigationRenamedPayload,
+         NAVIGATION_RENAMED, EDITOR_BUSY_ON, EDITOR_BUSY_OFF } from './event-types';
 import { AceClientsideSyntaxHighlightingService } from '../service/syntaxHighlighting/ace.clientside.syntax.highlighting.service';
 import { SyntaxHighlightingService } from '../service/syntaxHighlighting/syntax.highlighting.service';
 import { TestEditorConfiguration } from 'app/config/test-editor-configuration';
+import { SNACKBAR_DISPLAY_NOTIFICATION } from 'app/snack-bar/snack-bar-event-types';
 
 @Component({
   selector: 'xtext-editor',
@@ -294,4 +296,38 @@ describe('EditorTabsComponent', () => {
     expect(unaffectedTab.path).toEqual('top/secret/foo');
     expect(affectedTab.path).toEqual('caribbean/bar');
   });
+
+  it('does not produce snack bar message if editor action completes before timeout', fakeAsync(() => {
+    // given
+    let messageReceived = false;
+    messagingService.subscribe(SNACKBAR_DISPLAY_NOTIFICATION, () => {
+      messageReceived = true;
+    } );
+
+    // when
+    messagingService.publish(EDITOR_BUSY_ON, {});
+    tick(29999);
+    messagingService.publish(EDITOR_BUSY_OFF, {});
+    tick(1);
+
+    // then
+    expect(messageReceived).toBeFalsy();
+  }));
+
+  it('produces snack bar message if editor action does not complete before timeout', fakeAsync(() => {
+    // given
+    let messageReceived = false;
+    messagingService.subscribe(SNACKBAR_DISPLAY_NOTIFICATION, () => {
+      messageReceived = true;
+    } );
+
+    // when
+    messagingService.publish(EDITOR_BUSY_ON, {});
+    tick(30000);
+    messagingService.publish(EDITOR_BUSY_OFF, {});
+
+
+    // then
+    expect(messageReceived).toBeTruthy();
+  }));
 });
