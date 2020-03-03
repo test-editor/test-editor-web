@@ -1,4 +1,5 @@
 language: nix
+nix: 2.3.3
 # see https://docs.travis-ci.com/user/languages/nix
 # and https://nixos.wiki/wiki/Nix_on_Travis
 sudo: false
