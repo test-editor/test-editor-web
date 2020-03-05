@@ -348,51 +348,51 @@
     semver-intersect "1.4.0"
 
 "@testeditor/messaging-service@~1.5.0":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.5.4.tgz#6e4251f26cd345a6ab60049de42a73b19a9c63ac"
-  integrity sha512-Rp/MD1IjkQCvjfcuoJK+FIysuqc1dB3kAWsViQDghSzioI4ssi7R7KQdxTihy8h4SSBBBiEJoUT0TE/BDM9zVw==
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/@testeditor/messaging-service/-/messaging-service-1.5.6.tgz#d2531de6326e4e342759cea24f456935b1056cbd"
+  integrity sha512-+snyjsJIb7I2jyfry9pzZ0cJ7FrTLNRe3TRVVRcN3sfNP5c0idhQiMiB2e/A07ujkqv94CMyWv7Y7G32s+qxYg==
   dependencies:
     tslib "^1.9.0"
 
 "@testeditor/test-navigator@~0.2.0":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.2.6.tgz#36fb6918155f03559d4c0fdee3fd5e9fe7b7a5e5"
-  integrity sha512-H+AuGu9MEzEsS5VhOiA59ip4Rberkn9mmZdvR5SBi1PSIUUr/VQCKnfBBaw4aS2HIMiZ6npxnjzxw7lAqLuqqQ==
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@testeditor/test-navigator/-/test-navigator-0.2.8.tgz#e42d7abda4ae8c8667aca53440d29e51f729c9bf"
+  integrity sha512-c2PZ1i87M9Pm4wd5TIAgp5tec8w70+/0Z4EkfubbrdKGgYRNLs7+S6zXv2m3bCm9Pdpxl9pQy0ItnKACBw8MrQ==
   dependencies:
     tslib "^1.9.0"
 
 "@testeditor/testeditor-commons@~0.6.0":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.6.2.tgz#3a15fc43dc59fc42efd382e024f626f9adbdedff"
-  integrity sha512-eDup89EmFb6cj8qOpPUJ9F2beOSNKekYIWQn3YenwG/hvTxSBiZp/nwyQuuKuaZzfXaEquUdQoEvRNy98bRsYQ==
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@testeditor/testeditor-commons/-/testeditor-commons-0.6.4.tgz#69cf88f31f7ee1121a0b075041d8c6b0e4621d7f"
+  integrity sha512-4pLZG9HYBOx+UMZB+Wd6NMSd86qEPdi7W247/f0DBmuGRx0W3RumooBUsOqaCCRJf1M19n3rM8SbgXP5BvE/MQ==
   dependencies:
     tslib "^1.9.0"
 
 "@testeditor/testexec-details@~0.4.2":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.4.4.tgz#6508ce3e40396f19f5734772a5101b83b5653d31"
-  integrity sha512-Mw3eGLlkLAZMyuNd/rmlQKrp52r7ZO0Jqvklzzu0mgD7hXuolq4tuDSOGqXijaWcmtf24WGvTT5nlI6DCo1nww==
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-details/-/testexec-details-0.4.6.tgz#95587cab4c708daab1475b1fd03e524aa5228270"
+  integrity sha512-5TTRTfFOyR5m2+14sfVfOl47t105NEWLBilsmVDGC3v7SAU5kOHxAvyvofavkBcOm3vyuJjZcIkT+d6x11IqZw==
   dependencies:
     tslib "^1.9.0"
 
 "@testeditor/testexec-navigator@~0.5.0":
-  version "0.5.10"
-  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.5.10.tgz#34c7b2a60c7ace448183a4235a257e361e65eaa3"
-  integrity sha512-7XawIghaYe2bNkRISFH4yzuzpDMGKKiDWBYkCXx7inqm9sjO4/kpXpngFBXJsiV8Kk1nXVWq1mIedAPvNzLahQ==
+  version "0.5.12"
+  resolved "https://registry.yarnpkg.com/@testeditor/testexec-navigator/-/testexec-navigator-0.5.12.tgz#8c4a8996ab49040ca468bf281745a06cd6f46155"
+  integrity sha512-F07gkzuxk9G9NNy3Ly4mIS/34ub8/BALWHod7VCmA7t4ECWX9KTxabFOaBO4MNoghnTsa1AzXr38BQMKo+dduA==
   dependencies:
     tslib "^1.9.0"
 
 "@testeditor/teststep-selector@~0.2.0":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@testeditor/teststep-selector/-/teststep-selector-0.2.2.tgz#4ca27e9b437ce2dc03316166253510fd3bab537f"
-  integrity sha512-id56cpx8x845zf4g7/beTB0CvFx0CZh8eHhROmw9pQsbKAYLVxaTabRnMbl5+xZBcl2IbK3tTCYPeGCOa3BVZA==
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@testeditor/teststep-selector/-/teststep-selector-0.2.4.tgz#3d1eba748e60e7481eca5929d741e7b311f3e3ea"
+  integrity sha512-KZOJiSF2IYD/waaDakWHF58EagkDd1Uc5me3O+tFABNMvVpTkC+mKV6WWIAkkSgxdrvo3v7ho5E8C9wM03ZaLQ==
   dependencies:
     tslib "^1.9.0"
 
 "@testeditor/user-activity@~0.1.0":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@testeditor/user-activity/-/user-activity-0.1.2.tgz#3b79069bff56418c6d696f50844a89da44e901d9"
-  integrity sha512-oOqO/A+cTtTsAAyoAYKoSZdHXfoNxuLq8o8AQHR+ObX4N001nkMYVQk2MUHaElgDsx7zMJlbe5yH1M63HfpN5A==
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@testeditor/user-activity/-/user-activity-0.1.4.tgz#c6eeab4ba8bdcda6f0c808a11e4055012a05a836"
+  integrity sha512-CZ6hMQfNMn00cBHR18UD+7IHKIUEeMgOzJf11iqYbWFQCsbyfwBpGl0V1OzT99Q3wqJ47hxAIUf4tp+1akU+gQ==
   dependencies:
     tslib "^1.9.0"
 
